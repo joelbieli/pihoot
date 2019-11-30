@@ -22,7 +22,7 @@ Method: `GET`
 
 URL: `/api/quiz`
 
-Return value: [`[Quiz]`](#quiz)
+Return value: [`Quiz`](#quiz)
 
 #### Read (single)
 
@@ -126,7 +126,7 @@ URL: `/api/game/start/{gameId}`
 
 Parameters: `gameId: string`
 
-#### Start
+#### End
 
 Method: `POST`
 
@@ -171,8 +171,6 @@ Route: `/ws/frontend/question/end`
 Direction: Client -> Server
 
 Payload: [`QuestionEvent`](#question-event)
-
-
 
 # API design - Raspberry PI
 
