@@ -12,7 +12,6 @@ function runInitFunctions() {
 	let playButton = $('#play-button');
 	
 	initPlayButton(playButton);
-	initListeners(createButton, playButton);
 }
 
 function runPrepFunctions() {
