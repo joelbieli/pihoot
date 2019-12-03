@@ -9,5 +9,5 @@ class Quiz(
         var id: String? = null,
         var title: String? = null,
         var description: String? = null,
-        var questions: MutableList<Question>? = null
+        var questions: MutableList<Question> = mutableListOf()
 )
