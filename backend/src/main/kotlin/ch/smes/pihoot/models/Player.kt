@@ -5,6 +5,6 @@ import org.springframework.data.annotation.Id
 class Player(
         @Id
         var id: String? = null,
-        var color: PlayerColor,
-        var socket: Any
+        var color: PlayerColor? = null,
+        var socket: Any? = null
 )
