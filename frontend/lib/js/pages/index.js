@@ -1,21 +1,13 @@
 $(document).ready(function () {
-	runPrepFunctions();
+	runInitFunctions();
 });
-
-runInitFunctions();
 
 
 // ----- Function collection launchers -----
 
 function runInitFunctions() {
-	let createButton = $('#create-button');
 	let playButton = $('#play-button');
+	let playButtonMessage = $('#play-button-message');
 	
-	initPlayButton(playButton);
-}
-
-function runPrepFunctions() {
-	let playButton = $('#play-button');
-	
-	preparePlayButton(playButton);
+	initPlayButton(playButton, playButtonMessage);
 }
