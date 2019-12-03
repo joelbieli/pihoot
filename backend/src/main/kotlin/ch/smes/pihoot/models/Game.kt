@@ -7,6 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 class Game(
         @Id
         var id: String? = null,
-        var quiz: Quiz,
-        var players: MutableList<Player>
+        var quiz: Quiz? = null,
+        var players: MutableList<Player>? = null
 )

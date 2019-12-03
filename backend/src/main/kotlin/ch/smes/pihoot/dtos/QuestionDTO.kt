@@ -2,6 +2,6 @@ package ch.smes.pihoot.dtos
 
 class QuestionDTO(
         var id: String? = null,
-        var question: String,
-        var answers: MutableList<AnswerDTO>
+        var question: String? = null,
+        var answers: MutableList<AnswerDTO>? = null
 )

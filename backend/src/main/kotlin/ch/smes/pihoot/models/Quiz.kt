@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 class Quiz(
         @Id
         var id: String? = null,
-        var title: String,
-        var description: String,
-        var questions: MutableList<Question>
+        var title: String? = null,
+        var description: String? = null,
+        var questions: MutableList<Question>? = null
 )
