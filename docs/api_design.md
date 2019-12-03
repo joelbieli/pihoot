@@ -22,7 +22,7 @@ Method: `GET`
 
 URL: `/api/quiz`
 
-Return value: [`Quiz`](#quiz)
+Return value: [`[Quiz]`](#quiz)
 
 #### Read (single)
 
@@ -217,7 +217,8 @@ Payload: `answerId: string`
 ```json
 Quiz {
     title: string,
-    description: string
+    description: string,
+    questions: [Question] //this is only returned from the backend. it will simply be ignored if sent from the frontend
 }
 ```
 
