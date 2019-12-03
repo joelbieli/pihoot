@@ -76,33 +76,17 @@ Payload: [`Question`](#question)
 
 Return value: [`Question`](#question)
 
-#### Read
-
-Method: `GET`
-
-URL: `/api/question/{quizId}`
-
-Return value: [`[Question]`](#question)
-
-#### Read (single)
-
-Method: `GET`
-
-URL: `/api/question/{quizId}/{id}`
-
-Parameters:
- - `quizId: string`
- - `id: string`
-
-Return value: [`Question`](#question)
-
 #### Update
 
 Method: `PUT`
 
-URL: `/api/question/{id}`
+URL: `/api/question/{quizId}/{id}`
 
-Parameters: `id: string`
+Parameters:
+
+- `quizId: string`
+
+- `id: string`
 
 Payload:  [`Question`](#question)
 
@@ -112,9 +96,13 @@ Return value:  [`Question`](#question)
 
 Method: `DELETE`
 
-URL: `/api/question/{id}`
+URL: `/api/question/{quizId}/{id}`
 
-Parameters: `id: string`
+Parameters:
+
+- `quizId: string`
+
+- `id: string`
 
 ### Game
 
