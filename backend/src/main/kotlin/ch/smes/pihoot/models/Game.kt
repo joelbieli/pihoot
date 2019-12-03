@@ -8,5 +8,5 @@ class Game(
         @Id
         var id: String? = null,
         var quiz: Quiz? = null,
-        var players: MutableList<Player>? = null
+        var players: MutableList<Player> = mutableListOf()
 )
