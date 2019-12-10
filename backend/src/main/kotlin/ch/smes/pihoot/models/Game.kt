@@ -8,5 +8,6 @@ class Game(
         @Id
         var id: String? = null,
         var quiz: Quiz? = null,
+        var colorCode: List<AnswerColor> = listOf(),
         var players: MutableList<Player> = mutableListOf()
 )
