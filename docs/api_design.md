@@ -138,27 +138,32 @@ Return value: [`Score`](#score)
 
 ### Players
 
-Route: `/ws/frontend/players`
+Route: `/ws/web/players`
 
 Direction: Server -> Client
 
-Payload: [`[Player]`](#player)
+Payload: [`WSEvent`](#ws-event)<[`Player`](#player)>
 
 ### Begin question
 
-Route: `/ws/frontend/question/begin`
+Route: `/ws/web/question/begin/{quizId}/{questionId}`
+
+Parameters:
+- `quizId: string`
+- `questionId: string`
 
 Direction: Client -> Server
-
-Payload: [`QuestionEvent`](#question-event)
 
 ### End question
 
-Route: `/ws/frontend/question/end`
+Route: `/ws/web/question/end/{quizId}/{questionId}`
+
+Parameters:
+- `quizId: string`
+- `questionId: string`
 
 Direction: Client -> Server
 
-Payload: [`QuestionEvent`](#question-event)
 
 # API design - Raspberry PI
 
@@ -170,7 +175,7 @@ Route: `/ws/pi/question/begin`
 
 Direction: Server -> Client
 
-Payload: [`Answer`](#answer)
+Payload: [`WSEvent`](#ws-event)<[`Answer`](#answer)>
 
 ### End question
 
@@ -178,13 +183,29 @@ Route: `/ws/pi/question/end`
 
 Direction: Server -> Client
 
+### Queueing Games
+
+Route: `/ws/pi/games`
+
+Direction: Server -> Client
+
+Payload: [`WSEvent`](#ws-event)<[`[Games]`](#game)> (only id and colorCode)
+
+### Join
+
+Route: `/ws/pi/join/{gameId}`
+
+Parameters: `gameId: string`
+
+Direction: Client -> Server
+
 ### Color
 
 Route: `/ws/pi/color`
 
 Direction: Server -> Client
 
-Payload: [`PlayerColor`](#player-color)
+Payload: [`WSEvent`](#ws-event)<[`PlayerColor`](#player-color)>
 
 ### Answer
 
@@ -192,7 +213,7 @@ Route: `/ws/pi/answer`
 
 Direction: Client -> Server
 
-Payload: `answerId: string`
+Payload: [`WSEvent`](#ws-event)<`answerId: string`>
 
 
 
@@ -241,6 +262,7 @@ Answer {
 ```json
 Game {
     id: string,
+    colorCode: [AnswerColor; 8]
     quiz: Quiz
 }
 ```
@@ -267,14 +289,25 @@ Score {
 }
 ```
 
-### QuestionEvent
+### WSMessage
 
-<a name="question-event"></a>
+<a name="ws-message"></a>
 
 ```json
-QuestionEvent {
-    questionId: string,
-    gameId: string
+WSMessage<T> {
+    data: T,
+    error: WSError
+}
+```
+
+### WSError
+
+<a name="ws-error"></a>
+
+```json
+WSError {
+    code: number, // HTTP code
+    message: string
 }
 ```
 
