@@ -5,16 +5,16 @@ import enum
 import os
 
 from colors import Colors
-from buttonmanager import ButtonManager
-from ledmanager import LEDManager
+from buttonmanager import GPIOButtonManager
+from ledmanager import GPIOLEDManager
 from loader import Loader
 from network import NetworkManager
 
 class GameManager(object):
   def __init__(self):
     self.state = GameState.STARTING;
-    self.leds = LEDManager()
-    self.buttons = ButtonManager()
+    self.leds = GPIOLEDManager()
+    self.buttons = GPIOButtonManager()
     loader = Loader(self.leds)
     self.network = NetworkManager("10.0.0.1", 65853)
     
