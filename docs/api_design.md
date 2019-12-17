@@ -175,15 +175,15 @@ Payload: [`WSEvent`](#ws-event)<[`Player`](#player)>
 
 ### Begin question
 
-Route: `/ws/pi/question/begin`
+Route: `/ws/pi/{gameId}/question/begin`
 
 Direction: Server -> Client
 
-Payload: [`WSEvent`](#ws-event)<[`Answer`](#answer)>
+Payload: [`WSEvent`](#ws-event)<[`[Answer]`](#answer)>
 
 ### End question
 
-Route: `/ws/pi/question/end`
+Route: `/ws/pi/{gameId}/question/end`
 
 Direction: Server -> Client
 
@@ -205,7 +205,9 @@ Direction: Client -> Server
 
 ### Color
 
-Route: `/ws/pi/color`
+Route: `/ws/pi/{sessionId}/color`
+
+Parameters: `sessionId: string`
 
 Direction: Server -> Client
 
