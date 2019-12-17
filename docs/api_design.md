@@ -122,6 +122,28 @@ URL: `/api/game/end/{gameId}`
 
 Parameters: `gameId: string`
 
+#### Begin question
+
+Route: `/api/game/question/begin/{gameId}/{questionId}`
+
+Parameters:
+
+- `gameId: string`
+- `questionId: string`
+
+Direction: Client -> Server
+
+#### End question
+
+Route: `/api/game/question/end/{gameId}/{questionId}`
+
+Parameters:
+
+- `gameId: string`
+- `questionId: string`
+
+Direction: Client -> Server
+
 ### Score
 
 #### Read
@@ -138,31 +160,13 @@ Return value: [`Score`](#score)
 
 ### Players
 
-Route: `/ws/web/players`
+Route: `/ws/web/players/{gameId}`
+
+Arguments: `gameId: string`
 
 Direction: Server -> Client
 
 Payload: [`WSEvent`](#ws-event)<[`Player`](#player)>
-
-### Begin question
-
-Route: `/ws/web/question/begin/{quizId}/{questionId}`
-
-Parameters:
-- `quizId: string`
-- `questionId: string`
-
-Direction: Client -> Server
-
-### End question
-
-Route: `/ws/web/question/end/{quizId}/{questionId}`
-
-Parameters:
-- `quizId: string`
-- `questionId: string`
-
-Direction: Client -> Server
 
 
 # API design - Raspberry PI
@@ -209,7 +213,9 @@ Payload: [`WSEvent`](#ws-event)<[`PlayerColor`](#player-color)>
 
 ### Answer
 
-Route: `/ws/pi/answer`
+Route: `/ws/pi/answer/{gameId}`
+
+Parameters: `gameId: string`
 
 Direction: Client -> Server
 
@@ -352,8 +358,10 @@ AnswerColor {
         
         F ->>+ B: Play quiz (/api/quiz/play)
         B -->>- F: Return new game
+        B ->> P: Notify about new game (/ws/pi/games)
+        P -->> B: Join game(/ws/pi/join)
         B ->> P: Assign colors (/ws/pi/color)
-        B ->> F: Send participating players (/ws/players)
+        B ->> F: Send participating players (/ws/web/players)
         F ->> B: Begin game (/api/game/begin)
         loop for every question
             F ->> B: Begin question (/api/question/begin)
@@ -361,8 +369,9 @@ AnswerColor {
             P ->> B: Answer question (/ws/pi/answer)
             F ->> B: End question (/api/question/end)
             B ->> P: Stop taking answers (/ws/pi/question/end)
-            F ->>+ B: Get score (/api/score)
+            F ->>+ B: Get score (/api/web/score)
             B -->>- F: Return current score
         end
         F ->> B: End game (/api/game/end)
 ```
+
