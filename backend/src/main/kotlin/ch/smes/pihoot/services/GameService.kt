@@ -23,8 +23,8 @@ class GameService {
             colorCode = generateSequence { AnswerColor.values().random() }.take(8).toList()
     ))
 
-    fun addPlayer(colorCode: List<AnswerColor>): Pair<Player, String>? {
-        val game = gameRepository.findByColorCode(colorCode)
+    fun addPlayer(gameId: String): Player? {
+        val game = gameRepository.findById(gameId)
 
         if (game.isEmpty) {
             return null
@@ -39,6 +39,6 @@ class GameService {
 
         gameRepository.save(game.get())
 
-        return Pair(newPlayer, game.get().id!!)
+        return newPlayer
     }
 }
