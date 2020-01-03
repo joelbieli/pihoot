@@ -51,7 +51,6 @@ export function playableQuizzesAvailable(quizzes) {
     if (quizzes.length < 1) {
         return false;
     }
-    console.log("func", quizzes);
     quizzes.forEach(quiz => {
         if (quiz.questions.length > 0) {
             quiz.questions.forEach(question => {
