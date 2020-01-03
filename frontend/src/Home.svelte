@@ -21,23 +21,23 @@
 <div class="uk-child-width-expand@s uk-margin-large-top" uk-grid>
 	<div class="uk-text-center">
         {#if !apiStore.requestAttempted}
-			<button class="uk-button uk-button-primary" disabled>
+			<button class="uk-button uk-button-primary uk-border-rounded" disabled>
 				<div id="play-button-spinner-container" class="uk-text-center">
 					<div id="play-button-spinner" uk-spinner></div>
 				</div>
 			</button>
-			<div class="uk-alert-primary" uk-alert>
+			<div class="uk-alert-primary uk-border-rounded" uk-alert>
 				<p>Attempting to connect to server...</p>
 			</div>
         {:else if apiStore.accessible}
-			<button class="uk-button uk-button-primary" on:click={() => dispatchPageUpdate('edit')}>
+			<button class="uk-button uk-button-primary uk-border-rounded" on:click={() => dispatchPageUpdate('edit')}>
 				Edit quiz
 			</button>
         {:else if !apiStore.accessible}
-			<button class="uk-button uk-button-primary" disabled>
+			<button class="uk-button uk-button-primary uk-border-rounded" disabled>
 				Edit quiz
 			</button>
-			<div class="uk-alert-danger" uk-alert>
+			<div class="uk-alert-danger uk-border-rounded" uk-alert>
 				<p>It looks like we're unable to open a connection to the database. Please contact the site
 					administrator for further assistance.</p>
 			</div>
@@ -45,30 +45,30 @@
 	</div>
 	<div class="uk-text-center">
         {#if !playableQuizzesStore.requestAttempted}
-			<button class="uk-button uk-button-primary" disabled>
+			<button class="uk-button uk-button-primary uk-border-rounded" disabled>
 				<div id="play-button-spinner-container" class="uk-text-center">
 					<div id="play-button-spinner" uk-spinner></div>
 				</div>
 			</button>
-			<div class="uk-alert-primary" uk-alert>
+			<div class="uk-alert-primary uk-border-rounded" uk-alert>
 				<p>Attempting to fetch to quizzes...</p>
 			</div>
         {:else if !apiStore.accessible}
 			<button class="uk-button uk-button-primary" disabled>
 				Play quiz
 			</button>
-			<div class="uk-alert-danger" uk-alert>
+			<div class="uk-alert-danger uk-border-rounded" uk-alert>
 				<p>No connection could be established with the database.</p>
 			</div>
         {:else if playableQuizzesStore.available}
-			<button class="uk-button uk-button-primary" on:click={() => dispatchPageUpdate('play')}>
+			<button class="uk-button uk-button-primary uk-border-rounded" on:click={() => dispatchPageUpdate('play')}>
 				Play quiz
 			</button>
         {:else if !playableQuizzesStore.available}
-			<button class="uk-button uk-button-primary" disabled>
+			<button class="uk-button uk-button-primary uk-border-rounded" disabled>
 				Play quiz
 			</button>
-			<div class="uk-alert-primary" uk-alert>
+			<div class="uk-alert-primary uk-border-rounded" uk-alert>
 				<p>You don't seem to have enough quizzes to be able to play. Please create some quizzes and try
 					again.</p>
 			</div>
