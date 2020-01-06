@@ -1,5 +1,6 @@
 package ch.smes.pihoot.services
 
+import ch.smes.pihoot.exceptions.NotFoundException
 import ch.smes.pihoot.models.AnswerColor
 import ch.smes.pihoot.models.Game
 import ch.smes.pihoot.models.Player
@@ -23,11 +24,11 @@ class GameService {
             colorCode = generateSequence { AnswerColor.values().random() }.take(8).toList()
     ))
 
-    fun addPlayer(gameId: String): Player? {
+    fun addPlayer(gameId: String): Player {
         val game = gameRepository.findById(gameId)
 
         if (game.isEmpty) {
-            return null
+            throw NotFoundException("Game with id $gameId could not be found")
         }
 
         val newPlayer = Player(
