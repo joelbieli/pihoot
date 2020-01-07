@@ -2,10 +2,11 @@ import stomp
 import logging
 
 class NetworkManager(object):
-  def __init__(self, address, port):
+  def __init__(self, address, port, game_manager):
     self.address = address
     self.port = port
     self.conn = None
+    self._game_manager = game_manager
     
   def connect(self):
     self.conn = stomp.Connection(

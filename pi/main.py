@@ -16,7 +16,7 @@ class GameManager(object):
     self.leds = GPIOLEDManager()
     self.buttons = GPIOButtonManager()
     loader = Loader(self.leds)
-    self.network = NetworkManager("10.0.0.1", 65853)
+    self.network = NetworkManager("10.0.0.1", 65853, self)
     
     # Display the intro
     self.intro()
@@ -35,6 +35,9 @@ class GameManager(object):
     else:
       self.leds.blink(Colors.GREEN, 2)
       logging.info("Connected!")
+  
+  def handle_game_list(self, game_list):
+    pass
     
   def intro(self):
     for i in range(4):
