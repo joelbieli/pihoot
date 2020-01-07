@@ -1,4 +1,4 @@
-import {writable} from 'svelte/store';
+import {readable, writable} from 'svelte/store';
 
 export const api = writable({
     accessible: false,
@@ -9,6 +9,11 @@ export const playableQuizzes = writable({
     requestAttempted: false
 });
 export const apiUrl = writable('http://localhost:8091/api/');
+export const animationConfig = readable({
+    duration: 200,
+    y: 80
+}, _ => {
+});
 
 let quizEndpointUrl = 'http://localhost:8091/api/quiz';
 
@@ -35,9 +40,9 @@ fetch(quizEndpointUrl, {
 })
     .then(res => res.json())
     .then(data => playableQuizzes.set({
-            available: playableQuizzesAvailable(data),
-            requestAttempted: true
-        }))
+        available: playableQuizzesAvailable(data),
+        requestAttempted: true
+    }))
     .catch(_ => {
         console.error("Failed to fetch quizzes for playableQuizzes store.");
         playableQuizzes.set({

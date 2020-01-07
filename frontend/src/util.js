@@ -1,0 +1,1 @@
+export const passByVal = (obj) => JSON.parse(JSON.stringify(obj));
