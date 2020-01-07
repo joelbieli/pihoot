@@ -124,6 +124,8 @@ Parameters: `gameId: string`
 
 #### Begin question
 
+Method: `POST`
+
 Route: `/api/game/question/begin/{gameId}/{questionId}`
 
 Parameters:
@@ -131,9 +133,9 @@ Parameters:
 - `gameId: string`
 - `questionId: string`
 
-Direction: Client -> Server
-
 #### End question
+
+Method: `POST`
 
 Route: `/api/game/question/end/{gameId}/{questionId}`
 
@@ -141,8 +143,6 @@ Parameters:
 
 - `gameId: string`
 - `questionId: string`
-
-Direction: Client -> Server
 
 ### Score
 
@@ -171,11 +171,35 @@ Payload: [`WSEvent`](#ws-event)<[`Player`](#player)>
 
 # API design - Raspberry PI
 
+## REST
+
+### Join
+
+Method: `POST`
+
+URL: `/api/game/join/{gameId}`
+
+Parameters: `gameId: string`
+
+Return value: [`Player`](#player) (includes player color)
+
+### Answer
+
+Method: `POST`
+
+URL: `/api/game/{gameId}/answer`
+
+Parameters: `gameId: string`
+
+Payload: [`AnswerColor`](#answer-color)
+
+Return value: 
+
 ## Websocket
 
 ### Begin question
 
-Route: `/ws/pi/{gameId}/question/begin`
+Route: `/ws/pi/game/{gameId}/question/begin`
 
 Direction: Server -> Client
 
@@ -183,7 +207,7 @@ Payload: [`WSEvent`](#ws-event)<[`[Answer]`](#answer)>
 
 ### End question
 
-Route: `/ws/pi/{gameId}/question/end`
+Route: `/ws/pi/game/{gameId}/question/end`
 
 Direction: Server -> Client
 
@@ -193,36 +217,7 @@ Route: `/ws/pi/games`
 
 Direction: Server -> Client
 
-Payload: [`WSEvent`](#ws-event)<[`[Games]`](#game)> (only id and colorCode)
-
-### Join
-
-Route: `/ws/pi/join/{gameId}`
-
-Parameters: `gameId: string`
-
-Direction: Client -> Server
-
-### Color
-
-Route: `/ws/pi/{sessionId}/color`
-
-Parameters: `sessionId: string`
-
-Direction: Server -> Client
-
-Payload: [`WSEvent`](#ws-event)<[`PlayerColor`](#player-color)>
-
-### Answer
-
-Route: `/ws/pi/answer/{gameId}`
-
-Parameters: `gameId: string`
-
-Direction: Client -> Server
-
-Payload: [`WSEvent`](#ws-event)<`answerId: string`>
-
+Payload: [`[Games]`](#game) (only id and colorCode)
 
 
 # Data Types
