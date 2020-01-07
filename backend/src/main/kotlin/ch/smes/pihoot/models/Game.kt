@@ -8,6 +8,7 @@ class Game(
         @Id
         var id: String? = null,
         var quiz: Quiz? = null,
+        var state: GameState = GameState.QUEUING,
         var colorCode: List<AnswerColor> = listOf(),
         var players: MutableList<Player> = mutableListOf()
 )
