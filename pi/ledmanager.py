@@ -21,10 +21,10 @@ class _LEDManager(object):
 class GPIOLEDManager(_LEDManager):
   def __init__(self):
     self._led_dict = {
-      Colors.BLUE: gpiozero.LED(16),
-      Colors.RED: gpiozero.LED(20),
-      Colors.YELLOW: gpiozero.LED(23),
-      Colors.GREEN: gpiozero.LED(21),
+      Colors.BLUE: gpiozero.LED(22),
+      Colors.RED: gpiozero.LED(24),
+      Colors.YELLOW: gpiozero.LED(21),
+      Colors.GREEN: gpiozero.LED(26),
     }
     
   def on(self, color):
