@@ -126,7 +126,7 @@ Parameters: `gameId: string`
 
 Method: `POST`
 
-Route: `/api/game/question/begin/{gameId}/{questionId}`
+Route: `/api/game/{gameId}/question/{questionId}/begin`
 
 Parameters:
 
@@ -137,7 +137,7 @@ Parameters:
 
 Method: `POST`
 
-Route: `/api/game/question/end/{gameId}/{questionId}`
+Route: `/api/game/{gameId}/question/{questionId}/end`
 
 Parameters:
 
