@@ -5,8 +5,14 @@ import ch.smes.pihoot.exceptions.NotFoundException
 import ch.smes.pihoot.models.*
 import ch.smes.pihoot.repositories.GameRepository
 import ch.smes.pihoot.utils.IdUtils
+import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria.where
+import org.springframework.data.mongodb.core.query.Query
+import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Service
+
 
 @Service
 class GameService {
@@ -16,6 +22,9 @@ class GameService {
 
     @Autowired
     private lateinit var quizService: QuizService
+
+    @Autowired
+    private lateinit var mongoTemplate: MongoTemplate
 
     fun getOne(gameId: String): Game {
         val game = gameRepository.findById(gameId)
@@ -42,6 +51,14 @@ class GameService {
         game.state = newState
 
         saveOrUpdate(game)
+    }
+
+    fun updateQuestionState(gameId: String, questionId: String, newState: QuestionState) {
+        mongoTemplate.updateFirst(
+                Query(where("_id").`is`(ObjectId(gameId)).and("quiz.questions._id").`is`(questionId)),
+                Update().set("quiz.questions.$.state", newState),
+                MutableCollection::class.java
+        )
     }
 
     fun saveOrUpdate(game: Game): Game = gameRepository.save(game)
