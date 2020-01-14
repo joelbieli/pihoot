@@ -12,6 +12,8 @@ class _LEDManager(object):
   @classmethod
   def version(self): return "1.0"
   @abc.abstractmethod
+  def set_rgb(self, color): raise NotImplementedError
+  @abc.abstractmethod
   def on(self, color): raise NotImplementedError
   @abc.abstractmethod
   def off(self, color): raise NotImplementedError
