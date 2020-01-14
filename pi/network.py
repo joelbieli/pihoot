@@ -11,9 +11,9 @@ class NetworkManager(object):
     self.conn = stomp.Connection(
     [(self.address, self.port)], timeout=2, reconnect_attempts_max=2)
     self.conn.set_listener('', PiHootListener())
-    self.conn.start()
     
     try:
+      self.conn.start()
       self.conn.connect(wait=True)
     except stomp.exception.ConnectFailedException as ex:
       return False

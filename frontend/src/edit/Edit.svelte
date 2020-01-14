@@ -11,7 +11,6 @@
 	let quizzes = '';
 	let editedQuizzes = '';
 	let unidenticalQuizzes = [];
-	let highestQuestionId = 0;
 
 	let playableQuizHintDisplayed = false;
 	let playableQuizHintExpanderDisplayed = true;
@@ -152,7 +151,6 @@
 			if (quiz.id == quizId) {
 				editedQuizzes[i].questions = passByVal([...quizzes[i].questions, {
 					"question": "",
-					"id": highestQuestionId,
 					"answers": [
 						{
 							"answer": "",
@@ -174,25 +172,22 @@
 				}]);
 			}
 		});
-		highestQuestionId += 1;
 	}
 
-	function deleteQuestion(quizId, questionId) {
+	function deleteQuestion(quizId, questionIndex) {
 		editedQuizzes.forEach((quiz, i) => {
 			if (quiz.id == quizId) {
-				editedQuizzes[i].questions = passByVal(quiz.questions.filter(question => question.id !== questionId));
+				editedQuizzes[i].questions = passByVal(editedQuizzes[i].questions).filter((quiz, i) => i !== questionIndex);
 			}
 		});
 	}
 
-	function negateAnswerBool(quizId, questionId, answerIndex) {
+	function negateAnswerBool(quizId, questionIndex, answerIndex) {
 		editedQuizzes.forEach((quiz, i) => {
 			if (quiz.id === quizId) {
-				quiz.questions.forEach((question, j) => {
-					if (question.id == questionId) {
-						editedQuizzes[i].questions[j].answers[answerIndex].correct = passByVal(!editedQuizzes[i].questions[j].answers[answerIndex].correct);
-					}
-				});
+				quiz.questions[questionIndex].answers[answerIndex].correct = passByVal(!editedQuizzes[i].questions[questionIndex].answers[answerIndex].correct);
+				// Force UI update by reassigning root object.
+				editedQuizzes = editedQuizzes;
 			}
 		});
 	}
@@ -449,41 +444,44 @@
 								</div>
 							</div>
 						</div>
-					</div>
-					<hr>
-					<div class="uk-margin-medium-top">
-                        {#each quiz.questions as question}
-							<div class="uk-margin" transition:fly="{{ y: -animationY, duration: animationDuration }}">
-								<div class="uk-margin uk-inline uk-width-1-1">
-									<a on:click={() => deleteQuestion(quiz.id, question.id)}
-									   class="uk-form-icon uk-text-danger uk-form-icon-flip"
-									   uk-icon="icon: trash"></a>
-									<input bind:value={question.question} class="uk-input uk-border-rounded" type="text"
-									       placeholder="Question">
-								</div>
-								<div class="uk-grid-small" uk-grid>
-                                    {#each question.answers as answer, i}
-										<div class="uk-width-1-2">
-											<div class="uk-inline uk-width-1-1">
-                                                {#if answer.correct}
-													<a on:click={() => negateAnswerBool(quiz.id, question.id, i)}
-													   class="uk-form-icon uk-text-success uk-form-icon-flip"
-													   uk-icon="icon: check"
-													   transition:fade="{{ duration: animationDuration }}"></a>
-                                                {:else}
-													<a on:click={() => negateAnswerBool(quiz.id, question.id, i)}
-													   class="uk-form-icon uk-text-danger uk-form-icon-flip"
-													   uk-icon="icon: close"
-													   transition:fade="{{ duration: animationDuration }}"></a>
-                                                {/if}
-												<input bind:value={answer.answer} class="uk-input uk-border-rounded" type="text"
-												       placeholder="Answer">
+						<hr>
+						<div class="uk-margin-medium-top">
+                            {#each quiz.questions as question, j}
+								<div class="uk-margin"
+								     transition:fly="{{ y: -animationY, duration: animationDuration }}">
+									<div class="uk-margin uk-inline uk-width-1-1">
+										<a on:click={() => deleteQuestion(quiz.id, j)}
+										   class="uk-form-icon uk-text-danger uk-form-icon-flip"
+										   uk-icon="icon: trash"></a>
+										<input bind:value={question.question} class="uk-input uk-border-rounded"
+										       type="text"
+										       placeholder="Question">
+									</div>
+									<div class="uk-grid-small" uk-grid>
+                                        {#each question.answers as answer, k}
+											<div class="uk-width-1-2">
+												<div class="uk-inline uk-width-1-1">
+                                                    {#if answer.correct}
+														<a on:click={() => negateAnswerBool(quiz.id, j, k)}
+														   class="uk-form-icon uk-text-success uk-form-icon-flip"
+														   uk-icon="icon: check"
+														   transition:fade="{{ duration: animationDuration }}"></a>
+                                                    {:else}
+														<a on:click={() => negateAnswerBool(quiz.id, j, k)}
+														   class="uk-form-icon uk-text-danger uk-form-icon-flip"
+														   uk-icon="icon: close"
+														   transition:fade="{{ duration: animationDuration }}"></a>
+                                                    {/if}
+													<input bind:value={answer.answer} class="uk-input uk-border-rounded"
+													       type="text"
+													       placeholder="Answer">
+												</div>
 											</div>
-										</div>
-                                    {/each}
+										{/each}
+									</div>
 								</div>
-							</div>
-                        {/each}
+                        	{/each}
+						</div>
 
 						<div class="uk-text-center">
 							<button on:click={() => createQuestion(quiz.id)} class="uk-button uk-button-default uk-border-rounded"
