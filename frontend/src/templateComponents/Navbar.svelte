@@ -18,40 +18,56 @@
 	const dispatchPageUpdate = (target) => dispatch('pageUpdate', {target: target});
 </script>
 
-<nav class="uk-navbar-container" uk-navbar>
-	<div class="uk-navbar-left">
+<style>
+	/* Overwrites the color and pointer when no playable quizzes are found to remove any hover effects. */
+	.disabled-link {
+		color: #cdcdcd;
+		cursor: default;
+	}
 
-		<ul class="uk-navbar-nav">
-			<a class="uk-navbar-item uk-logo" on:click={() => dispatchPageUpdate('home')}>Pihoot</a>
-			<li>
-				<a>Actions <span uk-icon="chevron-down"></span></a>
-				<div class="uk-navbar-dropdown">
-					<ul class="uk-nav uk-navbar-dropdown-nav">
-						<li>
-                            {#if !apiStore.requestAttempted}
-								<span uk-spinner="ratio: .5"></span>
-                            {:else if apiStore.accessible}
-								<a on:click={() => dispatchPageUpdate('edit')}>Edit quiz</a>
-                            {:else if !apiStore.accessible}
-								<a class="uk-link-muted" uk-tooltip="Connection to database could not be established.">Edit
-									quiz</a>
-                            {/if}
-						</li>
-						<li>
-                            {#if !playableQuizzesStore.requestAttempted}
-								<span uk-spinner="ratio: .5"></span>
-                            {:else if !apiStore.accessible}
-								<a class="uk-link-muted" uk-tooltip="Connection to database could not be established.">Play
-									quiz</a>
-                            {:else if playableQuizzesStore.available}
-								<a on:click={() => dispatchPageUpdate('select')}>Play quiz</a>
-                            {:else if !playableQuizzesStore.available}
-								<a class="uk-link-muted" uk-tooltip="No playable quizzes found.">Play quiz</a>
-                            {/if}
-						</li>
-					</ul>
-				</div>
-			</li>
-		</ul>
-	</div>
-</nav>
+	.disabled-link:hover {
+		color: #cdcdcd;
+	}
+</style>
+
+<div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
+	<nav class="uk-navbar-container" uk-navbar>
+		<div class="uk-navbar-left">
+
+			<ul class="uk-navbar-nav">
+				<a class="uk-navbar-item uk-logo" on:click={() => dispatchPageUpdate('home')}>Pihoot</a>
+				<li>
+					<a>Actions <span uk-icon="chevron-down"></span></a>
+					<div class="uk-navbar-dropdown">
+						<ul class="uk-nav uk-navbar-dropdown-nav">
+							<li>
+                                {#if !apiStore.requestAttempted}
+									<span uk-spinner="ratio: .5"></span>
+                                {:else if apiStore.accessible}
+									<a on:click={() => dispatchPageUpdate('edit')}>Edit quiz</a>
+                                {:else if !apiStore.accessible}
+									<a class="uk-link-muted"
+									   uk-tooltip="Connection to database could not be established.">Edit
+										quiz</a>
+                                {/if}
+							</li>
+							<li>
+                                {#if !playableQuizzesStore.requestAttempted}
+									<span uk-spinner="ratio: .5"></span>
+                                {:else if !apiStore.accessible}
+									<a class="uk-disabled"
+									   uk-tooltip="Connection to database could not be established.">Play
+										quiz</a>
+                                {:else if playableQuizzesStore.available}
+									<a on:click={() => dispatchPageUpdate('select')}>Play quiz</a>
+                                {:else if !playableQuizzesStore.available}
+									<a class="disabled-link" uk-tooltip="No playable quizzes found.">Play quiz</a>
+                                {/if}
+							</li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</nav>
+</div>

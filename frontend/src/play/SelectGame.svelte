@@ -147,9 +147,7 @@
 		</div>
 
 		<div class="uk-margin-small">
-
-			<!-- TODO(laniw): Pass data along when changing page. -->
-            {#if playableQuizSelected}
+			{#if playableQuizSelected}
 				<button class="uk-button uk-button-primary uk-border-rounded"
 				        on:click={() => playSelectedQuiz(selectedQuiz, false, false, false, false, false, false)}>Play
 				</button>
