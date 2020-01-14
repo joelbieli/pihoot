@@ -4,9 +4,15 @@ import ch.smes.pihoot.exceptions.BadRequestException
 import ch.smes.pihoot.exceptions.NotFoundException
 import ch.smes.pihoot.models.*
 import ch.smes.pihoot.repositories.GameRepository
+import ch.smes.pihoot.utils.ColorUtils
 import ch.smes.pihoot.utils.IdUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria.where
+import org.springframework.data.mongodb.core.query.Query
+import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Service
+
 
 @Service
 class GameService {
@@ -16,6 +22,9 @@ class GameService {
 
     @Autowired
     private lateinit var quizService: QuizService
+
+    @Autowired
+    private lateinit var mongoTemplate: MongoTemplate
 
     fun getOne(gameId: String): Game {
         val game = gameRepository.findById(gameId)
@@ -32,7 +41,13 @@ class GameService {
     fun getPlayersOfGame(gameId: String): List<Player> = getOne(gameId).players
 
     fun createGame(quizId: String) = gameRepository.save(Game(
-            quiz = quizService.getOne(quizId),
+            quiz = quizService.getOne(quizId).also { quiz ->
+                quiz.questions.shuffle()
+                quiz.questions.forEach {
+                    it.answers.shuffle()
+                    ColorUtils.assignColorToAnswers(it.answers)
+                }
+            },
             colorCode = generateSequence { AnswerColor.values().random() }.take(8).toList()
     ))
 
@@ -42,6 +57,14 @@ class GameService {
         game.state = newState
 
         saveOrUpdate(game)
+    }
+
+    fun updateQuestionState(gameId: String, questionId: String, newState: QuestionState) {
+        mongoTemplate.updateFirst(
+                Query(where("_id").`is`(gameId).and("quiz.questions._id").`is`(questionId)),
+                Update().set("quiz.questions.$.state", newState),
+                Game::class.java
+        )
     }
 
     fun saveOrUpdate(game: Game): Game = gameRepository.save(game)

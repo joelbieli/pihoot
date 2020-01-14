@@ -4,12 +4,16 @@ import abc
 
 from sense_hat import SenseHat
 from colors import Colors
+from colors import RGBColors
+from colors import RGB_COLORS
 
 class _LEDManager(object):
   __metaclass__ = abc.ABCMeta
 
   @classmethod
   def version(self): return "1.0"
+  @abc.abstractmethod
+  def set_rgb(self, color): raise NotImplementedError
   @abc.abstractmethod
   def on(self, color): raise NotImplementedError
   @abc.abstractmethod
@@ -22,12 +26,33 @@ class _LEDManager(object):
 class GPIOLEDManager(_LEDManager):
   def __init__(self):
     self._led_dict = {
-      Colors.BLUE: gpiozero.LED(16),
-      Colors.RED: gpiozero.LED(20),
-      Colors.YELLOW: gpiozero.LED(23),
-      Colors.GREEN: gpiozero.LED(21),
+      Colors.BLUE: gpiozero.LED(22),
+      Colors.RED: gpiozero.LED(24),
+      Colors.YELLOW: gpiozero.LED(26),
+      Colors.GREEN: gpiozero.LED(12),
+    }
+    self._rgb_led = {
+      Colors.RED: gpiozero.LED(16),
+      Colors.GREEN: gpiozero.LED(20),
+      Colors.BLUE: gpiozero.LED(21)
     }
     
+  def set_rgb(self, color):
+    if RGB_COLORS[color][0]:
+      self._rgb_led[Colors.RED].on()
+    else:
+      self._rgb_led[Colors.RED].off()
+      
+    if RGB_COLORS[color][1]:
+      self._rgb_led[Colors.GREEN].on()
+    else:
+      self._rgb_led[Colors.GREEN].off()
+      
+    if RGB_COLORS[color][2]:
+      self._rgb_led[Colors.BLUE].on()
+    else:
+      self._rgb_led[Colors.BLUE].off()
+
   def on(self, color):
     self._led_dict[color].on()
   
