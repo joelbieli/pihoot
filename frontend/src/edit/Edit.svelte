@@ -437,20 +437,19 @@
 													       placeholder="Answer">
 												</div>
 											</div>
-										{/each}
+                                        {/each}
 									</div>
 								</div>
-                        	{/each}
+                            {/each}
 						</div>
 
-							<div class="uk-text-center">
-								<button on:click={() => createQuestion(quiz.id)}
-								        class="uk-button uk-button-default uk-border-rounded"
-								        uk-tooltip="Add question">
+						<div class="uk-text-center">
+							<button on:click={() => createQuestion(quiz.id)}
+							        class="uk-button uk-button-default uk-border-rounded"
+							        uk-tooltip="Add question">
                                     <span class="uk-margin-small-top uk-margin-small-bottom"
                                           uk-icon="plus"></span>
-								</button>
-							</div>
+							</button>
 						</div>
 					</div>
 				</li>
