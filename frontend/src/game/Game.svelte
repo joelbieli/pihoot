@@ -1,1 +1,0 @@
-<kbd>Template file</kbd>

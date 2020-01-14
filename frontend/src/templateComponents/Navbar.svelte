@@ -44,7 +44,7 @@
 								<a class="uk-link-muted" uk-tooltip="Connection to database could not be established.">Play
 									quiz</a>
                             {:else if playableQuizzesStore.available}
-								<a on:click={() => dispatchPageUpdate('play')}>Play quiz</a>
+								<a on:click={() => dispatchPageUpdate('select')}>Play quiz</a>
                             {:else if !playableQuizzesStore.available}
 								<a class="uk-link-muted" uk-tooltip="No playable quizzes found.">Play quiz</a>
                             {/if}
