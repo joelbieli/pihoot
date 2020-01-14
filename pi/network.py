@@ -26,7 +26,7 @@ class NetworkManager(object):
 
 class PiHootListener(stomp.ConnectionListener):
     def __init__(self, network_manager):
-        super.(PiHootListener, self).__init__()
+        super(PiHootListener, self).__init__()
         self._network_manager = network_manager
     
     def on_error(self, headers, message):
