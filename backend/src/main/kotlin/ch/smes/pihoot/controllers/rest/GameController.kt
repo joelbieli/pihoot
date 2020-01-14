@@ -3,6 +3,7 @@ package ch.smes.pihoot.controllers.rest
 import ch.smes.pihoot.dtos.PlayerDTO
 import ch.smes.pihoot.mappers.PlayerMapper
 import ch.smes.pihoot.models.GameState
+import ch.smes.pihoot.models.QuestionState
 import ch.smes.pihoot.services.GameService
 import ch.smes.pihoot.services.WebsocketService
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,12 +39,24 @@ class GameController {
 
     @PostMapping("/{gameId}/question/{questionId}/begin")
     fun beginQuestion(@PathVariable gameId: String, @PathVariable questionId: String) {
+        gameService.updateQuestionState(gameId, questionId, QuestionState.IN_PROGRESS)
 
+        val game = gameService.getOne(gameId)
+
+        websocketService.beginQuestion(gameId, game.quiz
+                ?.questions
+                ?.find { it.id == questionId }
+                ?.answers
+                ?.map { it.color }
+                ?.requireNoNulls()
+                .orEmpty())
     }
 
     @PostMapping("/{gameId}/question/{questionId}/end")
     fun endQuestion(@PathVariable gameId: String, @PathVariable questionId: String) {
+        gameService.updateQuestionState(gameId, questionId, QuestionState.ENDED)
 
+        websocketService.endQuestion(gameId)
     }
 
     @PostMapping("/join/{gameId}")
