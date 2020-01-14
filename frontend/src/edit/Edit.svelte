@@ -346,10 +346,6 @@
 		POST: 3,
 		DELETE: 4
 	};
-
-	$:{
-		console.log(passByVal(editedQuizzes));
-	}
 </script>
 
 <style>
@@ -452,7 +448,7 @@
 						<div class="uk-margin-medium-top">
                             {#each quiz.questions as question, j}
 								<div class="uk-margin"
-								     transition:fly="{{ y: -animationConf.y, duration: animationConf.duration }}">
+								     transition:fly="{{ y: -animationY, duration: animationDuration }}">
 									<div class="uk-margin uk-inline uk-width-1-1">
 										<a on:click={() => deleteQuestion(quiz.id, j)}
 										   class="uk-form-icon uk-text-danger uk-form-icon-flip"
@@ -469,23 +465,23 @@
 														<a on:click={() => negateAnswerBool(quiz.id, j, k)}
 														   class="uk-form-icon uk-text-success uk-form-icon-flip"
 														   uk-icon="icon: check"
-														   transition:fade="{{ duration: animationConf.duration }}"></a>
+														   transition:fade="{{ duration: animationDuration }}"></a>
                                                     {:else}
 														<a on:click={() => negateAnswerBool(quiz.id, j, k)}
 														   class="uk-form-icon uk-text-danger uk-form-icon-flip"
 														   uk-icon="icon: close"
-														   transition:fade="{{ duration: animationConf.duration }}"></a>
+														   transition:fade="{{ duration: animationDuration }}"></a>
                                                     {/if}
 													<input bind:value={answer.answer} class="uk-input uk-border-rounded"
 													       type="text"
 													       placeholder="Answer">
 												</div>
 											</div>
-										</div>
-                                    {/each}
+										{/each}
+									</div>
 								</div>
-							</div>
-                        {/each}
+                        	{/each}
+						</div>
 
 						<div class="uk-text-center">
 							<button on:click={() => createQuestion(quiz.id)} class="uk-button uk-button-default uk-border-rounded"
