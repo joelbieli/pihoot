@@ -11,8 +11,6 @@ class _ButtonManager(object):
   @classmethod
   def version(self): return "1.0"
   @abc.abstractmethod
-  def _put_event(self): raise NotImplementedError
-  @abc.abstractmethod
   def await_event(self, color): raise NotImplementedError
 
 class GPIOButtonManager(_ButtonManager):

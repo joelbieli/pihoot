@@ -5,6 +5,7 @@ import enum
 import os
 
 from colors import Colors
+from colors import RGBColors
 from buttonmanager import GPIOButtonManager
 from ledmanager import GPIOLEDManager
 from loader import Loader
