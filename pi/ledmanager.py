@@ -2,6 +2,7 @@ import gpiozero
 import time
 import abc
 
+from sense_hat import SenseHat
 from colors import Colors
 
 class _LEDManager(object):
@@ -41,37 +42,54 @@ class GPIOLEDManager(_LEDManager):
     time.sleep(duration)
     self._led_dict[color].off()
     
-class SANSLEDManager(_LEDManager):
+class SenseHatLEDManager(_LEDManager):
   def __init__(self):
-    self.r = (255, 0, 0)
-    self.g = (0, 255, 0)
-    self.b = (0, 0, 255)
-    self.y = (255, 255, 0)
-    self.o = (0, 0, 0)
+    r_cords = ((1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (2, 1), (3, 1), (4, 1), (5, 1), (3, 2), (4, 2))
+    y_cords = ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1, 2), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4))
+    g_cords = ((1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (2, 6), (3, 6), (4, 6), (5, 6), (3, 5), (4, 5))
+    b_cords = ((7, 1), (7, 2), (7, 3), (7, 4), (7, 5), (7, 6), (6, 2), (6, 3), (6, 4), (6, 5), (5, 3), (5, 4))
+    self.i_cords = ( (3, 3), (4, 4), (4, 3), (3, 4))
     
     self._led_dict = {
-      Colors.RED: ((0, 3), (0, 3)),
-      Colors.GREEN: ((0, 3), (4, 7)),
-      Colors.BLUE: ((4, 7), (0, 3)),
-      Colors.YELLOW: ((4, 7), (4, 7))
+      Colors.RED: r_cords,
+      Colors.GREEN: g_cords,
+      Colors.BLUE: b_cords,
+      Colors.YELLOW: y_cords
     }
     
+    self._color_dict = {
+      Colors.RED: (255, 0, 0),
+      Colors.GREEN: (0, 255, 0),
+      Colors.BLUE: (0, 0, 255),
+      Colors.YELLOW: (255, 255, 0)
+    }
+    
+    self.sense = SenseHat()
+    
   def on(self, color):
-    self._led_dict[color]
+    self._set_led(color)
   
   def off(self, color):
-    self._led_dict[color].off()
+    self._set_led(color, off=True)
     
   def toggle(self, color):
-    self._led_dict[color].toggle()
+    if self.sense.get_pixel(self._led_dict[color][0][0], self._led_dict[color][0][1]) == [0, 0, 0]:
+      self._set_led(color)
+    else:
+      self._set_led(color, off=True)
     
   def blink(self, color, duration=.1):
-    self._led_dict[color].on()
+    self._set_led(color)
     time.sleep(duration)
-    self._led_dict[color].off()
+    self._set_led(color, off=True)
+  
+  def set_indicator_light(self, rgb):
+    for i in self.i_cords:
+      self.sense.set_pixel(i[0], i[1], rgb)
     
-  def _led_on (color):
-    for i in range(self._led_dict[color][0]):
-      for ii in range(self._led_dict[color][1]):
-        pass
-    
+  def _set_led (self, color, off=False):
+    for i in self._led_dict[color]:
+      if not off:
+        self.sense.set_pixel(i[0], i[1], self._color_dict[color])
+      else:
+        self.sense.set_pixel(i[0], i[1], (0, 0, 0))

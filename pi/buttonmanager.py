@@ -3,6 +3,7 @@ import time
 import queue
 import abc
 
+from sense_hat import SenseHat
 from colors import Colors
 
 class _ButtonManager(object):
@@ -10,8 +11,6 @@ class _ButtonManager(object):
 
   @classmethod
   def version(self): return "1.0"
-  @abc.abstractmethod
-  def _put_event(self): raise NotImplementedError
   @abc.abstractmethod
   def await_event(self, color): raise NotImplementedError
 
@@ -39,3 +38,24 @@ class GPIOButtonManager(_ButtonManager):
   def await_event(self):
     print("Await...")
     return self._event_queue.get(True, None)
+
+
+class SenseHatButtonManager(_ButtonManager):
+  def __init__(self, is_listening=True):
+    self.is_listening = is_listening
+    self.sense = SenseHat()
+    
+    self._button_dict = {
+      "right": Colors.BLUE,
+      "down": Colors.GREEN,
+      "left": Colors.YELLOW,
+      "up": Colors.RED
+    }
+
+  def await_event(self):
+    if self.is_listening:
+      while True:
+        event = self.sense.stick.wait_for_event(emptybuffer=True)
+        if event.action == "pressed" and event.direction != "middle":
+          return self._button_dict[event.direction]
+      
