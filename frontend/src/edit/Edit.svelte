@@ -146,13 +146,13 @@
 
 	function createQuestion(quizId) {
 		editedQuizzes.forEach((quiz, i, quizzes) => {
-			if (quiz.id == quizId) {
+			if (quiz.id === quizId) {
 				editedQuizzes[i].questions = passByVal([...quizzes[i].questions, {
 					"question": "",
 					"answers": [
 						{
 							"answer": "",
-							"correct": false
+							"correct": true
 						},
 						{
 							"answer": "",
@@ -174,8 +174,10 @@
 
 	function deleteQuestion(quizId, questionIndex) {
 		editedQuizzes.forEach((quiz, i) => {
-			if (quiz.id == quizId) {
+			if (quiz.id === quizId) {
 				editedQuizzes[i].questions = passByVal(editedQuizzes[i].questions).filter((quiz, i) => i !== questionIndex);
+				// Force UI update by reassigning root object.
+				editedQuizzes = editedQuizzes;
 			}
 		});
 	}
@@ -353,10 +355,11 @@
 
 	<PlayableQuizHint animationY={animationConf.y} animationDuration={animationConf.duration}/>
 
-	<div class="uk-card uk-card-default uk-card-body uk-border-rounded uk-margin">
-		<ul class="uk-border" uk-accordion>
+	<div class="uk-card uk-card-default uk-card-body uk-border-rounded">
+		<ul uk-accordion>
             {#each editedQuizzes as quiz, i}
-				<li transition:fly="{{ y: -animationConf.y, duration: animationConf.duration }}">
+				<li class="{i < editedQuizzes.length - 1 ? 'uk-margin-medium' : ''}"
+				    transition:fly="{{ y: -animationConf.y, duration: animationConf.duration }}">
 					<a class="uk-accordion-title">
                         {quiz.title !== '' ? quiz.title : "No Title"}
                         {#if unidenticalQuizzes[i]}
@@ -379,7 +382,7 @@
 									</div>
 								</div>
 								<div class="uk-width-auto">
-									<div class="uk-grid-small uk-margin-small-left" uk-grid>
+									<div class="uk-grid-collapse uk-margin-small-left" uk-grid>
 										<div class="uk-width-auto">
 											<button on:click={() => deleteQuiz(quiz.id)} uk-tooltip="Delete quiz"
 											        class="uk-button uk-button-default uk-border-rounded">
@@ -394,11 +397,13 @@
 											</button>
 										</div>
 										<div class="uk-width-auto">
-											<button on:click={() => updateQuiz(quiz)} uk-tooltip="Save quiz changes"
-											        class="uk-button uk-button-default uk-border-rounded">
+											<div class="uk-margin-small-left">
+												<button on:click={() => updateQuiz(quiz)} uk-tooltip="Save quiz changes"
+												        class="uk-button uk-button-default uk-border-rounded">
                                             <span class="uk-text-success uk-margin-small-top uk-margin-small-bottom"
                                                   uk-icon="check"></span>
-											</button>
+												</button>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -407,15 +412,23 @@
 						<hr>
 						<div class="uk-margin-medium-top">
                             {#each quiz.questions as question, j}
-								<div class="uk-margin"
-								     transition:fly="{{ y: -animationY, duration: animationDuration }}">
-									<div class="uk-margin uk-inline uk-width-1-1">
-										<a on:click={() => deleteQuestion(quiz.id, j)}
-										   class="uk-form-icon uk-text-danger uk-form-icon-flip"
-										   uk-icon="icon: trash"></a>
-										<input bind:value={question.question} class="uk-input uk-border-rounded"
-										       type="text"
-										       placeholder="Question">
+								<div class="uk-margin{i < quiz.questions.length - 1 ? '-medium' : ''}"
+								     transition:fly="{{ y: -animationConf.y, duration: animationConf.duration }}">
+									<div class="uk-grid-collapse" uk-grid>
+										<div class="uk-width-expand">
+											<input bind:value={question.question} class="uk-input uk-border-rounded"
+											       type="text"
+											       placeholder="Question">
+										</div>
+										<div class="uk-width-auto">
+											<div class="uk-margin-small-left">
+												<button class="uk-button uk-button-default uk-text-danger uk-border-rounded"
+														uk-tooltip="Delete question"
+												        on:click={() => deleteQuestion(quiz.id, j)}>
+													<span uk-icon="icon: trash"></span>
+												</button>
+											</div>
+										</div>
 									</div>
 									<div class="uk-grid-small" uk-grid>
                                         {#each question.answers as answer, k}
@@ -425,12 +438,14 @@
 														<a on:click={() => negateAnswerBool(quiz.id, j, k)}
 														   class="uk-form-icon uk-text-success uk-form-icon-flip"
 														   uk-icon="icon: check"
-														   transition:fade="{{ duration: animationDuration }}"></a>
+														   uk-tooltip="Answer is correct"
+														   transition:fade="{{ duration: animationConf.duration }}"></a>
                                                     {:else}
 														<a on:click={() => negateAnswerBool(quiz.id, j, k)}
 														   class="uk-form-icon uk-text-danger uk-form-icon-flip"
 														   uk-icon="icon: close"
-														   transition:fade="{{ duration: animationDuration }}"></a>
+														   uk-tooltip="Answer is wrong"
+														   transition:fade="{{ duration: animationConf.duration }}"></a>
                                                     {/if}
 													<input bind:value={answer.answer} class="uk-input uk-border-rounded"
 													       type="text"
