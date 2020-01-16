@@ -17,7 +17,7 @@ class GameManager(object):
     self.leds = GPIOLEDManager()
     self.buttons = GPIOButtonManager()
     loader = Loader(self.leds)
-    self.network = NetworkManager("10.0.0.1", 65853, self)
+    self.network = NetworkManager("10.0.0.10", 8080, self)
     
     # Display the intro
     self.intro()
@@ -27,8 +27,8 @@ class GameManager(object):
     loader.start()
     status = self.network.connect()
     loader.finish()
-    time.sleep(.2)
-    
+    time.sleep(.5)
+        
     if not status:
       # Put the program in an endless loop
       self.leds.on(Colors.RED)
@@ -44,13 +44,13 @@ class GameManager(object):
     for i in range(4):
       self.leds.toggle(Colors.BLUE)
       self.leds.toggle(Colors.RED)
-      self.leds.toggle(Colors.YELLOW)
       self.leds.toggle(Colors.GREEN)
+      self.leds.toggle(Colors.YELLOW)
       time.sleep(.1)
       self.leds.toggle(Colors.BLUE)
       self.leds.toggle(Colors.RED)
-      self.leds.toggle(Colors.YELLOW)
       self.leds.toggle(Colors.GREEN)
+      self.leds.toggle(Colors.YELLOW)
       time.sleep(.1)
 
 def main():

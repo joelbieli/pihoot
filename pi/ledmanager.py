@@ -27,8 +27,8 @@ class GPIOLEDManager(_LEDManager):
     self._led_dict = {
       Colors.BLUE: gpiozero.LED(22),
       Colors.RED: gpiozero.LED(24),
-      Colors.YELLOW: gpiozero.LED(26),
       Colors.GREEN: gpiozero.LED(12),
+      Colors.YELLOW: gpiozero.LED(26),
     }
     self._rgb_led = {
       Colors.RED: gpiozero.LED(16),
