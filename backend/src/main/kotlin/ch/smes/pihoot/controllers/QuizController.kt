@@ -1,4 +1,4 @@
-package ch.smes.pihoot.controllers.rest
+package ch.smes.pihoot.controllers
 
 import ch.smes.pihoot.dtos.GameDTO
 import ch.smes.pihoot.dtos.QuizDTO
@@ -8,7 +8,6 @@ import ch.smes.pihoot.services.GameService
 import ch.smes.pihoot.services.QuizService
 import ch.smes.pihoot.services.WebsocketService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.*
 
 @RestController

@@ -1,4 +1,4 @@
-package ch.smes.pihoot.controllers.rest
+package ch.smes.pihoot.controllers
 
 import ch.smes.pihoot.dtos.QuestionDTO
 import ch.smes.pihoot.mappers.QuestionMapper
