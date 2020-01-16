@@ -55,7 +55,7 @@ class GameService {
 
         val newPlayer = Player(
                 IdUtils.generateId(),
-                PlayerColor.values().filter { game.players.any { player -> player.color == it } }.random()
+                PlayerColor.values().filter { game.players.none { player -> player.color == it } }.random()
         )
 
         game.players.add(newPlayer)
