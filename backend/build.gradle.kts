@@ -22,6 +22,8 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
+    implementation("org.zeromq:jeromq:0.5.1")
+
     compileOnly("org.mapstruct:mapstruct:1.3.1.Final")
     kapt("org.mapstruct:mapstruct-processor:1.3.1.Final")
 
