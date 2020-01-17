@@ -19,6 +19,6 @@ class WebsocketService {
     private lateinit var playerMapper: PlayerMapper
 
     fun updatePlayersForGame(gameId: String) {
-        simpMessagingTemplate.convertAndSend("/ws/web/players/$gameId", gameService.getPlayersOfGame(gameId).map { playerMapper.toDto(it) })
+        simpMessagingTemplate.convertAndSend("/ws/game/$gameId/players", gameService.getPlayersOfGame(gameId).map { playerMapper.toDto(it) })
     }
 }
