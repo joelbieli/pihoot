@@ -18,6 +18,7 @@ class GameManager(object):
     self.network = NetworkManager("10.0.0.229", 5563, self)
     self.games_list = []
     self.active_game = None
+    self.active_player = None
     self._animator = Animator(self.leds, self)
     self._animator.start()
     time.sleep(1)

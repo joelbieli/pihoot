@@ -41,6 +41,9 @@ def main():
             code = game['colorCode']
             if code == buffer:
               game_manager.active_game = game
+              game_manager.network.join_game(game["id"])
+              
+              #self._game_manager.leds.set_rgb(Colors["PURPLE"])
               break
           # Pop first item of buffer
           buffer.pop(0)
