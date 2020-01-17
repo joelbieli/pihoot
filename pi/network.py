@@ -3,7 +3,7 @@ import logging
 import threading
 import enum
 
-from main import GameState
+from gamestate import GameState
 
 class NetworkManager(object):
   def __init__(self, address, port, game_manager):
@@ -16,24 +16,28 @@ class NetworkManager(object):
     
   def connect(self):
     self._socket = self._context.socket(zmq.SUB)
-    self._socket.connect("tcp://10.0.0.10:5563")
-    self._socket.setsockopt(zmq.SUBSCRIBE, _Topic.QUEUE_GAMES.value)
-    self._socket.setsockopt(zmq.SUBSCRIBE, _Topic.START_QUESTION.value)
-    self._socket.setsockopt(zmq.SUBSCRIBE, _Topic.END_QUESTION.value)
+    self._socket.connect("tcp://10.0.0.229:5563")
+    self._socket.setsockopt_string(zmq.SUBSCRIBE, _Topic.QUEUE_GAMES.value)
+    self._socket.setsockopt_string(zmq.SUBSCRIBE, _Topic.START_QUESTION.value)
+    self._socket.setsockopt_string(zmq.SUBSCRIBE, _Topic.END_QUESTION.value)
 
-    self._listener = threading.Thread(self.socket_routine)
+    self._listener = threading.Thread(target = self.socket_routine)
     self._listener.start()
+    
+    return True
 
   def socket_routine(self):
     while True:
       topic = self._socket.recv_string()
-
-      if topic is _Topic.QUEUE_GAMES.value:
+      
+      if topic == _Topic.QUEUE_GAMES.value:
         data = self._socket.recv_json()
 
         # Update games list and set to listening
         self._game_manager.games_list = data
-        self._game_manager.state = GameState.WAITING_QUESTION
+        self._game_manager.state = GameState.INPUT_COLORCODE
+        
+        logging.debug("Games: {}".format(data))
         
 
   def games_update(games):

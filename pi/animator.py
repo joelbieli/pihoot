@@ -2,18 +2,7 @@ import threading
 import time
 
 from colors import Colors
-from main import GameState
-
-_anim_map = {
-  GameState.STARTING: _anim_intro,
-  GameState.CONNECTING: _anim_connecting,
-  GameState.ERROR: _anim_error,
-  GameState.WAITING_GAMES: _anim_waiting_games,
-  GameState.WAITING_QUESTION: _anim_reset,
-  GameState.INPUT_REGULAR: _anim_input_regular,
-  GameState.INPUT_COLORCODE: _anim_input_regular,
-  GameState.RESET: _anim_reset
-}
+from gamestate import GameState
 
 class Animator(threading.Thread):
   def __init__(self, leds, game_manager):
@@ -28,7 +17,7 @@ class Animator(threading.Thread):
       if self._halting:
         time.sleep(1)
       else:
-        _anim_map[self._game_manager.state](self._leds)
+        _ANIM_MAP[self._game_manager.state](self._leds)
 
   def halt(self, halt=True):
     self._halting = halt
@@ -99,3 +88,14 @@ def _anim_intro(leds):
   leds.off(Colors.GREEN)
   leds.off(Colors.YELLOW)
   time.sleep(.1)
+  
+_ANIM_MAP = {
+  GameState.STARTING: _anim_intro,
+  GameState.CONNECTING: _anim_connecting,
+  GameState.ERROR: _anim_error,
+  GameState.WAITING_GAMES: _anim_waiting_games,
+  GameState.WAITING_QUESTION: _anim_reset,
+  GameState.INPUT_REGULAR: _anim_input_regular,
+  GameState.INPUT_COLORCODE: _anim_input_regular,
+  GameState.RESET: _anim_reset
+}
