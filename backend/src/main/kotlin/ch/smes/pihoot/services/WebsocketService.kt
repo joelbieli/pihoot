@@ -21,4 +21,8 @@ class WebsocketService {
     fun updatePlayersForGame(gameId: String) {
         simpMessagingTemplate.convertAndSend("/ws/game/$gameId/players", gameService.getPlayersOfGame(gameId).map { playerMapper.toDto(it) })
     }
+
+    fun updateAnswerCountForGame(gameId: String, answerCount: Int) {
+        simpMessagingTemplate.convertAndSend("/ws/game/$gameId/answers", answerCount)
+    }
 }

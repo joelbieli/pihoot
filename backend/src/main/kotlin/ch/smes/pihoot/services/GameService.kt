@@ -26,6 +26,9 @@ class GameService {
     private lateinit var quizService: QuizService
 
     @Autowired
+    private lateinit var websocketService: WebsocketService
+
+    @Autowired
     private lateinit var mongoTemplate: MongoTemplate
 
     fun getOne(gameId: String): Game {
@@ -53,6 +56,8 @@ class GameService {
         val isCorrect = question.answers.find { it.color == answer }?.isCorrect ?: false
 
         question.answerCount += 1
+
+        websocketService.updateAnswerCountForGame(gameId, question.answerCount);
 
         if (isCorrect) {
             val score = (Instant.now().toEpochMilli() - question.beginTimestamp!!.toEpochMilli()) * -(1/35L) + (7100/7L)
