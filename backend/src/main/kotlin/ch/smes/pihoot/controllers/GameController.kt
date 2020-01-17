@@ -7,6 +7,7 @@ import ch.smes.pihoot.models.GameState
 import ch.smes.pihoot.models.QuestionState
 import ch.smes.pihoot.services.GameService
 import ch.smes.pihoot.services.WebsocketService
+import ch.smes.pihoot.services.ZMQPubService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -21,13 +22,16 @@ class GameController {
     private lateinit var websocketService: WebsocketService
 
     @Autowired
+    private lateinit var zmqPubService: ZMQPubService
+
+    @Autowired
     private lateinit var playerMapper: PlayerMapper
 
     @PostMapping("/start/{gameId}")
     fun startGame(@PathVariable gameId: String) {
         gameService.updateGameState(gameId, GameState.IN_GAME)
 
-        websocketService.updateQueueingGames()
+        zmqPubService.updateQueueingGames()
     }
 
     @PostMapping("/end/{gameId}")
@@ -41,7 +45,7 @@ class GameController {
 
         val game = gameService.getOne(gameId)
 
-        websocketService.beginQuestion(gameId, game.quiz
+        zmqPubService.beginQuestion(gameId, game.quiz
                 ?.questions
                 ?.find { it.id == questionId }
                 ?.answers
@@ -54,7 +58,7 @@ class GameController {
     fun endQuestion(@PathVariable gameId: String, @PathVariable questionId: String) {
         gameService.updateQuestionState(gameId, questionId, QuestionState.ENDED)
 
-        websocketService.endQuestion(gameId)
+        zmqPubService.endQuestion(gameId)
     }
 
     @PostMapping("/join/{gameId}")

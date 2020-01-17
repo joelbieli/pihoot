@@ -12,7 +12,6 @@ import org.zeromq.ZContext
 import org.zeromq.ZMQ
 import javax.annotation.PostConstruct
 
-
 @Service
 class ZMQPubService: SmartLifecycle {
 
@@ -51,7 +50,7 @@ class ZMQPubService: SmartLifecycle {
 
     override fun start() {
         if (!isRunning) {
-            val port = environment.getProperty("zmq.publisher.port", "5566")
+            val port = environment.getProperty("zmq.publisher.port", "5563")
             val context = ZMQ.context(1)
             publisher = context.socket(SocketType.PUB)
 

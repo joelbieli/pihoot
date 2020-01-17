@@ -9,21 +9,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 
 @SpringBootApplication
-class Application {
-
-    @Autowired
-    private lateinit var zmqPublisherService: ZMQPubService
-
-    @Bean
-    fun doStuff() = CommandLineRunner {
-        Thread.sleep(2000)
-        zmqPublisherService.updateQueueingGames()
-        Thread.sleep(2000)
-        zmqPublisherService.beginQuestion("akdhksa", listOf(AnswerColor.BLUE))
-        Thread.sleep(2000)
-        zmqPublisherService.endQuestion("akdhksa")
-    }
-}
+class Application
 
 fun main(args: Array<String>) {
     runApplication<Application>(*args)
