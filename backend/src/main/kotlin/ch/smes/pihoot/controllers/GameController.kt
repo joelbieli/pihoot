@@ -1,16 +1,15 @@
-package ch.smes.pihoot.controllers.rest
+package ch.smes.pihoot.controllers
 
 import ch.smes.pihoot.dtos.PlayerDTO
 import ch.smes.pihoot.mappers.PlayerMapper
+import ch.smes.pihoot.models.AnswerColor
 import ch.smes.pihoot.models.GameState
 import ch.smes.pihoot.models.QuestionState
 import ch.smes.pihoot.services.GameService
 import ch.smes.pihoot.services.WebsocketService
+import ch.smes.pihoot.services.ZMQPubService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/game")
@@ -23,16 +22,19 @@ class GameController {
     private lateinit var websocketService: WebsocketService
 
     @Autowired
+    private lateinit var zmqPubService: ZMQPubService
+
+    @Autowired
     private lateinit var playerMapper: PlayerMapper
 
-    @PostMapping("/start/{gameId}")
+    @PostMapping("/{gameId}/start")
     fun startGame(@PathVariable gameId: String) {
         gameService.updateGameState(gameId, GameState.IN_GAME)
 
-        websocketService.updateQueueingGames()
+        zmqPubService.updateQueueingGames()
     }
 
-    @PostMapping("/end/{gameId}")
+    @PostMapping("/{gameId}/end")
     fun endGame(@PathVariable gameId: String) {
         gameService.updateGameState(gameId, GameState.ENDED)
     }
@@ -43,7 +45,7 @@ class GameController {
 
         val game = gameService.getOne(gameId)
 
-        websocketService.beginQuestion(gameId, game.quiz
+        zmqPubService.beginQuestion(gameId, game.quiz
                 ?.questions
                 ?.find { it.id == questionId }
                 ?.answers
@@ -56,10 +58,10 @@ class GameController {
     fun endQuestion(@PathVariable gameId: String, @PathVariable questionId: String) {
         gameService.updateQuestionState(gameId, questionId, QuestionState.ENDED)
 
-        websocketService.endQuestion(gameId)
+        zmqPubService.endQuestion(gameId)
     }
 
-    @PostMapping("/join/{gameId}")
+    @PostMapping("/{gameId}/join")
     fun joinGame(@PathVariable gameId: String): PlayerDTO {
         val newPlayer = gameService.addPlayer(gameId)
 
@@ -67,4 +69,15 @@ class GameController {
 
         return playerMapper.toDto(newPlayer)
     }
+
+
+    @PostMapping("/{gameId}/answer/{playerId}")
+    fun answerQuestion(
+            @RequestBody answer: AnswerColor,
+            @PathVariable gameId: String,
+            @PathVariable playerId: String
+    ): Boolean = gameService.checkAnswerAndUpdateScore(gameId, playerId, answer)
+
+    @PostMapping("/{gameId}/score")
+    fun getScore(@PathVariable gameId: String): Map<String, Int> = gameService.getScore(gameId)
 }
