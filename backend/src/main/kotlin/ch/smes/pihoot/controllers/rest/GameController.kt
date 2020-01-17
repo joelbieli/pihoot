@@ -66,7 +66,14 @@ class GameController {
         return playerMapper.toDto(newPlayer)
     }
 
-    @PostMapping("/{gameId}/answer")
-    fun answerQuestion(@RequestBody answer: AnswerColor, @PathVariable gameId: String): Boolean =
-            gameService.checkAnswerForGame(gameId, answer)
+
+    @PostMapping("/{gameId}/answer/{playerId}")
+    fun answerQuestion(
+            @RequestBody answer: AnswerColor,
+            @PathVariable gameId: String,
+            @PathVariable playerId: String
+    ): Boolean = gameService.checkAnswerAndUpdateScore(gameId, playerId, answer)
+
+    @PostMapping("/{gameId}/score")
+    fun getScore(@PathVariable gameId: String): Map<String, Int> = gameService.getScore(gameId)
 }
