@@ -21,16 +21,4 @@ class WebsocketService {
     fun updatePlayersForGame(gameId: String) {
         simpMessagingTemplate.convertAndSend("/ws/web/players/$gameId", gameService.getPlayersOfGame(gameId).map { playerMapper.toDto(it) })
     }
-
-    fun updateQueueingGames() {
-        simpMessagingTemplate.convertAndSend("/ws/pi/games", gameService.getQueueingGames())
-    }
-
-    fun beginQuestion(gameId: String, answerColors: List<AnswerColor>) {
-        simpMessagingTemplate.convertAndSend("/ws/pi/game/$gameId/question/begin", answerColors)
-    }
-
-    fun endQuestion(gameId: String) {
-        simpMessagingTemplate.convertAndSend("/ws/pi/game/$gameId/question/begin")
-    }
 }

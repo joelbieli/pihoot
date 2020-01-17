@@ -1,4 +1,4 @@
-package ch.smes.pihoot.controllers.rest
+package ch.smes.pihoot.controllers
 
 import ch.smes.pihoot.dtos.GameDTO
 import ch.smes.pihoot.dtos.QuizDTO
@@ -7,8 +7,8 @@ import ch.smes.pihoot.mappers.QuizMapper
 import ch.smes.pihoot.services.GameService
 import ch.smes.pihoot.services.QuizService
 import ch.smes.pihoot.services.WebsocketService
+import ch.smes.pihoot.services.ZMQPubService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -28,7 +28,7 @@ class QuizController {
     private lateinit var gameMapper: GameMapper
 
     @Autowired
-    private lateinit var websocketService: WebsocketService
+    private lateinit var zmqPubService: ZMQPubService
 
     @GetMapping
     fun getAll(): List<QuizDTO> = quizService.getAll().map { quizMapper.toDto(it) }
@@ -43,7 +43,7 @@ class QuizController {
     fun playQuiz(@PathVariable quizId: String): GameDTO {
         val newGame = gameService.createGame(quizId)
 
-        websocketService.updateQueueingGames()
+        zmqPubService.updateQueueingGames()
 
         return gameMapper.toDto(newGame)
     }
