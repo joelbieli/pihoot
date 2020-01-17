@@ -3,6 +3,8 @@ import logging
 import threading
 import enum
 
+from main import GameState
+
 class NetworkManager(object):
   def __init__(self, address, port, game_manager):
     self.address = address
@@ -31,6 +33,7 @@ class NetworkManager(object):
 
         # Update games list and set to listening
         self._game_manager.games_list = data
+        self._game_manager.state = GameState.WAITING_QUESTION
         
 
   def games_update(games):
