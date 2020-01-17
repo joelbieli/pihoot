@@ -1,6 +1,7 @@
 package ch.smes.pihoot.services
 
 import ch.smes.pihoot.exceptions.BadRequestException
+import ch.smes.pihoot.exceptions.InternalServerErrorException
 import ch.smes.pihoot.exceptions.NotFoundException
 import ch.smes.pihoot.models.*
 import ch.smes.pihoot.repositories.GameRepository
@@ -12,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Criteria.where
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 
 @Service
@@ -40,12 +42,32 @@ class GameService {
 
     fun getPlayersOfGame(gameId: String): List<Player> = getOne(gameId).players
 
-    fun checkAnswerForGame(gameId: String, answer: AnswerColor): Boolean = getOne(gameId).quiz
-            ?.questions
-            ?.find { it.state == QuestionState.IN_PROGRESS }
-            ?.answers
-            ?.find { it.color == answer }
-            ?.isCorrect ?: false
+    fun getScore(gameId: String) = getOne(gameId).players.map { it.id!! to it.score }.toMap()
+
+    fun checkAnswerAndUpdateScore(gameId: String, playerId: String, answer: AnswerColor): Boolean {
+        val game = getOne(gameId)
+        val player = game.players.find { it.id == playerId }
+                ?: throw NotFoundException("Player {$playerId} could not be found in game {$gameId}")
+        val question = game.quiz?.questions?.find { it.state == QuestionState.IN_PROGRESS }
+                ?: throw InternalServerErrorException("There is currently no question in progress for game {$gameId}")
+        val isCorrect = question.answers.find { it.color == answer }?.isCorrect ?: false
+
+        question.answerCount += 1
+
+        if (isCorrect) {
+            val score = (Instant.now().toEpochMilli() - question.beginTimestamp!!.toEpochMilli()) * -(1/35L) + (7100/7L)
+
+            player.score += when {
+                score > 1000 -> 1000
+                score < 600 -> 600
+                else -> score.toInt()
+            }
+
+            saveOrUpdate(game)
+        }
+
+        return isCorrect
+    }
 
     fun createGame(quizId: String) = gameRepository.save(Game(
             quiz = quizService.getOne(quizId).also { quiz ->
