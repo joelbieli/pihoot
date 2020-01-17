@@ -2,15 +2,13 @@ package ch.smes.pihoot.controllers.rest
 
 import ch.smes.pihoot.dtos.PlayerDTO
 import ch.smes.pihoot.mappers.PlayerMapper
+import ch.smes.pihoot.models.AnswerColor
 import ch.smes.pihoot.models.GameState
 import ch.smes.pihoot.models.QuestionState
 import ch.smes.pihoot.services.GameService
 import ch.smes.pihoot.services.WebsocketService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/game")
@@ -67,4 +65,8 @@ class GameController {
 
         return playerMapper.toDto(newPlayer)
     }
+
+    @PostMapping("/{gameId}/answer")
+    fun answerQuestion(@RequestBody answer: AnswerColor, @PathVariable gameId: String): Boolean =
+            gameService.checkAnswerForGame(gameId, answer)
 }

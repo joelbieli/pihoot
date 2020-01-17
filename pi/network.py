@@ -9,9 +9,9 @@ class NetworkManager(object):
     self._game_manager = game_manager
     
   def connect(self):
-    self.conn = stomp.Connection12(
-    [(self.address, self.port)], timeout=3, reconnect_attempts_max=2)
-    self.conn.set_listener('pi_listener', PiListener())
+    self.conn = stomp.Connection(
+    [(self.address, self.port)], timeout=2, reconnect_attempts_max=2)
+    self.conn.set_listener('', PiHootListener())
     
     try:
       self.conn.start()

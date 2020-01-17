@@ -40,6 +40,13 @@ class GameService {
 
     fun getPlayersOfGame(gameId: String): List<Player> = getOne(gameId).players
 
+    fun checkAnswerForGame(gameId: String, answer: AnswerColor): Boolean = getOne(gameId).quiz
+            ?.questions
+            ?.find { it.state == QuestionState.IN_PROGRESS }
+            ?.answers
+            ?.find { it.color == answer }
+            ?.isCorrect ?: false
+
     fun createGame(quizId: String) = gameRepository.save(Game(
             quiz = quizService.getOne(quizId).also { quiz ->
                 quiz.questions.shuffle()
@@ -78,7 +85,7 @@ class GameService {
 
         val newPlayer = Player(
                 IdUtils.generateId(),
-                PlayerColor.values().filter { game.players.any { player -> player.color == it } }.random()
+                PlayerColor.values().filter { game.players.none { player -> player.color == it } }.random()
         )
 
         game.players.add(newPlayer)
