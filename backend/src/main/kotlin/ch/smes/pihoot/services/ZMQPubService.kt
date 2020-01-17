@@ -8,12 +8,10 @@ import org.springframework.context.SmartLifecycle
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
 import org.zeromq.SocketType
-import org.zeromq.ZContext
 import org.zeromq.ZMQ
-import javax.annotation.PostConstruct
 
 @Service
-class ZMQPubService: SmartLifecycle {
+class ZMQPubService : SmartLifecycle {
 
     @Autowired
     private lateinit var environment: Environment
@@ -31,19 +29,21 @@ class ZMQPubService: SmartLifecycle {
 
     fun updateQueueingGames() {
         publisher.sendMore("queueingGames")
-        publisher.send(objectMapper.writeValueAsString(gameService.getQueueingGames().map { object {
-            val id = it.id
-            val colorCode = it.colorCode
-        } }))
+        publisher.send(objectMapper.writeValueAsString(gameService.getQueueingGames().map {
+            object {
+                val id = it.id
+                val colorCode = it.colorCode
+            }
+        }))
     }
 
     fun beginQuestion(gameId: String, answerColors: List<AnswerColor>) {
-        publisher.sendMore("beginQuestion")
+        publisher.sendMore("beginQuestion/$gameId")
         publisher.send(objectMapper.writeValueAsString(answerColors))
     }
 
     fun endQuestion(gameId: String) {
-        publisher.send("endQuestion")
+        publisher.send("endQuestion/$gameId")
     }
 
     override fun isRunning(): Boolean = isRunning
@@ -54,10 +54,10 @@ class ZMQPubService: SmartLifecycle {
             val context = ZMQ.context(1)
             publisher = context.socket(SocketType.PUB)
 
-            val thread: Thread = Thread {
+            val thread = Thread {
                 publisher.bind("tcp://*:$port")
                 isRunning = true
-                logger.info("ZMQ puiblisher listening on port $port")
+                logger.info("ZMQ publisher listening on port $port")
             }
 
             thread.isDaemon = true
