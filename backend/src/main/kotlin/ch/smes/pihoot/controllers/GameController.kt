@@ -27,14 +27,14 @@ class GameController {
     @Autowired
     private lateinit var playerMapper: PlayerMapper
 
-    @PostMapping("/start/{gameId}")
+    @PostMapping("/{gameId}/start")
     fun startGame(@PathVariable gameId: String) {
         gameService.updateGameState(gameId, GameState.IN_GAME)
 
         zmqPubService.updateQueueingGames()
     }
 
-    @PostMapping("/end/{gameId}")
+    @PostMapping("/{gameId}/end")
     fun endGame(@PathVariable gameId: String) {
         gameService.updateGameState(gameId, GameState.ENDED)
     }
@@ -61,7 +61,7 @@ class GameController {
         zmqPubService.endQuestion(gameId)
     }
 
-    @PostMapping("/join/{gameId}")
+    @PostMapping("/{gameId}/join")
     fun joinGame(@PathVariable gameId: String): PlayerDTO {
         val newPlayer = gameService.addPlayer(gameId)
 

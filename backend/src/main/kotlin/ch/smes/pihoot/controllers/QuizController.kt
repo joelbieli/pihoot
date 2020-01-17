@@ -39,7 +39,7 @@ class QuizController {
     @PostMapping
     fun create(@RequestBody quizDTO: QuizDTO): QuizDTO = quizMapper.toDto(quizService.saveOrUpdate(quizMapper.toModel(quizDTO)))
 
-    @PostMapping("/play/{quizId}")
+    @PostMapping("/{quizId}/play")
     fun playQuiz(@PathVariable quizId: String): GameDTO {
         val newGame = gameService.createGame(quizId)
 
