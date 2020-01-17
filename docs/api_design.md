@@ -1,3 +1,7 @@
+# API Design
+
+**IMPORTANT: Open in Typora for proper formatting**
+
 [TOC]
 
 # API design - frontend
@@ -58,7 +62,7 @@ Parameters: `id: string`
 
 Method: `POST`
 
-URL: `/api/quiz/play/{quizId}`
+URL: `/api/quiz/{quizId}/play`
 
 Parameter: `quizId: string`
 
@@ -70,7 +74,7 @@ Return value: [`Game`](#game)
 
 Method: `POST`
 
-URL: `/api/question/{quizId}`
+URL: `/api/quiz/{quizId}/question`
 
 Payload: [`Question`](#question)
 
@@ -80,7 +84,7 @@ Return value: [`Question`](#question)
 
 Method: `PUT`
 
-URL: `/api/question/{quizId}/{id}`
+URL: `/api/quiz/{quizId}/question/{id}`
 
 Parameters:
 
@@ -96,7 +100,7 @@ Return value:  [`Question`](#question)
 
 Method: `DELETE`
 
-URL: `/api/question/{quizId}/{id}`
+URL: `/api/quiz/{quizId}/question/{id}`
 
 Parameters:
 
@@ -110,7 +114,7 @@ Parameters:
 
 Method: `POST`
 
-URL: `/api/game/start/{gameId}`
+URL: `/api/game/{gameId}/start`
 
 Parameters: `gameId: string`
 
@@ -118,7 +122,7 @@ Parameters: `gameId: string`
 
 Method: `POST`
 
-URL: `/api/game/end/{gameId}`
+URL: `/api/game/{gameId}/end`
 
 Parameters: `gameId: string`
 
@@ -144,13 +148,11 @@ Parameters:
 - `gameId: string`
 - `questionId: string`
 
-### Score
-
-#### Read
+#### Score
 
 Method: `GET`
 
-URL: `/api/score/{gameId}`
+URL: `/api/game/{gameId}/score`
 
 Parameters: `gameId: string`
 
@@ -160,14 +162,26 @@ Return value: [`Score`](#score)
 
 ### Players
 
-Route: `/ws/web/players/{gameId}`
+Route: `/ws/game/{gameId}/players`
 
 Arguments: `gameId: string`
 
 Direction: Server -> Client
 
-Payload: [`WSEvent`](#ws-event)<[`Player`](#player)>
+Payload: [`Player`](#player)
 
+#### Answers
+
+Method: `GET`
+
+Route: `/ws/game/{gameId}/answers`
+
+Parameters:
+
+- `gameId: string`
+- `questionId: string`
+
+Payload: integer (amount of answers for current questions)
 
 # API design - Raspberry PI
 
@@ -177,7 +191,7 @@ Payload: [`WSEvent`](#ws-event)<[`Player`](#player)>
 
 Method: `POST`
 
-URL: `/api/game/join/{gameId}`
+URL: `/api/game/{gameId}/join`
 
 Parameters: `gameId: string`
 
@@ -187,35 +201,32 @@ Return value: [`Player`](#player) (includes player color)
 
 Method: `POST`
 
-URL: `/api/game/{gameId}/answer`
+URL: `/api/game/{gameId}/answer/{playerId}`
 
-Parameters: `gameId: string`
+Parameters:
+
+- `gameId: string`
+- `playerId: string`
 
 Payload: [`AnswerColor`](#answer-color)
 
-Return value: 
+Return value: boolean (true if correct, otherwise false)
 
-## Websocket
+## ZMQ Sockets
 
 ### Begin question
 
-Route: `/ws/pi/game/{gameId}/question/begin`
+Topic: `beginQuestion/{gameId}`
 
-Direction: Server -> Client
-
-Payload: [`WSEvent`](#ws-event)<[`[Answer]`](#answer)>
+Payload: [`[Answer]`](#answer)
 
 ### End question
 
-Route: `/ws/pi/game/{gameId}/question/end`
-
-Direction: Server -> Client
+Route: `endQuestion/{gameId}`
 
 ### Queueing Games
 
-Route: `/ws/pi/games`
-
-Direction: Server -> Client
+Route: `queueingGames`
 
 Payload: [`[Games]`](#game) (only id and colorCode)
 
@@ -276,6 +287,7 @@ Game {
 
 ```json
 Player {
+    id: string,
     color: Color //serzialized to string
 }
 ```
@@ -289,28 +301,6 @@ Player {
 ```json
 Score {
     Player => integer
-}
-```
-
-### WSMessage
-
-<a name="ws-message"></a>
-
-```json
-WSMessage<T> {
-    data: T,
-    error: WSError
-}
-```
-
-### WSError
-
-<a name="ws-error"></a>
-
-```json
-WSError {
-    code: number, // HTTP code
-    message: string
 }
 ```
 
@@ -355,20 +345,28 @@ AnswerColor {
         
         F ->>+ B: Play quiz (/api/quiz/play)
         B -->>- F: Return new game
-        B ->> P: Notify about new game (/ws/pi/games)
-        P -->> B: Join game(/ws/pi/join)
-        B ->> P: Assign colors (/ws/pi/color)
-        B ->> F: Send participating players (/ws/web/players)
-        F ->> B: Begin game (/api/game/begin)
+        B ->> P: Notify about new game (queueingGames)
+        loop for every player joining
+            P ->>+ B: Join game(/api/game/join)
+            B -->>- P: Return player with color
+            B ->> F: Send players in game (/ws/game/players)
+        end
+        F ->> B: Start game (/api/game/start)
         loop for every question
-            F ->> B: Begin question (/api/question/begin)
-            B ->> P: Start taking answers (/ws/pi/question/begin)
-            P ->> B: Answer question (/ws/pi/answer)
-            F ->> B: End question (/api/question/end)
-            B ->> P: Stop taking answers (/ws/pi/question/end)
-            F ->>+ B: Get score (/api/web/score)
+            F ->> B: Begin question (/api/game/question/begin)
+            B ->> P: Start taking answers (beginGame)
+            loop for every answer
+                P ->>+ B: Answer question (/api/game/question/answer)
+                B -->>- P: Return whether answer was right or not
+                B ->> F: Send player count (/ws/game/answers)
+            end
+            F ->> B: End question (/api/game/question/end)
+            B ->> P: Stop taking answers (endQuestion)
+            F ->>+ B: Get score (/api/game/score)
             B -->>- F: Return current score
         end
         F ->> B: End game (/api/game/end)
+            F ->>+ B: Get score (/api/game/score)
+            B -->>- F: Return current score
 ```
 
