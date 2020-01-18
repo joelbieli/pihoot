@@ -348,7 +348,7 @@
 	}
 </style>
 
-<div class="uk-container uk-container-small">
+<div class="uk-container uk-container-small uk-margin-xlarge-bottom">
 	<button on:click={createQuiz} class="uk-button uk-button-default uk-border-rounded" uk-tooltip="Add quiz">
 		<span class="uk-margin-small-top uk-margin-small-bottom" uk-icon="plus"></span>
 	</button>
