@@ -31,12 +31,13 @@
 		</div>
 		<div class="uk-width-auto">
 			<button class="uk-button uk-button-primary uk-border-rounded" on:click={startPlaying}>Start playing</button>
+<!--			TODO(laniw): Disable button if less than 1 player is present.-->
 		</div>
 	</div>
 	<hr>
 
     {#each colorCode as color}
-		<span class="colorDot" style="background-color: {getHexForColor(color)}">
+		<span class="colorDot uk-border-rounded" style="background-color: {getHexForColor(color)}">
 
         </span>
     {/each}
@@ -47,4 +48,5 @@
             {player.color}
 		</div>
     {/each}
+<!--	TODO(laniw): Add else when no players have joined yet.-->
 </div>

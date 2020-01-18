@@ -1,9 +1,9 @@
 <script>
 	import {apiUrl, animationConfig} from '../stores.js';
 	import {onDestroy, createEventDispatcher} from 'svelte';
-	import {passByVal} from '../util.js'
-	import LoadingGame from './PreGame.svelte';
+	import PreGame from './PreGame.svelte';
 	import PlayersJoin from './PlayersJoin.svelte';
+	import QuestionsParent from './QuestionsParent.svelte';
 
 	export let data;
 	const dispatch = createEventDispatcher();
@@ -22,6 +22,14 @@
 			attempted: false,
 			successful: false,
 			subscriptionOpen: false
+		},
+		startGame: {
+			attempted: false,
+			successful: false
+		},
+		endGame: {
+			attempted: false,
+			successful: false
 		}
 	};
 
@@ -51,7 +59,31 @@
 	}
 
 	function handleStartPlaying(_) {
-		// Start Playing
+		startGame();
+	}
+
+	function startGame() {
+		fetch(`${apiUrlStore}game/${game.id}/start`, {
+			method: 'POST',
+			mode: 'cors'
+		}).then(_ => {
+			connectionStatus.startGame.attempted = true;
+			connectionStatus.startGame.successful = true;
+		}).catch(_ => {
+			connectionStatus.startGame.attempted = true;
+		});
+	}
+
+	function endGame() {
+		fetch(`${apiUrlStore}game/${game.id}/end`, {
+			method: 'POST',
+			mode: 'cors'
+		}).then(_ => {
+			connectionStatus.endGame.attempted = true;
+			connectionStatus.endGame.successful = true;
+		}).catch(_ => {
+			connectionStatus.endGame.attempted = true;
+		});
 	}
 
 	function init() {
@@ -71,7 +103,7 @@
 			connectionStatus.createGame.attempted = true;
 			connectionStatus.createGame.successful = true;
 		}).catch(res => {
-			connectionStatus.createGame.attempted = false;
+			connectionStatus.createGame.attempted = true;
 		});
 
 		for (let i = 1000; i <= 10000; i += 1000) {
@@ -94,14 +126,15 @@
 	$: {
 		if (game !== undefined) {
 			console.log(game.id);
-			console.log(game)
 		}
 	}
 </script>
 
 {#if !connectionStatus.createGame.attempted}
-	<LoadingGame createGameStatus={connectionStatus.createGame} on:pageUpdate={handlePageUpdate}
-	             on:visibilityChange={handleVisibilityUpdate} on:retryGameStart={handleRetryGameStart}/>
-{:else}
+	<PreGame createGameStatus={connectionStatus.createGame} on:pageUpdate={handlePageUpdate}
+	         on:visibilityChange={handleVisibilityUpdate} on:retryGameStart={handleRetryGameStart}/>
+{:else if !connectionStatus.startGame.successful}
 	<PlayersJoin quizName={game.quiz.title} {players} colorCode={game.colorCode} on:startPlaying={handleStartPlaying}/>
+{:else if connectionStatus.startGame.successful}
+	<QuestionsParent {game}/>
 {/if}
