@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Service
 import java.time.Instant
+import kotlin.math.roundToInt
 
 
 @Service
@@ -63,15 +64,15 @@ class GameService {
 
         question.answerCount += 1
 
-        websocketService.updateAnswerCountForGame(gameId, question.answerCount);
+        websocketService.updateAnswerCountForGame(gameId, question.answerCount)
 
         if (isCorrect) {
-            val score = (Instant.now().toEpochMilli() - question.beginTimestamp!!.toEpochMilli()) * -(1/35L) + (7100/7L)
+            val score = ((Instant.now().toEpochMilli() - question.beginTimestamp!!.toEpochMilli()) * -(1/35F) + (7100/7F)).roundToInt()
 
             player.score += when {
                 score > 1000 -> 1000
                 score < 600 -> 600
-                else -> score.toInt()
+                else -> score
             }
 
             saveOrUpdate(game)
@@ -99,12 +100,32 @@ class GameService {
         saveOrUpdate(game)
     }
 
-    fun updateQuestionState(gameId: String, questionId: String, newState: QuestionState) {
-        mongoTemplate.updateFirst(
-                Query(where("_id").`is`(gameId).and("quiz.questions._id").`is`(questionId)),
-                Update().set("quiz.questions.$.state", newState),
-                Game::class.java
-        )
+    /**
+     * Set question to IN_PROGRESS and set start endpoint to now
+     */
+    fun beginQuestion(gameId: String, questionId: String) {
+        val game = getOne(gameId)
+        val question = game.quiz?.questions?.find { it.id == questionId }
+                ?: throw NotFoundException("Question {$questionId} could not be found in {$gameId}")
+
+        question.state = QuestionState.IN_PROGRESS
+        question.beginTimestamp = Instant.now()
+
+        saveOrUpdate(game)
+    }
+
+
+    /**
+     * Set question to ENDED
+     */
+    fun endQuestion(gameId: String, questionId: String) {
+        val game = getOne(gameId)
+        val question = game.quiz?.questions?.find { it.id == questionId }
+                ?: throw NotFoundException("Question {$questionId} could not be found in {$gameId}")
+
+        question.state = QuestionState.ENDED
+
+        saveOrUpdate(game)
     }
 
     fun saveOrUpdate(game: Game): Game = gameRepository.save(game)
