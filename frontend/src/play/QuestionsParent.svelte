@@ -80,7 +80,7 @@
 	}
 </script>
 
-<div class="uk-container uk-container-xsmall uk-margin-xlarge-top">
+<div class="uk-container uk-container-small uk-margin-xlarge-top">
     {#if showOnlyQuestion && !showScoreboard}
 		<Question question={currentQuestion} questionIndex={currentQuestionIndex}
 		          questionCount={game.quiz.questions.length}/>
