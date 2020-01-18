@@ -207,19 +207,28 @@
 	}
 
 	function updateEditedQuiz(quizId, data = []) {
-		performRequest(requestMethods.GET, `${apiUrlStore}quiz`, result =>
-						result.json(), () => displayNotification(
-				'Failed to update quizzes.',
-				notificationStatus.DANGER,
-				notificationPosition.BOTTOM_LEFT), data => {
-					data.forEach((quiz, i) => {
-						if (quiz.id === quizId) {
-							editedQuizzes[i] = passByVal(quiz);
-							quizzes[i] = passByVal(quiz);
-						}
-					});
+		if (data !== []) {
+			data.forEach((quiz, i) => {
+				if (quiz.id === quizId) {
+					editedQuizzes[i] = passByVal(quiz);
+					quizzes[i] = passByVal(quiz);
 				}
-		);
+			});
+		} else {
+			performRequest(requestMethods.GET, `${apiUrlStore}quiz`, result =>
+							result.json(), () => displayNotification(
+					'Failed to update quizzes.',
+					notificationStatus.DANGER,
+					notificationPosition.BOTTOM_LEFT), data => {
+						data.forEach((quiz, i) => {
+							if (quiz.id === quizId) {
+								editedQuizzes[i] = passByVal(quiz);
+								quizzes[i] = passByVal(quiz);
+							}
+						});
+					}
+			);
+		}
 	}
 
 	function performRequest(methodEnum, url, callback1, catchClause, callback2 = () => {
@@ -423,7 +432,7 @@
 										<div class="uk-width-auto">
 											<div class="uk-margin-small-left">
 												<button class="uk-button uk-button-default uk-text-danger uk-border-rounded"
-														uk-tooltip="Delete question"
+												        uk-tooltip="Delete question"
 												        on:click={() => deleteQuestion(quiz.id, j)}>
 													<span uk-icon="icon: trash"></span>
 												</button>
