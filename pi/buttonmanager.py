@@ -28,7 +28,7 @@ class GPIOButtonManager(_ButtonManager):
     self._button_yellow = gpiozero.Button(25)
     self._button_yellow.when_released = lambda: self._put_event(Colors.GREEN)
 
-    self._button_green = gpiozero.Button(13)
+    self._button_green = gpiozero.Button(5)
     self._button_green.when_released = lambda: self._put_event(Colors.YELLOW)
 
   def _put_event(self, color):
