@@ -9,6 +9,7 @@ import ch.smes.pihoot.services.GameService
 import ch.smes.pihoot.services.WebsocketService
 import ch.smes.pihoot.services.ZMQPubService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -47,7 +48,7 @@ class GameController {
 
     @PostMapping("/{gameId}/question/{questionId}/begin")
     fun beginQuestion(@PathVariable gameId: String, @PathVariable questionId: String) {
-        gameService.updateQuestionState(gameId, questionId, QuestionState.IN_PROGRESS)
+        gameService.beginQuestion(gameId, questionId)
 
         val game = gameService.getOne(gameId)
 
@@ -62,7 +63,7 @@ class GameController {
 
     @PostMapping("/{gameId}/question/{questionId}/end")
     fun endQuestion(@PathVariable gameId: String, @PathVariable questionId: String) {
-        gameService.updateQuestionState(gameId, questionId, QuestionState.ENDED)
+        gameService.endQuestion(gameId, questionId)
 
         zmqPubService.endQuestion(gameId)
     }
@@ -77,12 +78,12 @@ class GameController {
     }
 
 
-    @PostMapping("/{gameId}/answer/{playerId}")
+    @PostMapping(value = ["/{gameId}/answer/{playerId}"], consumes = [MediaType.TEXT_PLAIN_VALUE])
     fun answerQuestion(
-            @RequestBody answer: AnswerColor,
+            @RequestBody answer: String,
             @PathVariable gameId: String,
             @PathVariable playerId: String
-    ): Boolean = gameService.checkAnswerAndUpdateScore(gameId, playerId, answer)
+    ): Boolean   = gameService.checkAnswerAndUpdateScore(gameId, playerId, AnswerColor.valueOf(answer))
 
     @PostMapping("/{gameId}/score")
     fun getScore(@PathVariable gameId: String): Map<String, Int> = gameService.getScore(gameId)
