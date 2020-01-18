@@ -96,6 +96,46 @@
 	}
 
 	function updateQuiz(quiz) {
+		quizzes.forEach(dataBaseQuiz => {
+			if (dataBaseQuiz.id === quiz.id) {
+				// Found matching quiz from database.
+
+				// Loop through every question in the local quiz.
+				quiz.questions.forEach((_, j) => {
+					let existed = false;
+					let changed = false;
+					// Loop through every question in the database quiz.
+					dataBaseQuiz.questions.forEach((_, k) => {
+						if (dataBaseQuiz.questions[k].id === quiz.questions[j].id) {
+							existed = true;
+							if (JSON.stringify(dataBaseQuiz.questions[k]) !== JSON.stringify(quiz.questions[j])) {
+								changed = true;
+							}
+						}
+					});
+					if (existed && changed) {
+						// Update question.
+					} else if (!existed) {
+						// Create question.
+					}
+				});
+
+				// Loop through every question in the database quiz.
+				dataBaseQuiz.questions.forEach((_, j) => {
+					let deleted = true;
+					// Loop through every question in the local quiz.
+					quiz.questions.forEach((_, k) => {
+						if (dataBaseQuiz.questions[j].id === quiz.questions[k].id) {
+							deleted = false;
+						}
+					});
+					if (deleted) {
+						// Delete question.
+					}
+				});
+			}
+		});
+
 		fetch(`${apiUrlStore}quiz/${quiz.id}`, {
 			method: 'PUT',
 			mode: 'cors',
@@ -310,11 +350,6 @@
 		POST: 3,
 		DELETE: 4
 	};
-
-	$:{
-		console.log(unidenticalQuizzes);
-		console.log(editedQuizzes, quizzes);
-	}
 </script>
 
 <style>
