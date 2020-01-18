@@ -133,13 +133,13 @@
 		}).then(_ => {
 			updateEditedQuizzes();
 			displayNotification(
-					'Quiz successfully deleted from database.',
+					'Quiz successfully deleted.',
 					notificationStatus.SUCCESS,
 					notificationPosition.BOTTOM_LEFT);
 			updatePlayableQuizzes();
 		}).catch(_ => {
 			displayNotification(
-					'Failed to delete quiz from the database.',
+					'Failed to delete quiz.',
 					notificationStatus.DANGER,
 					notificationPosition.BOTTOM_LEFT);
 		});
