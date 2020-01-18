@@ -29,12 +29,7 @@ class ZMQPubService : SmartLifecycle {
 
     fun updateQueueingGames() {
         publisher.sendMore("queueingGames")
-        publisher.send(objectMapper.writeValueAsString(gameService.getQueueingGames().map {
-            object {
-                val id = it.id
-                val colorCode = it.colorCode
-            }
-        }))
+        publisher.send(objectMapper.writeValueAsString(gameService.getQueueingGames()))
     }
 
     fun beginQuestion(gameId: String, answerColors: List<AnswerColor>) {

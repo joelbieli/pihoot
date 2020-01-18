@@ -27,6 +27,12 @@ class GameController {
     @Autowired
     private lateinit var playerMapper: PlayerMapper
 
+    /**
+     * Get all queueing games
+     */
+    @GetMapping("/queueing")
+    fun getQueueingGames(): List<Any> = gameService.getQueueingGames()
+
     @PostMapping("/{gameId}/start")
     fun startGame(@PathVariable gameId: String) {
         gameService.updateGameState(gameId, GameState.IN_GAME)
