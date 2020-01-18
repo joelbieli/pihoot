@@ -95,28 +95,52 @@
 		});
 	}
 
-	function updateQuiz(quiz) {
+	function updateQuiz(localQuiz) {
 		quizzes.forEach(dataBaseQuiz => {
-			if (dataBaseQuiz.id === quiz.id) {
+			if (dataBaseQuiz.id === localQuiz.id) {
 				// Found matching quiz from database.
 
 				// Loop through every question in the local quiz.
-				quiz.questions.forEach((_, j) => {
+				localQuiz.questions.forEach((_, j) => {
 					let existed = false;
 					let changed = false;
 					// Loop through every question in the database quiz.
 					dataBaseQuiz.questions.forEach((_, k) => {
-						if (dataBaseQuiz.questions[k].id === quiz.questions[j].id) {
+						if (dataBaseQuiz.questions[k].id === localQuiz.questions[j].id) {
 							existed = true;
-							if (JSON.stringify(dataBaseQuiz.questions[k]) !== JSON.stringify(quiz.questions[j])) {
+							if (JSON.stringify(dataBaseQuiz.questions[k]) !== JSON.stringify(localQuiz.questions[j])) {
 								changed = true;
 							}
 						}
 					});
-					if (existed && changed) {
-						// Update question.
-					} else if (!existed) {
+					if (!existed) {
 						// Create question.
+						fetch(`${apiUrlStore}quiz/${localQuiz.id}/question`, {
+							method: 'POST',
+							mode: 'cors',
+							headers: {
+								'Content-Type': 'application/JSON'
+							},
+							body: JSON.stringify(localQuiz.questions[j])
+						}).then(result => result.json()).then(data => {
+							localQuiz.questions[j] = data;
+						}).catch(_ => {
+							console.error('Failed to create question.')
+						});
+					} else if (existed && changed) {
+						// Update question.
+						fetch(`${apiUrlStore}quiz/${localQuiz.id}/question/${localQuiz.questions[j].id}`, {
+							method: 'PUT',
+							mode: 'cors',
+							headers: {
+								'Content-Type': 'application/JSON'
+							},
+							body: JSON.stringify(localQuiz.questions[j])
+						}).then(result => result.json()).then(data => {
+							localQuiz.questions[j] = data;
+						}).catch(_ => {
+							console.error('Failed to update question.')
+						});
 					}
 				});
 
@@ -124,35 +148,45 @@
 				dataBaseQuiz.questions.forEach((_, j) => {
 					let deleted = true;
 					// Loop through every question in the local quiz.
-					quiz.questions.forEach((_, k) => {
-						if (dataBaseQuiz.questions[j].id === quiz.questions[k].id) {
+					localQuiz.questions.forEach((_, k) => {
+						if (dataBaseQuiz.questions[j].id === localQuiz.questions[k].id) {
 							deleted = false;
 						}
 					});
 					if (deleted) {
 						// Delete question.
+						fetch(`${apiUrlStore}quiz/${localQuiz.id}/question/${localQuiz.questions[j].id}`, {
+							method: 'DELETE',
+							mode: 'cors',
+							headers: {
+								'Content-Type': 'application/JSON'
+							},
+							body: JSON.stringify(localQuiz.questions[j])
+						}).then(_ => {}).catch(_ => {
+							console.error('Failed to update question.')
+						});
 					}
 				});
 			}
 		});
 
-		fetch(`${apiUrlStore}quiz/${quiz.id}`, {
+		fetch(`${apiUrlStore}quiz/${localQuiz.id}`, {
 			method: 'PUT',
 			mode: 'cors',
 			headers: {
 				'Content-Type': 'application/JSON'
 			},
-			body: JSON.stringify(quiz)
+			body: JSON.stringify(localQuiz)
 		}).then(_ => {
 			displayNotification(
-					'Saved changes to quiz.',
+					'Saved quiz changes.',
 					notificationStatus.SUCCESS,
 					notificationPosition.BOTTOM_LEFT);
-			updateEditedQuiz(quiz.id);
+			updateEditedQuiz(localQuiz.id);
 			updatePlayableQuizzes();
 		}).catch(_ => {
 			displayNotification(
-					'Failed to save changes to quiz.',
+					'Failed to save quiz changes.',
 					notificationStatus.DANGER,
 					notificationPosition.BOTTOM_LEFT);
 		});
@@ -188,7 +222,6 @@
 	function createQuestion(quizId) {
 		editedQuizzes.forEach((quiz, i, quizzes) => {
 			if (quiz.id === quizId) {
-				console.log('here');
 				editedQuizzes[i].questions = passByVal([...quizzes[i].questions, {
 					"question": "",
 					"answers": [
@@ -350,6 +383,12 @@
 		POST: 3,
 		DELETE: 4
 	};
+
+	$:{
+		if (editedQuizzes.length > 0) {
+			console.log(editedQuizzes[0]);
+		}
+	}
 </script>
 
 <style>
