@@ -1,10 +1,11 @@
 <script>
 	import {createEventDispatcher} from 'svelte';
-	import {getHexForColor} from '../util/playUtils'
+	import {getHexForColor, getTextHexForColor} from '../util/playUtils'
 
 	export let quizName;
 	export let players;
 	export let colorCode;
+	$: playerCount = players.length;
 
 	const dispatch = createEventDispatcher();
 
@@ -30,23 +31,35 @@
 			<h4>{quizName}</h4>
 		</div>
 		<div class="uk-width-auto">
-			<button class="uk-button uk-button-primary uk-border-rounded" on:click={startPlaying}>Start playing</button>
-<!--			TODO(laniw): Disable button if less than 1 player is present.-->
+            {#if playerCount > 0}
+				<button class="uk-button uk-button-primary uk-border-rounded" on:click={startPlaying}>Start playing
+				</button>
+            {:else}
+				<button class="uk-button uk-button-primary uk-border-rounded" on:click={startPlaying} disabled>Start
+					playing
+				</button>
+            {/if}
 		</div>
 	</div>
 	<hr>
 
-    {#each colorCode as color}
-		<span class="colorDot uk-border-rounded" style="background-color: {getHexForColor(color)}">
+	<div class="uk-card uk-card-default uk-card-body uk-card-small uk-border-rounded">
+		<p>
+			User the following color code to join the game.
+		</p>
+        {#each colorCode as color}
+			<span class="colorDot uk-border-rounded" style="background-color: {getHexForColor(color)}"></span>
+        {/each}
+	</div>
 
-        </span>
-    {/each}
-
-    {#each players as player}
-		<div class="uk-card uk-card-default uk-card-body uk-card-small uk-border-rounded uk-margin"
-		     style="background-color: {getHexForColor(player.color)}; color: white;">
-            {player.color}
-		</div>
-    {/each}
-<!--	TODO(laniw): Add else when no players have joined yet.-->
+	<div class="uk-margin">
+        {#each players as player}
+			<div class="uk-card uk-card-default uk-card-body uk-card-small uk-text-bold uk-border-rounded uk-margin"
+			     style="background-color: {getHexForColor(player.color)}; color: {getTextHexForColor(player.color)};">
+                {player.color}
+			</div>
+        {:else}
+			Waiting for players...
+        {/each}
+	</div>
 </div>
