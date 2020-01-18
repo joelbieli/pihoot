@@ -1,4 +1,4 @@
-package ch.smes.pihoot.controllers.rest
+package ch.smes.pihoot.controllers
 
 import ch.smes.pihoot.dtos.QuestionDTO
 import ch.smes.pihoot.mappers.QuestionMapper
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/question")
+@RequestMapping("/api/quiz/{quizId}/question")
 class QuestionController {
 
     @Autowired
@@ -16,18 +16,18 @@ class QuestionController {
     @Autowired
     private lateinit var questionMapper: QuestionMapper
 
-    @PostMapping("/{quizId}")
+    @PostMapping
     fun create(@PathVariable quizId: String, @RequestBody questionDTO: QuestionDTO): QuestionDTO {
         return questionMapper.toDto(questionService.saveOrUpdate(quizId, questionMapper.toModel(questionDTO)))
     }
 
 
-    @PutMapping("/{quizId}/{id}")
+    @PutMapping("/{id}")
     fun update(@PathVariable quizId: String, @PathVariable id: String, @RequestBody questionDTO: QuestionDTO): QuestionDTO {
         questionDTO.id = id
         return questionMapper.toDto(questionService.saveOrUpdate(quizId, questionMapper.toModel(questionDTO)))
     }
 
-    @DeleteMapping("/{quizId}/{id}")
+    @DeleteMapping("/{id}")
     fun delete(@PathVariable quizId: String, @PathVariable id: String): Unit = questionService.delete(quizId, id)
 }
