@@ -41,7 +41,13 @@ class GameService {
         return game.get()
     }
 
-    fun getQueueingGames(): List<Game> = gameRepository.findAllByStateIs(GameState.QUEUING)
+    fun getQueueingGames(): List<Any> = gameRepository.findAllByStateIs(GameState.QUEUING).map {
+        // send only id color code
+        object {
+            val id = it.id
+            val colorCode = it.colorCode
+        }
+    }
 
     fun getPlayersOfGame(gameId: String): List<Player> = getOne(gameId).players
 
