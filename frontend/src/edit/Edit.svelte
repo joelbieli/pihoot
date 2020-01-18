@@ -9,17 +9,11 @@
 	let connectionSuccessful = false;
 	let animationConf;
 	let apiUrlStore;
-	let quizzes = '';
-	let editedQuizzes = '';
+	let quizzes = [];
+	let editedQuizzes = [];
 	let unidenticalQuizzes = [];
 
-	$: {
-		if (editedQuizzes !== '' && editedQuizzes.length > 0) {
-			editedQuizzes.forEach((quiz, i) => {
-				unidenticalQuizzes[i] = JSON.stringify(quiz) !== JSON.stringify(quizzes[i]);
-			});
-		}
-	}
+	$: unidenticalQuizzes = editedQuizzes.map((_, i) => JSON.stringify(editedQuizzes[i]) !== JSON.stringify(quizzes[i]));
 
 	const init = () => {
 		fetch(`${apiUrlStore}quiz`, {
@@ -29,7 +23,7 @@
 			connectionSuccessful = true;
 			return res.json();
 		}).then(data => {
-					resetQuizData(data);
+					resetAllQuizzes(data);
 				}
 		).catch(res => {
 			// Do Nothing.
@@ -60,54 +54,68 @@
 
 	init();
 
-	function resetQuizData(data) {
+	function resetAllQuizzes(data) {
 		editedQuizzes = passByVal(data);
 		quizzes = passByVal(data);
 	}
 
+	function resetSingleQuiz(data, quizId) {
+		data.forEach((quiz, i) => {
+			if (quiz.id === quizId) {
+				editedQuizzes[i] = passByVal(quiz);
+				quizzes[i] = passByVal(quiz);
+			}
+		});
+	}
+
 	function createQuiz() {
-		performRequest(requestMethods.POST, `${apiUrlStore}quiz`, result => {
-					updateEditedQuizzes();
-					displayNotification(
-							'Successfully added a quiz.',
-							notificationStatus.SUCCESS,
-							notificationPosition.BOTTOM_LEFT);
-				}, () => displayNotification(
-				'Failed to add quiz to the database.',
-				notificationStatus.DANGER,
-				notificationPosition.BOTTOM_LEFT),
-				_ => {
-				},
-				{
-					"title": "",
-					"description": ""
-				});
+		let data = {
+			"title": "",
+			"description": ""
+		};
+
+		fetch(`${apiUrlStore}quiz`, {
+			method: 'POST',
+			mode: 'cors',
+			headers: {
+				'Content-Type': 'application/JSON'
+			},
+			body: JSON.stringify(data)
+		}).then(_ => {
+			updateEditedQuizzes();
+			displayNotification(
+					'Successfully added quiz.',
+					notificationStatus.SUCCESS,
+					notificationPosition.BOTTOM_LEFT);
+		}).catch(_ => {
+			displayNotification(
+					'Failed to add quiz.',
+					notificationStatus.DANGER,
+					notificationPosition.BOTTOM_LEFT);
+		});
 	}
 
 	function updateQuiz(quiz) {
-		performRequest(requestMethods.PUT, `${apiUrlStore}quiz/${quiz.id}`, result => {
-					displayNotification(
-							'Successfully saved changes to quiz.',
-							notificationStatus.SUCCESS,
-							notificationPosition.BOTTOM_LEFT);
-					return result.json();
-				}, _ => displayNotification(
-				'Failed to save changes to the database.',
-				notificationStatus.DANGER,
-				notificationPosition.BOTTOM_LEFT),
-				data => {
-					updateEditedQuiz(quiz.id, data);
-					performRequest(
-							requestMethods.GET,
-							`${apiUrlStore}quiz`,
-							result => result.json(),
-							() => console.error('Failed to update playAbleQuizzes.'),
-							data => playableQuizzes.set({
-								available: playableQuizzesAvailable(data),
-								requestAttempted: true
-							}));
-				}, quiz
-		);
+		fetch(`${apiUrlStore}quiz/${quiz.id}`, {
+			method: 'PUT',
+			mode: 'cors',
+			headers: {
+				'Content-Type': 'application/JSON'
+			},
+			body: JSON.stringify(quiz)
+		}).then(_ => {
+			displayNotification(
+					'Saved changes to quiz.',
+					notificationStatus.SUCCESS,
+					notificationPosition.BOTTOM_LEFT);
+			updateEditedQuiz(quiz.id);
+			updatePlayableQuizzes();
+		}).catch(_ => {
+			displayNotification(
+					'Failed to save changes to quiz.',
+					notificationStatus.DANGER,
+					notificationPosition.BOTTOM_LEFT);
+		});
 	}
 
 	function undoQuizChanges(quiz) {
@@ -119,34 +127,28 @@
 	}
 
 	function deleteQuiz(quizId) {
-		performRequest(
-				requestMethods.DELETE,
-				`${apiUrlStore}quiz/${quizId}`,
-				_ => {
-					updateEditedQuizzes();
-					displayNotification(
-							'Quiz successfully deleted from database.',
-							notificationStatus.SUCCESS,
-							notificationPosition.BOTTOM_LEFT);
-					performRequest(
-							requestMethods.GET,
-							`${apiUrlStore}quiz`,
-							result => result.json(),
-							() => console.error('Failed to update playAbleQuizzes.'),
-							data => playableQuizzes.set({
-								available: playableQuizzesAvailable(data),
-								requestAttempted: true
-							}));
-				},
-				() => displayNotification(
-						'Failed to delete quiz from the database.',
-						notificationStatus.DANGER,
-						notificationPosition.BOTTOM_LEFT));
+		fetch(`${apiUrlStore}quiz/${quizId}`, {
+			method: 'DELETE',
+			mode: 'cors'
+		}).then(_ => {
+			updateEditedQuizzes();
+			displayNotification(
+					'Quiz successfully deleted from database.',
+					notificationStatus.SUCCESS,
+					notificationPosition.BOTTOM_LEFT);
+			updatePlayableQuizzes();
+		}).catch(_ => {
+			displayNotification(
+					'Failed to delete quiz from the database.',
+					notificationStatus.DANGER,
+					notificationPosition.BOTTOM_LEFT);
+		});
 	}
 
 	function createQuestion(quizId) {
 		editedQuizzes.forEach((quiz, i, quizzes) => {
 			if (quiz.id === quizId) {
+				console.log('here');
 				editedQuizzes[i].questions = passByVal([...quizzes[i].questions, {
 					"question": "",
 					"answers": [
@@ -194,84 +196,47 @@
 
 	function updateEditedQuizzes(data = []) {
 		if (data.length !== 0) {
-			resetQuizData(data);
+			resetAllQuizzes(data);
 		} else {
-			performRequest(
-					requestMethods.GET,
-					`${apiUrlStore}quiz`,
-					result => result.json(),
-					() => console.error('Failed to update edited quizzes.'),
-					requestData => resetQuizData(requestData)
-			);
+			fetch(`${apiUrlStore}quiz`, {
+				method: 'GET',
+				mode: 'cors'
+			}).then(result => result.json()).then(data => {
+				resetAllQuizzes(data);
+			}).catch(_ => {
+				console.error('Failed to update edited quizzes.');
+			});
 		}
 	}
 
 	function updateEditedQuiz(quizId, data = []) {
-		if (data !== []) {
-			data.forEach((quiz, i) => {
-				if (quiz.id === quizId) {
-					editedQuizzes[i] = passByVal(quiz);
-					quizzes[i] = passByVal(quiz);
-				}
-			});
+		if (data.length > 0) {
+			resetSingleQuiz(data);
 		} else {
-			performRequest(requestMethods.GET, `${apiUrlStore}quiz`, result =>
-							result.json(), () => displayNotification(
-					'Failed to update quizzes.',
-					notificationStatus.DANGER,
-					notificationPosition.BOTTOM_LEFT), data => {
-						data.forEach((quiz, i) => {
-							if (quiz.id === quizId) {
-								editedQuizzes[i] = passByVal(quiz);
-								quizzes[i] = passByVal(quiz);
-							}
-						});
-					}
-			);
+			fetch(`${apiUrlStore}quiz`, {
+				method: 'GET',
+				mode: 'cors'
+			}).then(result => result.json()).then(data => {
+				resetSingleQuiz(data, quizId);
+			}).catch(_ => {
+				displayNotification(
+						'Failed to update quizzes.',
+						notificationStatus.DANGER,
+						notificationPosition.BOTTOM_LEFT);
+			});
 		}
 	}
 
-	function performRequest(methodEnum, url, callback1, catchClause, callback2 = () => {
-	}, data = {}) {
-		let method;
-
-		switch (methodEnum) {
-			case requestMethods.GET:
-				method = 'GET';
-				break;
-			case requestMethods.PUT:
-				method = 'PUT';
-				break;
-			case requestMethods.POST:
-				method = 'POST';
-				break;
-			case requestMethods.DELETE:
-				method = 'DELETE';
-				break;
-			default:
-				console.error('Unknown request method type!')
-		}
-
-		if (methodEnum === requestMethods.GET) {
-			fetch(url, {
-				method: method,
-				mode: 'cors'
-			}).then(res => callback1(res)).then(data => callback2(data));
-		} else if (methodEnum === requestMethods.DELETE) {
-			fetch(url, {
-				method: method,
-				mode: 'cors'
-			}).then(res => callback1(res));
-		} else if (methodEnum === requestMethods.POST || methodEnum === requestMethods.PUT) {
-			fetch(url, {
-				method: method,
-				mode: 'cors',
-				headers: {
-					'Content-Type': 'application/JSON'
-				},
-				body: JSON.stringify(data)
-			}).then(res => callback1(res)).then(res2 => callback2(res2));
-		}
+	function updatePlayableQuizzes() {
+		fetch(`${apiUrlStore}quiz`, {
+			method: 'GET',
+			mode: 'cors'
+		}).then(result => result.json()).then(data => {
+			playableQuizzes.set({
+				available: playableQuizzesAvailable(data),
+				requestAttempted: true
+			})
+		}).catch(_ => console.error('Failed to update playAbleQuizzes.'));
 	}
 
 	function displayNotification(message, statusEnum, positionEnum, timeout = 1000) {
@@ -345,6 +310,11 @@
 		POST: 3,
 		DELETE: 4
 	};
+
+	$:{
+		console.log(unidenticalQuizzes);
+		console.log(editedQuizzes, quizzes);
+	}
 </script>
 
 <style>
@@ -421,7 +391,7 @@
 						<hr>
 						<div class="uk-margin-medium-top">
                             {#each quiz.questions as question, j}
-								<div class="uk-margin{i < quiz.questions.length - 1 ? '-medium' : ''}"
+								<div class="uk-margin{j < quiz.questions.length - 1 ? '-medium' : ''}"
 								     transition:fly="{{ y: -animationConf.y, duration: animationConf.duration }}">
 									<div class="uk-grid-collapse" uk-grid>
 										<div class="uk-width-expand">
