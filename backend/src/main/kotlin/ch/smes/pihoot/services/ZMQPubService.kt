@@ -27,22 +27,36 @@ class ZMQPubService : SmartLifecycle {
 
     private var isRunning: Boolean = false
 
+    /**
+     * Notify the Raspberry Pis when a new game was created an is queuing
+     */
     fun updateQueueingGames() {
         publisher.sendMore("queueingGames")
         publisher.send(objectMapper.writeValueAsString(gameService.getQueueingGames()))
     }
 
+    /**
+     * Notify the Raspberry Pis when a question has begun and it can start accepting and sending answers
+     */
     fun beginQuestion(gameId: String, answerColors: List<AnswerColor>) {
         publisher.sendMore("beginQuestion/$gameId")
         publisher.send(objectMapper.writeValueAsString(answerColors))
     }
 
+    /**
+     * Notify the Raspberry Pis when a question has ended and it can stop accepting and sending answers
+     */
     fun endQuestion(gameId: String) {
         publisher.send("endQuestion/$gameId")
     }
 
     override fun isRunning(): Boolean = isRunning
 
+    /**
+     * This is run when the application starts
+     *
+     * It creates a publisher socket and runs it in a new daemon thread
+     */
     override fun start() {
         if (!isRunning) {
             val port = environment.getProperty("zmq.publisher.port", "5563")
