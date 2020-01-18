@@ -8,14 +8,14 @@ export const playableQuizzes = writable({
     available: false,
     requestAttempted: false
 });
-export const apiUrl = writable('http://localhost:8091/api/');
+export const apiUrl = writable('http://localhost:8080/api/');
 export const animationConfig = readable({
     duration: 200,
     y: 80
 }, _ => {
 });
 
-let quizEndpointUrl = 'http://localhost:8091/api/quiz';
+let quizEndpointUrl = 'http://localhost:8080/api/quiz';
 
 fetch(quizEndpointUrl, {
     method: 'GET',
