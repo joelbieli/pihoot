@@ -383,12 +383,6 @@
 		POST: 3,
 		DELETE: 4
 	};
-
-	$:{
-		if (editedQuizzes.length > 0) {
-			console.log(editedQuizzes[0]);
-		}
-	}
 </script>
 
 <style>
