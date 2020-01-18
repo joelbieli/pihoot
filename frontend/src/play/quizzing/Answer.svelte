@@ -1,6 +1,6 @@
 <script>
 	import TimedLoadingBar from '../../util/TimedLoadingBar.svelte';
-	import {getHexForColor} from '../../util/playUtils'
+	import {getHexForColor, getTextHexForColor} from '../../util/playUtils'
 
 	export let question;
 	export let questionIndex;
@@ -16,11 +16,13 @@
 			countDown -= 1;
 		}
 	}, 1000);
+
+	console.log(getTextHexForColor(question.answers[3].color));
 </script>
 
 <style>
 	.answer {
-		color: white;
+		font-weight: bold;
 	}
 </style>
 
@@ -44,43 +46,43 @@
 	</div>
 </div>
 <div class="uk-grid-small" uk-grid>
-	<div class="uk-width-1-2 answer">
+	<div class="uk-width-1-2">
         {#if question.answers[0].answer !== ''}
 			<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
 			     style="background-color: {getHexForColor(question.answers[0].color)}">
-				<h2>
+				<h3 class="answer" style="color: {getTextHexForColor(question.answers[0].color)}">
                     {question.answers[0].answer}
-				</h2>
+				</h3>
 			</div>
         {/if}
 	</div>
-	<div class="uk-width-1-2 answer">
+	<div class="uk-width-1-2">
         {#if question.answers[1].answer !== ''}
 			<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
 			     style="background-color: {getHexForColor(question.answers[1].color)}">
-				<h2>
+				<h3 class="answer" style="color: {getTextHexForColor(question.answers[1].color)}">
                     {question.answers[1].answer}
-				</h2>
+				</h3>
 			</div>
         {/if}
 	</div>
-	<div class="uk-width-1-2 answer">
+	<div class="uk-width-1-2">
         {#if question.answers[2].answer !== ''}
 			<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
 			     style="background-color: {getHexForColor(question.answers[2].color)}">
-				<h2>
+				<h3 class="answer" style="color: {getTextHexForColor(question.answers[2].color)}">
                     {question.answers[2].answer}
-				</h2>
+				</h3>
 			</div>
         {/if}
 	</div>
-	<div class="uk-width-1-2 answer">
+	<div class="uk-width-1-2">
         {#if question.answers[3].answer !== ''}
 			<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
 			     style="background-color: {getHexForColor(question.answers[3].color)}">
-				<h2>
+				<h3 class="answer" style="color: {getTextHexForColor(question.answers[3].color)}">
                     {question.answers[3].answer}
-				</h2>
+				</h3>
 			</div>
         {/if}
 	</div>
