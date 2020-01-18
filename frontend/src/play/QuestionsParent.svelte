@@ -80,17 +80,18 @@
 	}
 </script>
 
-{#if showOnlyQuestion && !showScoreboard}
-	<Question question={currentQuestion} questionIndex={currentQuestionIndex}
-	          questionCount={game.quiz.questions.length}/>
-{:else if !showOnlyQuestion && !showScoreboard && showAnswers}
-	<Answer question={currentQuestion}/>
-{:else if !showOnlyQuestion && showScoreboard}
-	<Scoreboard on:nextQuestion={playNextQuestion}/>
-{:else}
-	<div class="uk-container uk-container-xsmall uk-margin-xlarge-top">
+<div class="uk-container uk-container-xsmall uk-margin-xlarge-top">
+    {#if showOnlyQuestion && !showScoreboard}
+		<Question question={currentQuestion} questionIndex={currentQuestionIndex}
+		          questionCount={game.quiz.questions.length}/>
+    {:else if !showOnlyQuestion && !showScoreboard && showAnswers}
+		<Answer question={currentQuestion} questionIndex={currentQuestionIndex}
+				questionCount={game.quiz.questions.length}/>
+    {:else if !showOnlyQuestion && showScoreboard && currentQuestionIndex !== game.quiz.questions.length}
+		<Scoreboard on:nextQuestion={playNextQuestion}/>
+    {:else}
 		<div class="uk-alert-danger uk-border-rounded" uk-alert>
 			<p>Somebody did a big oopsie here. ts ts ts...</p>
 		</div>
-	</div>
-{/if}
+    {/if}
+</div>

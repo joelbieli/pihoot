@@ -5,25 +5,38 @@
 	export let questionIndex;
 	export let questionCount;
 
-	let countDown;
+	let countDown = 5;
 
-	let climbingI = 0;
-	for (let i = 5; i >= 0; i -= 1) {
-		setTimeout(() => countDown = i, 1000 * climbingI);
-		climbingI += 1;
-	}
+	let interval = setInterval(() => {
+		if (countDown <= 0) {
+			clearInterval(interval);
+		} else {
+			countDown -= 1;
+		}
+	}, 1000);
 </script>
 
 <div class="uk-overlay uk-position-top-left">
-	{questionIndex+1} of {questionCount}
+    {questionIndex} of {questionCount}
 </div>
-<div class="uk-container uk-container-xsmall">
-		<h2>
-			{question.question}
-		</h2>
-		<h3>
-            {countDown}
-		</h3>
 
-		<TimedLoadingBar seconds="5" barColor="#1e87f0" wrapperColor="#bababa"/>
+<TimedLoadingBar seconds="5" barColor="#1e87f0" wrapperColor="#bababa"/>
+<div class="uk-grid uk-margin" uk-grid="">
+	<div class="uk-width-expand">
+		<h3>
+			Get ready!
+		</h3>
+	</div>
+	<div class="uk-width-auto">
+		<div class="uk-card uk-card-primary uk-card-body uk-border-rounded uk-card-small">
+			<h5>
+				{countDown}
+			</h5>
+		</div>
+	</div>
+</div>
+<div class="uk-card uk-card-body uk-card-default uk-border-rounded">
+	<h2>
+        {question.question}
+	</h2>
 </div>
