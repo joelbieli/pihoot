@@ -1,3 +1,17 @@
+/**
+ * File description:
+ * Contains utility functions for the play pages.
+ */
+
+/**
+ * Returns the hex value for a given color string.
+ *
+ * @global
+ *
+ * @param {string} color The color name.
+ *
+ * @return {string} The hex value.
+ */
 export function getHexForColor(color) {
     const colors = {
         RED: "#D01937",
@@ -26,6 +40,15 @@ export function getHexForColor(color) {
     }
 }
 
+/**
+ * Returns the hex value for the text color given the color string of the background.
+ *
+ * @global
+ *
+ * @param {string} color The background color name.
+ *
+ * @return {string} The hex value to be applied as a text color.
+ */
 export function getTextHexForColor(color) {
     const colors = {
         WHITE: "#FFF",

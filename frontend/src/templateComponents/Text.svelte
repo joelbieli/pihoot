@@ -1,4 +1,9 @@
 <script>
+	/**
+	 * File description:
+	 * Provides a text component.
+	 */
+
 	export let texts;
 </script>
 

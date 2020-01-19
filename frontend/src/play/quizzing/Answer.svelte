@@ -2,6 +2,11 @@
 	import TimedLoadingBar from '../../util/TimedLoadingBar.svelte';
 	import {getHexForColor, getTextHexForColor} from '../../util/playUtils'
 
+	/**
+	 * File description:
+	 * Provides a component to show the answers a player can choose.
+	 */
+
 	export let question;
 	export let questionIndex;
 	export let questionCount;
@@ -9,6 +14,7 @@
 
 	let countDown = 15;
 
+	// Updates the countdown value every second.
 	let interval = setInterval(() => {
 		if (countDown <= 0) {
 			clearInterval(interval);

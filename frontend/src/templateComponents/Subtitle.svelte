@@ -1,4 +1,9 @@
 <script>
+	/**
+	 * File description:
+	 * Provides a subtitle component.
+	 */
+
 	export let subtitle;
 </script>
 
