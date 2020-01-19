@@ -10,12 +10,21 @@
 
 	const dispatch = createEventDispatcher();
 
+	/**
+	 * Passes a returnHome event to its parent component to return back to the home screen.
+	 *
+	 * @fires returnHome
+	 */
 	function returnHome() {
 		dispatch('returnHome');
 	}
 
+	/**
+	 * Passes a showScoreboard event to its parent component to display the scoreboard.
+	 *
+	 * @fires showScoreboard
+	 */
 	function showScoreboard() {
-		console.log('showScoreboard');
 		dispatch('showScoreboard');
 	}
 </script>
