@@ -7,6 +7,7 @@
 
 	let countDown = 5;
 
+	// Update the countdown value every second.
 	let interval = setInterval(() => {
 		if (countDown <= 0) {
 			clearInterval(interval);
