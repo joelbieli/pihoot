@@ -9,6 +9,7 @@
 		if (width >= 100) {
 			clearInterval(interval);
 		} else {
+			// The longer this should run, the smaller the value by which the loader width should be increased by should be.
 			width += 1 / seconds;
 		}
 	}, 10);
@@ -25,6 +26,8 @@
 	}
 </style>
 
+<!-- The loading bar wrapper that shows "how far to the right it can load". -->
 <div class="barWrapper uk-border-rounded" style="background-color: {wrapperColor}">
+	<!-- The loading bar that expands to show a loading animation. -->
 	<div class="bar uk-border-rounded" style="background-color: {barColor}; width: {width}%;"></div>
 </div>

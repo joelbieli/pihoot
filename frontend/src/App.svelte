@@ -9,6 +9,8 @@
 	import SelectGame from './play/SelectGame.svelte';
 	import Play from './play/Play.svelte';
 
+	// TODO(laniw): Add docstrings for the purpose of the whole file for all files.
+
 	// Properties that hold control over what is visible on the page.
 	let showNavbar = true;
 	let showContainer = true;
