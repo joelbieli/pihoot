@@ -5,6 +5,7 @@ import enum
 import requests
 
 from gamestate import GameState
+from colors import Colors
 
 class NetworkManager(object):
   def __init__(self, address, port, game_manager):
@@ -41,12 +42,13 @@ class NetworkManager(object):
         logging.debug("Games: {}".format(data))
         
   def join_game(self, game_id):
-    r = requests.get(
-      "http://{}:{}/api/game/{}/join".format(
-        self.address, self.port, game_id))
-    self._game_manager.active_player = r.json()
-    
+    r = requests.post(
+      "http://{}:8080/api/game/{}/join".format(
+        self.address, game_id))
+    print(r.json())
     self._game_manager.leds.set_rgb(Colors[r.json()["color"]])
+
+    self._game_manager.active_player = r.json()
 
 class _Topic(enum.Enum):
   QUEUE_GAMES = "queueingGames"
