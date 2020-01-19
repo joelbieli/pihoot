@@ -9,6 +9,7 @@
 	import SelectGame from './play/SelectGame.svelte';
 	import Play from './play/Play.svelte';
 
+	// Properties that hold control over what is visible on the page.
 	let showNavbar = true;
 	let showContainer = true;
 	let showTitle = true;
@@ -16,8 +17,10 @@
 	let showDivider = true;
 	let showText = true;
 
+	// The latest page update data to pass on, if there is any.
 	let lastPageUpdateData;
 
+	// Page data that is passed to the template components to display something specific.
 	$: pageData = {
 		home: {
 			tabTitle: 'Pihoot Home',
@@ -61,14 +64,18 @@
 			data: {}
 		}
 	};
+	// An enum with the available pages.
 	const pages = {
 		HOME: 1,
 		EDIT: 2,
 		PLAY: 3,
 		SELECT: 4
 	};
+	// The page the user starts out on.
 	let currentPage = pages.HOME;
+	// The current page data that is being fed into the template components.
 	let currentPageData;
+	// A switch that update the needed properties when a page update occurs.
 	$: switch (currentPage) {
 		case pages.HOME:
 			pageData.home.data = lastPageUpdateData;
@@ -90,6 +97,13 @@
 			console.error(`Unknown page \'${currentPage}\'.`);
 	}
 
+	/**
+	 * Handles any page update event to display a different page.
+	 *
+	 * Since Svelte doesn't support routing and Sapper is still in development I wrote my own routing service, although it doesn't affect the path and doesn't support going back in the browser history.
+	 *
+	 * @param {Object} e Event data.
+	 */
 	function handlePageUpdate(e) {
 		let newCurrentPage;
 		let target;
@@ -126,6 +140,11 @@
 		}
 	}
 
+	/**
+	 * Handles any visibility update event to change the visibility of the template components.
+	 *
+	 * @param {Object} e Event data.
+	 */
 	function handleVisibilityChange(e) {
 		let visibilities;
 		if (e.detail !== 'undefined') {
@@ -166,5 +185,6 @@
 	</div>
 {/if}
 
+<!-- A tag that can take on any component as its content. -->
 <svelte:component this={currentPageData.page} data={currentPageData.data} on:pageUpdate={handlePageUpdate}
                   on:visibilityChange={handleVisibilityChange}/>
