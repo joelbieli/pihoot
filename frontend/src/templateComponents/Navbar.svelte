@@ -4,6 +4,11 @@
 	import {onDestroy} from 'svelte';
 	import {createEventDispatcher} from 'svelte';
 
+	/**
+	 * File description:
+	 * Provides a navbar component.
+	 */
+
 	let apiStore;
 	let playableQuizzesStore;
 	const dispatch = createEventDispatcher();
@@ -15,6 +20,13 @@
 		unsubscribePlayableQuizzes();
 	});
 
+	/**
+	 * Dispatches a page update with the given page target.
+	 *
+	 * @fires pageUpdate
+	 *
+	 * @param {string} target The page that should be displayed.
+	 */
 	const dispatchPageUpdate = (target) => dispatch('pageUpdate', {target: target});
 </script>
 

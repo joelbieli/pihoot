@@ -6,6 +6,11 @@
 	import CorrectAnswer from './quizzing/CorrectAnswer.svelte';
 	import Scoreboard from './quizzing/Scoreboard.svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that houses the needed to go through once cycle of question, answer, correct answers and scoreboard.
+	 */
+
 	export let game;
 	export let players;
 	let apiUrlStore;
@@ -15,6 +20,7 @@
 	let answeredCount;
 	let currentQuestion;
 	let currentQuestionIndex = 0;
+	// Properties defining what stage of the game is visible.
 	let showOnlyQuestion = false;
 	let showAnswers = false;
 	let showCorrectAnswers = false;
@@ -37,6 +43,9 @@
 
 	init();
 
+	/**
+	 * Queues the screens for the next question with the correct timings.
+	 */
 	function playNextQuestion() {
 		currentQuestion = game.quiz.questions[currentQuestionIndex];
 		// Clear scoreboard status for next question.
@@ -56,6 +65,9 @@
 		currentQuestionIndex += 1;
 	}
 
+	/**
+	 * Switches to the screen showing which answers are correct.
+	 */
 	function switchToCorrectAnswers() {
 		showAnswers = false;
 		showCorrectAnswers = showCorrectAnswers ? showCorrectAnswers : true;
@@ -65,12 +77,18 @@
 		}
 	}
 
+	/**
+	 * Switches to the scoreboard screen.
+	 */
 	function switchToScoreboard() {
 		console.log('showing');
 		showCorrectAnswers = false;
 		showScoreboard = true;
 	}
 
+	/**
+	 * Calls the start question endpoint to signalise to the backend that the players can start answering the question.
+	 */
 	function startQuestion() {
 		fetch(`${apiUrlStore}game/${game.id}/question/${currentQuestion.id}/begin`, {
 			method: 'POST',
@@ -83,6 +101,9 @@
 		});
 	}
 
+	/**
+	 * Calls the end question endpoint to signalise to the backend that the players can st art answering the question.
+	 */
 	function endQuestion() {
 		fetch(`${apiUrlStore}game/${game.id}/question/${currentQuestion.id}/end`, {
 			method: 'POST',
@@ -95,6 +116,13 @@
 		});
 	}
 
+	/**
+	 * Initiates every needed resource for proper functioning of the page.
+	 *
+	 * - Subscribes to stores
+	 * - Loads up the first question
+	 * - Subscribes to answers websocket
+	 */
 	function init() {
 		const unsubscribeApiUrl = apiUrl.subscribe(value => apiUrlStore = value);
 
@@ -104,11 +132,15 @@
 
 		playNextQuestion();
 
+		// TODO(laniw): Use setInterval instead.
 		for (let i = 1000; i <= 10000; i += 1000) {
 			setTimeout(() => openWebsocketSubscription(), i);
 		}
 	}
 
+	/**
+	 * Subscribes to the answers websocket to get notified every time a player answers a question to go to the next screen as soon as all players have answered.
+	 */
 	async function openWebsocketSubscription() {
 		const client = Stomp.client('ws://localhost:8080/ws/connect');
 		if (game !== undefined && !state.ws.subscriptionOpen) {
@@ -124,10 +156,20 @@
 		}
 	}
 
+	/**
+	 * Passes on a stopGame event to the parent component.
+	 *
+	 * @fires stopGame
+	 */
 	function stopGame() {
 		dispatch('stopGame');
 	}
 
+	/**
+	 * Passes on a returnHome event to the parent component.
+	 *
+	 * @fires returnHome
+	 */
 	function handleReturnHome() {
 		dispatch('returnHome', {
 			target: 'home',

@@ -2,6 +2,11 @@
 	import {createEventDispatcher} from 'svelte';
 	import {getHexForColor, getTextHexForColor} from '../../util/playUtils'
 
+	/**
+	 * File description:
+	 * Provides a component that shows the players what answers were right.
+	 */
+
 	export let question;
 	export let questionIndex;
 	export let questionCount;
@@ -10,12 +15,21 @@
 
 	const dispatch = createEventDispatcher();
 
+	/**
+	 * Passes a returnHome event to its parent component to return back to the home screen.
+	 *
+	 * @fires returnHome
+	 */
 	function returnHome() {
 		dispatch('returnHome');
 	}
 
+	/**
+	 * Passes a showScoreboard event to its parent component to display the scoreboard.
+	 *
+	 * @fires showScoreboard
+	 */
 	function showScoreboard() {
-		console.log('showScoreboard');
 		dispatch('showScoreboard');
 	}
 </script>
