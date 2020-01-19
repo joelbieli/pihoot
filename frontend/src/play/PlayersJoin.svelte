@@ -9,6 +9,9 @@
 
 	const dispatch = createEventDispatcher();
 
+	/**
+	 * Fires the startPlaying event when the user presses the appropriate button.
+	 */
 	function startPlaying() {
 		dispatch('startPlaying');
 	}
