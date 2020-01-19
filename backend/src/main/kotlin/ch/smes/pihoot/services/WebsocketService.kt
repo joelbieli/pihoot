@@ -18,10 +18,16 @@ class WebsocketService {
     @Autowired
     private lateinit var playerMapper: PlayerMapper
 
+    /**
+     * Notify the frontend about a new player
+     */
     fun updatePlayersForGame(gameId: String) {
         simpMessagingTemplate.convertAndSend("/ws/game/$gameId/players", gameService.getPlayersOfGame(gameId).map { playerMapper.toDto(it) })
     }
 
+    /**
+     * Notify the frontend about a new answer
+     */
     fun updateAnswerCountForGame(gameId: String, answerCount: Int) {
         simpMessagingTemplate.convertAndSend("/ws/game/$gameId/answers", answerCount)
     }

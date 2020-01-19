@@ -11,6 +11,9 @@ import ch.smes.pihoot.services.ZMQPubService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
+/**
+ * Controller for any quiz related HTTP request
+ */
 @RestController
 @RequestMapping("/api/quiz")
 class QuizController {
@@ -30,15 +33,29 @@ class QuizController {
     @Autowired
     private lateinit var zmqPubService: ZMQPubService
 
+    /**
+     * Get all quizzes
+     */
     @GetMapping
     fun getAll(): List<QuizDTO> = quizService.getAll().map { quizMapper.toDto(it) }
 
+    /**
+     * Get a specific quiz
+     */
     @GetMapping("/{id}")
     fun getOne(@PathVariable id: String): QuizDTO = quizMapper.toDto(quizService.getOne(id))
 
+    /**
+     * Create a new quiz
+     */
     @PostMapping
     fun create(@RequestBody quizDTO: QuizDTO): QuizDTO = quizMapper.toDto(quizService.saveOrUpdate(quizMapper.toModel(quizDTO)))
 
+    /**
+     * Play a quiz
+     *
+     * To create new a game, one must use this endpoint to play a quiz
+     */
     @PostMapping("/{quizId}/play")
     fun playQuiz(@PathVariable quizId: String): GameDTO {
         val newGame = gameService.createGame(quizId)
@@ -48,12 +65,18 @@ class QuizController {
         return gameMapper.toDto(newGame)
     }
 
+    /**
+     * Update an existing quiz
+     */
     @PutMapping("/{id}")
     fun update(@PathVariable id: String, @RequestBody quizDTO: QuizDTO): QuizDTO {
-        quizDTO.id = id;
+        quizDTO.id = id
         return quizMapper.toDto(quizService.saveOrUpdate(quizMapper.toModel(quizDTO)))
     }
 
+    /**
+     * Delete an existing quiz
+     */
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: String): Unit = quizService.delete(id)
 }

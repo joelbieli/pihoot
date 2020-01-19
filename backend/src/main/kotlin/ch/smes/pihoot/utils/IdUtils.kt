@@ -4,5 +4,8 @@ import java.util.*
 
 object IdUtils {
 
-    fun generateId() = UUID.randomUUID().toString().replace("-", "")
+    /**
+     * Generate a pseudo random mongodb like id
+     */
+    fun generateId() = UUID.randomUUID().toString().replace("-", "").take(24)
 }

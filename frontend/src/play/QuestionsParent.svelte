@@ -1,12 +1,15 @@
 <script>
 	import {apiUrl} from '../stores.js';
-	import {onDestroy} from 'svelte';
+	import {onDestroy, createEventDispatcher} from 'svelte';
 	import Question from './quizzing/Question.svelte';
 	import Answer from './quizzing/Answer.svelte';
 	import Scoreboard from './quizzing/Scoreboard.svelte';
 
 	export let game;
+	export let players;
 	let apiUrlStore;
+
+	const dispatch = createEventDispatcher();
 
 	let currentQuestion;
 	let currentQuestionIndex = 0;
@@ -28,6 +31,8 @@
 
 	function playNextQuestion() {
 		currentQuestion = game.quiz.questions[currentQuestionIndex];
+		// Clear scoreboard status for next question.
+		showScoreboard = false;
 		// Show only the question for 5 seconds.
 		showOnlyQuestion = true;
 		setTimeout(() => {
@@ -40,6 +45,9 @@
 			showAnswers = false;
 			showScoreboard = showScoreboard ? showScoreboard : true;
 			endQuestion();
+			if (game.quiz.questions.length <= currentQuestionIndex) {
+				stopGame();
+			}
 		}, 1000 * 20);
 
 		currentQuestionIndex += 1;
@@ -78,6 +86,22 @@
 
 		playNextQuestion();
 	}
+
+	function stopGame() {
+		dispatch('stopGame');
+	}
+
+	function handleReturnHome() {
+		dispatch('returnHome', {
+			target: 'home',
+			navbar: true,
+			container: true,
+			title: true,
+			subtitle: true,
+			divider: true,
+			text: true
+		});
+	}
 </script>
 
 <div class="uk-container uk-container-small uk-margin-xlarge-top">
@@ -86,9 +110,11 @@
 		          questionCount={game.quiz.questions.length}/>
     {:else if !showOnlyQuestion && !showScoreboard && showAnswers}
 		<Answer question={currentQuestion} questionIndex={currentQuestionIndex}
-				questionCount={game.quiz.questions.length}/>
+		        questionCount={game.quiz.questions.length}/>
     {:else if !showOnlyQuestion && showScoreboard && currentQuestionIndex !== game.quiz.questions.length}
-		<Scoreboard on:nextQuestion={playNextQuestion}/>
+		<Scoreboard {game} {players} on:nextQuestion={playNextQuestion} on:returnHome={handleReturnHome}/>
+    {:else if !showOnlyQuestion && showScoreboard && currentQuestionIndex === game.quiz.questions.length}
+		Final scoreboard
     {:else}
 		<div class="uk-alert-danger uk-border-rounded" uk-alert>
 			<p>Somebody did a big oopsie here. ts ts ts...</p>

@@ -102,7 +102,7 @@
 			game = data;
 			connectionStatus.createGame.attempted = true;
 			connectionStatus.createGame.successful = true;
-		}).catch(res => {
+		}).catch(_ => {
 			connectionStatus.createGame.attempted = true;
 		});
 
@@ -123,6 +123,12 @@
 		}
 	}
 
+	function handleReturnHome(e){
+		endGame();
+		handlePageUpdate(e);
+		handleVisibilityUpdate(e)
+	}
+
 	$: {
 		if (game !== undefined) {
 			console.log(game.id);
@@ -136,5 +142,5 @@
 {:else if !connectionStatus.startGame.successful}
 	<PlayersJoin quizName={game.quiz.title} {players} colorCode={game.colorCode} on:startPlaying={handleStartPlaying}/>
 {:else if connectionStatus.startGame.successful}
-	<QuestionsParent {game}/>
+	<QuestionsParent {game} {players} on:stopGame={endGame} on:returnHome={handleReturnHome}/>
 {/if}
