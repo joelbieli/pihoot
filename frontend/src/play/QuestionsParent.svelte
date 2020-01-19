@@ -3,6 +3,7 @@
 	import {onDestroy, createEventDispatcher} from 'svelte';
 	import Question from './quizzing/Question.svelte';
 	import Answer from './quizzing/Answer.svelte';
+	import CorrectAnswer from './quizzing/CorrectAnswer.svelte';
 	import Scoreboard from './quizzing/Scoreboard.svelte';
 
 	export let game;
@@ -15,6 +16,7 @@
 	let currentQuestionIndex = 0;
 	let showOnlyQuestion = false;
 	let showAnswers = false;
+	let showCorrectAnswers = false;
 	let showScoreboard = false;
 	let state = {
 		startQuestion: {
@@ -43,7 +45,7 @@
 		// Show scoreboard after 20 seconds
 		setTimeout(() => {
 			showAnswers = false;
-			showScoreboard = showScoreboard ? showScoreboard : true;
+			showCorrectAnswers = showCorrectAnswers ? showCorrectAnswers : true;
 			endQuestion();
 			if (game.quiz.questions.length <= currentQuestionIndex) {
 				stopGame();
@@ -51,6 +53,12 @@
 		}, 1000 * 20);
 
 		currentQuestionIndex += 1;
+	}
+
+	function switchToScoreboard() {
+		console.log('showing');
+		showCorrectAnswers = false;
+		showScoreboard = true;
 	}
 
 	function startQuestion() {
@@ -102,18 +110,26 @@
 			text: true
 		});
 	}
+
+	$: {
+		console.log(showOnlyQuestion, showAnswers, showCorrectAnswers, showScoreboard);
+	}
 </script>
 
 <div class="uk-container uk-container-small uk-margin-xlarge-top">
-    {#if showOnlyQuestion && !showScoreboard}
+    {#if showOnlyQuestion && !showAnswers && !showCorrectAnswers && !showScoreboard}
 		<Question question={currentQuestion} questionIndex={currentQuestionIndex}
 		          questionCount={game.quiz.questions.length}/>
-    {:else if !showOnlyQuestion && !showScoreboard && showAnswers}
+    {:else if !showOnlyQuestion && showAnswers && !showCorrectAnswers && !showScoreboard}
 		<Answer question={currentQuestion} questionIndex={currentQuestionIndex}
 		        questionCount={game.quiz.questions.length}/>
-    {:else if !showOnlyQuestion && showScoreboard && currentQuestionIndex !== game.quiz.questions.length}
+    {:else if !showOnlyQuestion && !showAnswers && showCorrectAnswers && !showScoreboard}
+		<CorrectAnswer question={currentQuestion} questionIndex={currentQuestionIndex}
+		               questionCount={game.quiz.questions.length} on:showScoreboard={switchToScoreboard}
+		               on:returnHome={handleReturnHome}/>
+    {:else if !showOnlyQuestion && !showAnswers && showScoreboard && currentQuestionIndex !== game.quiz.questions.length}
 		<Scoreboard {game} {players} on:nextQuestion={playNextQuestion} on:returnHome={handleReturnHome}/>
-    {:else if !showOnlyQuestion && showScoreboard && currentQuestionIndex === game.quiz.questions.length}
+    {:else if !showOnlyQuestion && !showAnswers && showScoreboard && currentQuestionIndex === game.quiz.questions.length}
 		Final scoreboard
     {:else}
 		<div class="uk-alert-danger uk-border-rounded" uk-alert>

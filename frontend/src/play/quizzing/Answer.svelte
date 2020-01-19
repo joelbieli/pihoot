@@ -45,52 +45,18 @@
 </div>
 <!-- TODO(laniw): Sort answers by color to be the same as on the answering hardware. -->
 <div class="uk-grid-small" uk-grid>
-	<div class="uk-width-1-2">
-        {#if question.answers[0].answer !== ''}
-			<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
-			     style="background-color: {getHexForColor(question.answers[0].color)}">
-				<h3 class="answer" style="color: {getTextHexForColor(question.answers[0].color)}">
-                    {question.answers[0].answer}
-				</h3>
-			</div>
-        {:else}
-			<div class="uk-card uk-card-default uk-card-small"></div>
-        {/if}
-	</div>
-	<div class="uk-width-1-2">
-        {#if question.answers[1].answer !== ''}
-			<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
-			     style="background-color: {getHexForColor(question.answers[1].color)}">
-				<h3 class="answer" style="color: {getTextHexForColor(question.answers[1].color)}">
-                    {question.answers[1].answer}
-				</h3>
-			</div>
-		{:else}
-			<div class="uk-card uk-card-default uk-card-small"></div>
-        {/if}
-	</div>
-	<div class="uk-width-1-2">
-        {#if question.answers[2].answer !== ''}
-			<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
-			     style="background-color: {getHexForColor(question.answers[2].color)}">
-				<h3 class="answer" style="color: {getTextHexForColor(question.answers[2].color)}">
-                    {question.answers[2].answer}
-				</h3>
-			</div>
-		{:else}
-			<div class="uk-card uk-card-default uk-card-small"></div>
-        {/if}
-	</div>
-	<div class="uk-width-1-2">
-        {#if question.answers[3].answer !== ''}
-			<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
-			     style="background-color: {getHexForColor(question.answers[3].color)}">
-				<h3 class="answer" style="color: {getTextHexForColor(question.answers[3].color)}">
-                    {question.answers[3].answer}
-				</h3>
-			</div>
-		{:else}
-			<div class="uk-card uk-card-default uk-card-small"></div>
-        {/if}
-	</div>
+    {#each question.answers as answer}
+		<div class="uk-width-1-2">
+			{#if answer.answer !== ''}
+				<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
+					 style="background-color: {getHexForColor(answer.color)}">
+					<h3 class="answer" style="color: {getTextHexForColor(answer.color)}">
+						{answer.answer}
+					</h3>
+				</div>
+			{:else}
+				<div class="uk-card uk-card-default uk-card-small"></div>
+			{/if}
+		</div>
+    {/each}
 </div>
