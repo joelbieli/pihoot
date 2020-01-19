@@ -46,6 +46,11 @@
 	 * - Updates playable quizzes store
 	 */
 	const init = () => {
+		const unsubscribeApiUrl = apiUrl.subscribe(value => apiUrlStore = value);
+		onDestroy(() => {
+			unsubscribeApiUrl();
+		});
+
 		fetch(`${apiUrlStore}quiz`, {
 			method: 'GET',
 			mode: 'cors'
@@ -56,11 +61,6 @@
 				quizzes = data
 		).catch(res => {
 			// Do Nothing.
-		});
-
-		const unsubscribeApiUrl = apiUrl.subscribe(value => apiUrlStore = value);
-		onDestroy(() => {
-			unsubscribeApiUrl();
 		});
 
 		fetch(`${apiUrlStore}quiz`, {
