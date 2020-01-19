@@ -72,8 +72,6 @@ fetch(quizEndpointUrl, {
 /**
  * Updates the playable quizzes store when called.
  *
- * Description. (use period)
- *
  * @global
  *
  * @param {Object} quizzes The quizzes that will be taken into account when updating the playable quizzes store.
