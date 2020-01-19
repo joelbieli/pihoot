@@ -11,6 +11,7 @@
 	let apiUrlStore;
 	let scores;
 	let fullPlayers;
+	// Creates a new players array that includes their id, color, and score.
 	$: {
 		fullPlayers = players.map(player => {
 			if (scores !== undefined) {
@@ -37,6 +38,12 @@
 
 	init();
 
+	/**
+	 * Initiates every needed resource for proper functioning of the page.
+	 *
+	 * - Subscribes to stores
+	 * - Gets the game scores
+	 */
 	function init() {
 		const unsubscribeApiUrl = apiUrl.subscribe(value => apiUrlStore = value);
 
@@ -58,10 +65,20 @@
 		});
 	}
 
+	/**
+	 * Passes on a returnHome event to its parent component.
+	 *
+	 * @fires returnHome
+	 */
 	function returnHome() {
 		dispatch('returnHome');
 	}
 
+	/**
+	 * Passes on a nextQuestion event to its parent component.
+	 *
+	 * @fires nextQuestion
+	 */
 	function nextQuestion() {
 		dispatch('nextQuestion');
 	}
