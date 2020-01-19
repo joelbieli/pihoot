@@ -12,6 +12,7 @@
 
 	const dispatch = createEventDispatcher();
 
+	let answeredCount;
 	let currentQuestion;
 	let currentQuestionIndex = 0;
 	let showOnlyQuestion = false;
@@ -26,6 +27,11 @@
 		endQuestion: {
 			attempted: false,
 			successful: false
+		},
+		ws: {
+			attempted: false,
+			successful: false,
+			subscriptionOpen: false
 		}
 	};
 
@@ -44,15 +50,19 @@
 		}, 5000);
 		// Show scoreboard after 20 seconds
 		setTimeout(() => {
-			showAnswers = false;
-			showCorrectAnswers = showCorrectAnswers ? showCorrectAnswers : true;
-			endQuestion();
-			if (game.quiz.questions.length <= currentQuestionIndex) {
-				stopGame();
-			}
+			switchToCorrectAnswers()
 		}, 1000 * 20);
 
 		currentQuestionIndex += 1;
+	}
+
+	function switchToCorrectAnswers() {
+		showAnswers = false;
+		showCorrectAnswers = showCorrectAnswers ? showCorrectAnswers : true;
+		endQuestion();
+		if (game.quiz.questions.length <= currentQuestionIndex) {
+			stopGame();
+		}
 	}
 
 	function switchToScoreboard() {
@@ -93,6 +103,25 @@
 		});
 
 		playNextQuestion();
+
+		for (let i = 1000; i <= 10000; i += 1000) {
+			setTimeout(() => openWebsocketSubscription(), i);
+		}
+	}
+
+	async function openWebsocketSubscription() {
+		const client = Stomp.client('ws://localhost:8080/ws/connect');
+		if (game !== undefined && !state.ws.subscriptionOpen) {
+			client.connect({}, _ => {
+				state.ws.subscriptionOpen = true;
+				client.subscribe(`/ws/game/${game.id}/answers`, rawData => {
+					answeredCount = JSON.parse(rawData.body);
+					if (answeredCount === players.length) {
+						switchToCorrectAnswers();
+					}
+				});
+			});
+		}
 	}
 
 	function stopGame() {
@@ -109,10 +138,6 @@
 			divider: true,
 			text: true
 		});
-	}
-
-	$: {
-		console.log(showOnlyQuestion, showAnswers, showCorrectAnswers, showScoreboard);
 	}
 </script>
 
