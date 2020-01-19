@@ -45,6 +45,9 @@
 			showAnswers = false;
 			showScoreboard = showScoreboard ? showScoreboard : true;
 			endQuestion();
+			if (game.quiz.questions.length <= currentQuestionIndex) {
+				stopGame();
+			}
 		}, 1000 * 20);
 
 		currentQuestionIndex += 1;
@@ -82,6 +85,10 @@
 		});
 
 		playNextQuestion();
+	}
+
+	function stopGame() {
+		dispatch('stopGame');
 	}
 
 	function handleReturnHome() {

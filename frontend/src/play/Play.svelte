@@ -142,5 +142,5 @@
 {:else if !connectionStatus.startGame.successful}
 	<PlayersJoin quizName={game.quiz.title} {players} colorCode={game.colorCode} on:startPlaying={handleStartPlaying}/>
 {:else if connectionStatus.startGame.successful}
-	<QuestionsParent {game} {players} on:returnHome={handleReturnHome}/>
+	<QuestionsParent {game} {players} on:stopGame={endGame} on:returnHome={handleReturnHome}/>
 {/if}
