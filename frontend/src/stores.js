@@ -74,10 +74,11 @@ fetch(quizEndpointUrl, {
  *
  * @global
  *
- * @param {Object} quizzes The quizzes that will be taken into account when updating the playable quizzes store.
+ * @param {Array} quizzes The quizzes that will be taken into account when updating the playable quizzes store.
  *
  * @return {boolean} Boolean describing the playable quizzes situation.
  */
+// TODO(laniw): Update to makes sure playable quiz has an answer that actually contains text.
 export function playableQuizzesAvailable(quizzes) {
     let oneValidQuiz = false;
     if (quizzes.length < 1) {
