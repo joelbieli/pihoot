@@ -166,16 +166,7 @@
 	 *
 	 * When the user commands that he wants to go back to the home screen this function ends the game, updates the displayed page and visibilities.
 	 *
-	 * @global
-	 *
-	 * @fires eventName
-	 *
-	 * @param {type} var Description.
-	 * @param {type} [var] Description of optional variable.
-	 * @param {type} [var=default] Description of optional variable with default variable.
-	 * @param {Object} objectVar Description.
-	 *
-	 * @return {type} Return value description.
+	 * @param {Object} e The event data.
 	 */
 	function handleReturnHome(e){
 		endGame();
