@@ -1,7 +1,23 @@
 <script>
+	import {createEventDispatcher} from 'svelte';
+	import {getHexForColor, getTextHexForColor} from '../../util/playUtils'
+
 	export let question;
 	export let questionIndex;
 	export let questionCount;
+
+	console.log('loaded');
+
+	const dispatch = createEventDispatcher();
+
+	function returnHome() {
+		dispatch('returnHome');
+	}
+
+	function showScoreboard() {
+		console.log('showScoreboard');
+		dispatch('showScoreboard');
+	}
 </script>
 
 <style>
@@ -14,7 +30,6 @@
     {questionIndex} of {questionCount}
 </div>
 
-<TimedLoadingBar seconds="15" barColor="#1e87f0" wrapperColor="#bababa"/>
 <div class="uk-grid uk-margin" uk-grid="">
 	<div class="uk-width-expand">
 		<h1>
@@ -22,27 +37,37 @@
 		</h1>
 	</div>
 	<div class="uk-width-auto">
-		<div class="uk-card uk-card-primary uk-card-body uk-border-rounded uk-card-small">
-			<h5>
-                {countDown}
-			</h5>
-		</div>
+		<button class="uk-button uk-button-default uk-border-rounded" on:click={returnHome}>Cancel and return home
+		</button>
+		<button class="uk-button uk-button-primary uk-border-rounded" on:click={showScoreboard}>Show Scoreboard</button>
 	</div>
 </div>
 <!-- TODO(laniw): Sort answers by color to be the same as on the answering hardware. -->
 <div class="uk-grid-small" uk-grid>
-	{#each question.answers as answer}
+    {#each question.answers as answer}
 		<div class="uk-width-1-2">
-			{#if answer.answer !== ''}
+            {#if answer.answer !== ''}
 				<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
-					 style="background-color: {getHexForColor(answer.color)}">
-					<h3 class="answer" style="color: {getTextHexForColor(answer.color)}">
-						{answer.answer}
-					</h3>
+				     style="{answer.correct ? `background-color: ${getHexForColor(answer.color)}` : ''}">
+					<div class="uk-grid-small" uk-grid>
+						<div class="uk-width-expand">
+							<h3 class="answer"
+							    style="{answer.correct ? `color: ${getTextHexForColor(answer.color)}` : ''}">
+                                {answer.answer}
+							</h3>
+						</div>
+						<div class="uk-width-auto">
+                            {#if answer.correct}
+								<span uk-icon="icon: check; ratio: 1.5"></span>
+                            {:else}
+								<span uk-icon="icon: close; ratio: 1.5"></span>
+                            {/if}
+						</div>
+					</div>
 				</div>
-			{:else}
+            {:else}
 				<div class="uk-card uk-card-default uk-card-small"></div>
-			{/if}
+            {/if}
 		</div>
-	{/each}
+    {/each}
 </div>

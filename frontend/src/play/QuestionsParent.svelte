@@ -56,6 +56,7 @@
 	}
 
 	function switchToScoreboard() {
+		console.log('showing');
 		showCorrectAnswers = false;
 		showScoreboard = true;
 	}
@@ -109,6 +110,10 @@
 			text: true
 		});
 	}
+
+	$: {
+		console.log(showOnlyQuestion, showAnswers, showCorrectAnswers, showScoreboard);
+	}
 </script>
 
 <div class="uk-container uk-container-small uk-margin-xlarge-top">
@@ -120,7 +125,8 @@
 		        questionCount={game.quiz.questions.length}/>
     {:else if !showOnlyQuestion && !showAnswers && showCorrectAnswers && !showScoreboard}
 		<CorrectAnswer question={currentQuestion} questionIndex={currentQuestionIndex}
-		               questionCount={game.quiz.questions.length}/>
+		               questionCount={game.quiz.questions.length} on:showScoreboard={switchToScoreboard}
+		               on:returnHome={handleReturnHome}/>
     {:else if !showOnlyQuestion && !showAnswers && showScoreboard && currentQuestionIndex !== game.quiz.questions.length}
 		<Scoreboard {game} {players} on:nextQuestion={playNextQuestion} on:returnHome={handleReturnHome}/>
     {:else if !showOnlyQuestion && !showAnswers && showScoreboard && currentQuestionIndex === game.quiz.questions.length}

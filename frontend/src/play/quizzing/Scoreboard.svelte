@@ -45,7 +45,7 @@
 		});
 
 		fetch(`${apiUrlStore}game/${game.id}/score`, {
-			method: 'POST',
+			method: 'GET',
 			mode: 'cors'
 		}).then(res => {
 			state.scores.attempted = true;
