@@ -9,7 +9,7 @@ This server will refresh automatically as soon as you save the file. You can fin
 
 ## Get started
 
-Start [Rollup](https://rollupjs.org):
+This project is running on npm, so you'll need to install the dependencies with `npm install` first. Once that's done you go ahead and start [Rollup](https://rollupjs.org).
 
 ```bash
 npm run dev
