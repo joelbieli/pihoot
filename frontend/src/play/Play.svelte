@@ -113,7 +113,7 @@
 	}
 
 	/**
-	 * Initiates every needed for proper functioning of the page.
+	 * Initiates every needed resource for proper functioning of the page.
 	 *
 	 * - Subscribes to stores
 	 * - Gets the game object
