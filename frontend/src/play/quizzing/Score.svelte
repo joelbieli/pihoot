@@ -4,11 +4,6 @@
 	export let color;
 	export let score;
 	export let position;
-
-	function fontBoldRule() {
-
-	}
-
 </script>
 
 <div class="uk-grid-small {position < 4 ? 'uk-padding-small' : ''} uk-border-rounded"
