@@ -9,6 +9,9 @@
 	let playableQuizzesArray = [];
 	let anyPlayAbleQuizzes = false;
 
+	/**
+	 * Updates the playable quizzes array any time something from the quizzes changes.
+	 */
 	$: {
 		playableQuizzesArray.length = quizzes.length;
 		if (quizzes.length > 0) {
@@ -35,8 +38,13 @@
 		}
 	}
 
-	const unsubscribeApiUrl = apiUrl.subscribe(value => apiUrlStore = value);
-
+	/**
+	 * Initiates every needed resource for proper functioning of the page.
+	 *
+	 * - Fetches the quizzes
+	 * - Subscribes to stores
+	 * - Updates playable quizzes store
+	 */
 	const init = () => {
 		fetch(`${apiUrlStore}quiz`, {
 			method: 'GET',
@@ -50,6 +58,7 @@
 			// Do Nothing.
 		});
 
+		const unsubscribeApiUrl = apiUrl.subscribe(value => apiUrlStore = value);
 		onDestroy(() => {
 			unsubscribeApiUrl();
 		});
@@ -57,22 +66,22 @@
 		fetch(`${apiUrlStore}quiz`, {
 			method: 'GET',
 			mode: 'cors'
-		})
-				.then(res => res.json())
-				.then(data => playableQuizzes.set({
-					available: playableQuizzesAvailable(data),
-					requestAttempted: true
-				}))
-				.catch(playableQuizzes.set({
-					available: false,
-					requestAttempted: true
-				}));
+		}).then(res => res.json()).then(data => playableQuizzes.set({
+			available: playableQuizzesAvailable(data),
+			requestAttempted: true
+		})).catch(playableQuizzes.set({
+			available: false,
+			requestAttempted: true
+		}));
 	};
 
 	init();
 
 	let selectedQuiz = {};
 
+	/**
+	 * Sets the selectedQuiz variable and playAbleQuizSelected when an option in the select is chosen.
+	 */
 	function selectQuiz() {
 		let e = document.getElementById("quiz-select");
 		let selectedQuizId = e.options[e.selectedIndex].value;
@@ -83,7 +92,7 @@
 				}
 			});
 		} else {
-			console.error('No quizzes to select!')
+			console.error('No quizzes to select!');
 			return;
 		}
 		if (selectedQuiz === 'undefined') {
@@ -93,6 +102,9 @@
 		playableQuizSelected = true;
 	}
 
+	/**
+	 * Ensures that the selectedQuiz is actually playable.
+	 */
 	let playableQuizSelected;
 	$: {
 		playableQuizSelected = false;
@@ -109,10 +121,31 @@
 		}
 	}
 
+	/**
+	 * Passes a pageUpdate event to its parent component to go to the play screen, passing along data as well.
+	 *
+	 * @fires pageUpdate
+	 */
 	const dispatchPageUpdate = (target, data) => dispatch('pageUpdate', {target: target, data: data});
 
+	/**
+	 * Passes a visibilitiesChange event to its parent component to go to the play screen, passing along data as well.
+	 *
+	 * @fires visibilitiesChange
+	 */
 	const dispatchVisibilitiesChange = visibilities => dispatch('visibilityChange', visibilities);
 
+	/**
+	 * Launches the needed functions to redirect to the play quiz and pass on the selected quiz.
+	 *
+	 * @param {Array} quiz The quiz that will be played.
+	 * @param {boolean} showNavbar Whether the navbar should be visible.
+	 * @param {boolean} showContainer Whether the container with the title, subtitle, divider and text should be visible.
+	 * @param {boolean} showTitle Whether the title should be visible.
+	 * @param {boolean} showSubtitle Whether the subtitle should be visible.
+	 * @param {boolean} showDivider Whether the divider should be visible.
+	 * @param {boolean} showText Whether the text should be visible.
+	 */
 	function playSelectedQuiz(quiz, showNavbar, showContainer, showTitle, showSubtitle, showDivider, showText) {
 		dispatchVisibilitiesChange({
 			navbar: showNavbar,
@@ -147,7 +180,7 @@
 		</div>
 
 		<div class="uk-margin-small">
-			{#if playableQuizSelected}
+            {#if playableQuizSelected}
 				<button class="uk-button uk-button-primary uk-border-rounded"
 				        on:click={() => playSelectedQuiz(selectedQuiz, false, false, false, false, false, false)}>Play
 				</button>
