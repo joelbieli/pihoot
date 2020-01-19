@@ -110,6 +110,14 @@ Parameters:
 
 ### Game
 
+#### Queueing Games
+
+Method: `GET`
+
+URL: `/api/game/queuing`
+
+Return value: [`[Game]`](#game)
+
 #### Start
 
 Method: `POST`
