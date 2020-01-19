@@ -15,7 +15,7 @@
 </script>
 
 <style>
-	.colorDot {
+	.colorBar {
 		width: calc(calc(100% / 8) - 1%);
 		height: 2em;
 		display: inline-block;
@@ -45,10 +45,10 @@
 
 	<div class="uk-card uk-card-default uk-card-body uk-card-small uk-border-rounded">
 		<p>
-			User the following color code to join the game.
+			Use the following color code to join the game.
 		</p>
         {#each colorCode as color}
-			<span class="colorDot uk-border-rounded" style="background-color: {getHexForColor(color)}"></span>
+			<span class="colorBar uk-border-rounded" style="background-color: {getHexForColor(color)}"></span>
         {/each}
 	</div>
 
