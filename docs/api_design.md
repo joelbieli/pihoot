@@ -311,12 +311,11 @@ Score {
 ```json
 PlayerColor {
     RED("#FF0000"),
-    ORANGE("#FFA500"),
+    GREEN("#00FF00"),
+    BLUE("#0000FF"),
+    LIGHTBLUE("#00FFFF"),
     YELLOW("#FFFF00"),
-    GREEN("#32CD32"),
-    BLUE("#1E90FF"),
-    PURPLE("#9400D3"),
-    MAGENTA("#FF00FF")
+    PURPLE("#FF00FF")
 }
 ```
 
