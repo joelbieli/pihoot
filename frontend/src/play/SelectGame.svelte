@@ -2,6 +2,11 @@
 	import {apiUrl, playableQuizzes, playableQuizzesAvailable} from '../stores.js';
 	import {onDestroy, createEventDispatcher} from 'svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that lets the user choose what playable game they want to play.
+	 */
+
 	const dispatch = createEventDispatcher();
 	let apiUrlStore;
 	let connectionSuccessful = false;

@@ -1,6 +1,11 @@
 <script>
 	import {fly} from 'svelte/transition';
 
+	/**
+	 * File description:
+	 * The hint alert that explains when quizzes are playable.
+	 */
+
 	export let animationY;
 	export let animationDuration;
 

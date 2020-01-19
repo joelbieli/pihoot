@@ -5,6 +5,11 @@
 	import {passByVal} from '../util.js'
 	import PlayableQuizHint from '../util/PlayableQuizHint.svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that lets the user edit their quizzes.
+	 */
+
 	const dispatch = createEventDispatcher();
 	let connectionSuccessful = false;
 	let animationConf;

@@ -1,4 +1,9 @@
 <script>
+	/**
+	 * File description:
+	 * Provides an element that looks like a loading bar where you can define the time it needs to reach 100%.
+	 */
+
 	export let seconds;
 	export let barColor;
 	export let wrapperColor;

@@ -2,6 +2,11 @@
 	import {createEventDispatcher} from 'svelte';
 	import {getHexForColor, getTextHexForColor} from '../../util/playUtils'
 
+	/**
+	 * File description:
+	 * Provides a component that shows the players what answers were right.
+	 */
+
 	export let question;
 	export let questionIndex;
 	export let questionCount;

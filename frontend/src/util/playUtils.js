@@ -1,4 +1,9 @@
 /**
+ * File description:
+ * Contains utility functions for the play pages.
+ */
+
+/**
  * Returns the hex value for a given color string.
  *
  * @global

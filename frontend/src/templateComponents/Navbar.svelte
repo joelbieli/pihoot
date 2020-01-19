@@ -4,6 +4,11 @@
 	import {onDestroy} from 'svelte';
 	import {createEventDispatcher} from 'svelte';
 
+	/**
+	 * File description:
+	 * Provides a navbar component.
+	 */
+
 	let apiStore;
 	let playableQuizzesStore;
 	const dispatch = createEventDispatcher();

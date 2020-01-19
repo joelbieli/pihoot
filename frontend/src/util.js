@@ -1,4 +1,9 @@
 /**
+ * File description:
+ * Contains utility files that are used globally.
+ */
+
+/**
  * Returns a clone of the object passed in.
  *
  * This functionality is crucial when wanting to compare edited quizzes to what was in the database when it was last

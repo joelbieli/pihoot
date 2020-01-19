@@ -1,6 +1,11 @@
 <script>
 	import TimedLoadingBar from '../../util/TimedLoadingBar.svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that displays the question.
+	 */
+
 	export let question;
 	export let questionIndex;
 	export let questionCount;

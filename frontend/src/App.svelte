@@ -9,7 +9,10 @@
 	import SelectGame from './play/SelectGame.svelte';
 	import Play from './play/Play.svelte';
 
-	// TODO(laniw): Add docstrings for the purpose of the whole file for all files.
+	/**
+	 * File description:
+	 * The main file that contains all of the logic needed to run the site.
+	 */
 
 	// Properties that hold control over what is visible on the page.
 	let showNavbar = true;

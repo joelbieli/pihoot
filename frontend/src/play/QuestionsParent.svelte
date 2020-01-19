@@ -6,6 +6,11 @@
 	import CorrectAnswer from './quizzing/CorrectAnswer.svelte';
 	import Scoreboard from './quizzing/Scoreboard.svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that houses the needed to go through once cycle of question, answer, correct answers and scoreboard.
+	 */
+
 	export let game;
 	export let players;
 	let apiUrlStore;

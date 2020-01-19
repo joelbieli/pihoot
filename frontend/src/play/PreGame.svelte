@@ -1,6 +1,11 @@
 <script>
 	import {createEventDispatcher} from 'svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that shows a loading screen before the game has been created and an error screen if the game could not be created.
+	 */
+
 	export let createGameStatus;
 	const dispatch = createEventDispatcher();
 

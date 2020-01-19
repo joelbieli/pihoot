@@ -1,6 +1,11 @@
 import {readable, writable} from 'svelte/store';
 
 /**
+ * File description:
+ * Contains stores and logic to write to stores.
+ */
+
+/**
  * A store that knows about the accessibility status to the API.
  */
 export const api = writable({

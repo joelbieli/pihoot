@@ -1,5 +1,10 @@
 <script>
-	import {getHexForColor, getTextHexForColor} from '../../util/playUtils'
+	import {getHexForColor, getTextHexForColor} from '../../util/playUtils';
+
+	/**
+	 * File description:
+	 * Provides a component that displays the score of a single player.
+	 */
 
 	export let color;
 	export let score;

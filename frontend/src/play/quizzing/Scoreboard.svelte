@@ -3,6 +3,11 @@
 	import {apiUrl} from '../../stores.js';
 	import {onDestroy, createEventDispatcher} from 'svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that displays a scoreboard.
+	 */
+
 	export let game;
 	export let players;
 

@@ -4,6 +4,11 @@
 	import {createEventDispatcher} from 'svelte';
 	import PlayableQuizHint from './util/PlayableQuizHint.svelte';
 
+	/**
+	 * File description:
+	 * The home page with the two navigation buttons to edit and play quizzes.
+	 */
+
 	let apiStore;
 	let animationConf;
 	let playableQuizzesStore;

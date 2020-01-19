@@ -5,6 +5,11 @@
 	import PlayersJoin from './PlayersJoin.svelte';
 	import QuestionsParent from './QuestionsParent.svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that contains all of the logic to play a quiz.
+	 */
+
 	export let data;
 	const dispatch = createEventDispatcher();
 
