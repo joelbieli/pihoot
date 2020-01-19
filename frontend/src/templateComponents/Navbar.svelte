@@ -35,7 +35,9 @@
 		<div class="uk-navbar-left">
 
 			<ul class="uk-navbar-nav">
-				<a class="uk-navbar-item uk-logo" on:click={() => dispatchPageUpdate('home')}>Pihoot</a>
+				<a class="uk-navbar-item uk-logo" on:click={() => dispatchPageUpdate('home')}>
+					<img data-src="/lib/images/logo.png" width="120em" alt="Pihoot Logo" uk-img>
+				</a>
 				<li>
 					<a>Actions <span uk-icon="chevron-down"></span></a>
 					<div class="uk-navbar-dropdown">
