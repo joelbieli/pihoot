@@ -180,16 +180,13 @@ Payload: [`Player`](#player)
 
 #### Answers
 
-Method: `GET`
-
 Route: `/ws/game/{gameId}/answers`
 
-Parameters:
+Arguments: `gameId: string`
 
-- `gameId: string`
-- `questionId: string`
+Direction: Server -> Client
 
-Payload: integer (amount of answers for current questions)
+Payload: `integer` (amount of answers for current question)
 
 # API design - Raspberry PI
 
