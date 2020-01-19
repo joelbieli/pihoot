@@ -70,7 +70,7 @@ class QuizController {
      */
     @PutMapping("/{id}")
     fun update(@PathVariable id: String, @RequestBody quizDTO: QuizDTO): QuizDTO {
-        quizDTO.id = id;
+        quizDTO.id = id
         return quizMapper.toDto(quizService.saveOrUpdate(quizMapper.toModel(quizDTO)))
     }
 
