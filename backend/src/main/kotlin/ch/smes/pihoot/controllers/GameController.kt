@@ -118,6 +118,6 @@ class GameController {
     /**
      * Retrieve the score for each player in a game
      */
-    @PostMapping("/{gameId}/score")
+    @GetMapping("/{gameId}/score")
     fun getScore(@PathVariable gameId: String): Map<String, Int> = gameService.getScore(gameId)
 }
