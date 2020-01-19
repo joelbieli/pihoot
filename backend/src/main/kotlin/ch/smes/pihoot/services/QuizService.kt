@@ -3,6 +3,7 @@ package ch.smes.pihoot.services
 import ch.smes.pihoot.exceptions.NotFoundException
 import ch.smes.pihoot.models.Quiz
 import ch.smes.pihoot.repositories.QuizRepository
+import ch.smes.pihoot.utils.IdUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -34,7 +35,14 @@ class QuizService {
     /**
      * Save a quiz if it doesn't already exist, otherwise update the existing quiz
      */
-    fun saveOrUpdate(quiz: Quiz) = quizRepository.save(quiz)
+    fun saveOrUpdate(quiz: Quiz): Quiz {
+        quiz.questions.forEach { question ->
+            if (question.id == null) question.id = IdUtils.generateId()
+            question.answers.filter { it.id == null }.forEach { it.id = IdUtils.generateId() }
+        }
+
+        return quizRepository.save(quiz)
+    }
 
     /**
      * Delete an existing quiz
