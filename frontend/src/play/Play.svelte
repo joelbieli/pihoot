@@ -106,6 +106,8 @@
 			connectionStatus.createGame.attempted = true;
 		});
 
+		let count = 0;
+		setInterval(() => openWebsocketSubscription(), 1000);
 		for (let i = 1000; i <= 10000; i += 1000) {
 			setTimeout(() => openWebsocketSubscription(), i);
 		}
