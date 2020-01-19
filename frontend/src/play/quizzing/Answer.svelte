@@ -16,8 +16,6 @@
 			countDown -= 1;
 		}
 	}, 1000);
-
-	console.log(getTextHexForColor(question.answers[3].color));
 </script>
 
 <style>
@@ -27,24 +25,25 @@
 </style>
 
 <div class="uk-overlay uk-position-top-left">
-	{questionIndex} of {questionCount}
+    {questionIndex} of {questionCount}
 </div>
 
 <TimedLoadingBar seconds="15" barColor="#1e87f0" wrapperColor="#bababa"/>
 <div class="uk-grid uk-margin" uk-grid="">
 	<div class="uk-width-expand">
 		<h1>
-			{question.question}
+            {question.question}
 		</h1>
 	</div>
 	<div class="uk-width-auto">
 		<div class="uk-card uk-card-primary uk-card-body uk-border-rounded uk-card-small">
 			<h5>
-				{countDown}
+                {countDown}
 			</h5>
 		</div>
 	</div>
 </div>
+<!-- TODO(laniw): Sort answers by color to be the same as on the answering hardware. -->
 <div class="uk-grid-small" uk-grid>
 	<div class="uk-width-1-2">
         {#if question.answers[0].answer !== ''}
@@ -54,6 +53,8 @@
                     {question.answers[0].answer}
 				</h3>
 			</div>
+        {:else}
+			<div class="uk-card uk-card-default uk-card-small"></div>
         {/if}
 	</div>
 	<div class="uk-width-1-2">
@@ -64,6 +65,8 @@
                     {question.answers[1].answer}
 				</h3>
 			</div>
+		{:else}
+			<div class="uk-card uk-card-default uk-card-small"></div>
         {/if}
 	</div>
 	<div class="uk-width-1-2">
@@ -74,6 +77,8 @@
                     {question.answers[2].answer}
 				</h3>
 			</div>
+		{:else}
+			<div class="uk-card uk-card-default uk-card-small"></div>
         {/if}
 	</div>
 	<div class="uk-width-1-2">
@@ -84,6 +89,8 @@
                     {question.answers[3].answer}
 				</h3>
 			</div>
+		{:else}
+			<div class="uk-card uk-card-default uk-card-small"></div>
         {/if}
 	</div>
 </div>
