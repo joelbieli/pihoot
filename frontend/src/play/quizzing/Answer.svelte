@@ -11,7 +11,6 @@
 	export let questionIndex;
 	export let questionCount;
 
-
 	let countDown = 15;
 
 	// Updates the countdown value every second.
