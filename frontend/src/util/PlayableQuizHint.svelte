@@ -52,16 +52,16 @@
 			<ul class="uk-margin-small-top">
 				<li>At least one quiz has to be saved</li>
 				<li>One quiz must have at least one question</li>
-				<li>At least one of the answers to a question must be true</li>
+				<li>At least one of the answers to a question must be true and not blank</li>
 			</ul>
 			<p class="uk-margin-top uk-margin-remove-bottom">Once you are on the play quiz page very similar criteria
 				determine whether a quiz can be chosen or not:</p>
 			<ul class="uk-margin-small-top">
 				<li>The quiz has to have at least one question</li>
-				<li>At least one question must have a correct answer.</li>
+				<li>At least one question must have a correct answer that isn't blank</li>
 			</ul>
 			<span class="uk-text-warning">
-				If you find that you can open the play quiz page but no quizzes show up, plesae contact the system administrator.
+				If you find that you can open the play quiz page but no quizzes show up, please contact the system administrator.
 			</span>
 		</div>
     {/if}
