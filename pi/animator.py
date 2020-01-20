@@ -33,12 +33,12 @@ def _anim_input_colorcode(leds):
   leds.on(Colors.GREEN)
   leds.on(Colors.BLUE)
   leds.on(Colors.YELLOW)
-  time.sleep(.3)
+  time.sleep(.4)
   leds.off(Colors.RED)
   leds.off(Colors.GREEN)
   leds.off(Colors.BLUE)
   leds.off(Colors.YELLOW)
-  time.sleep(.3)
+  time.sleep(.4)
 
 def _anim_input_regular(leds):
   leds.on(Colors.RED)
@@ -96,6 +96,6 @@ _ANIM_MAP = {
   GameState.WAITING_GAMES: _anim_waiting_games,
   GameState.WAITING_QUESTION: _anim_reset,
   GameState.INPUT_REGULAR: _anim_input_regular,
-  GameState.INPUT_COLORCODE: _anim_input_regular,
+  GameState.INPUT_COLORCODE: _anim_input_colorcode,
   GameState.RESET: _anim_reset
 }

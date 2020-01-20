@@ -16,9 +16,13 @@ class GameManager(object):
     self.leds = GPIOLEDManager()
     self.buttons = GPIOButtonManager()
     self.network = NetworkManager("10.0.0.229", 5563, self)
+    
     self.games_list = []
     self.active_game = None
     self.active_player = None
+    # Correct answer color of next question
+    self.active_answer = None
+    
     self._animator = Animator(self.leds, self)
     self._animator.start()
     time.sleep(1)
