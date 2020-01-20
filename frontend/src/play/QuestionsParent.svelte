@@ -48,6 +48,7 @@
 	 */
 	function playNextQuestion() {
 		currentQuestion = game.quiz.questions[currentQuestionIndex];
+		currentQuestion.answers = sortAnswersForHardware(currentQuestion.answers);
 		// Clear scoreboard status for next question.
 		showScoreboard = false;
 		// Show only the question for 5 seconds.
@@ -63,6 +64,24 @@
 		}, 1000 * 20);
 
 		currentQuestionIndex += 1;
+	}
+
+	function sortAnswersForHardware(answers) {
+		let sortedAnswers = [{}, {}, {}, {}];
+
+		let colorToIndexMapper = {
+			'RED': 0,
+			'GREEN': 1,
+			'BLUE': 2,
+			'YELLOW': 3
+		};
+
+		answers.forEach(answer => {
+			sortedAnswers[colorToIndexMapper[answer.color]] = answer;
+		});
+
+		console.log(sortedAnswers);
+		return sortedAnswers;
 	}
 
 	/**

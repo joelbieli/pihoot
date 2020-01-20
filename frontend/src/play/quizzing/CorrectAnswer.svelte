@@ -6,6 +6,7 @@
 	 * File description:
 	 * Provides a component that shows the players what answers were right.
 	 */
+	// TODO(laniw): Modify text color of cross/tick based on background color.
 
 	export let question;
 	export let questionIndex;
@@ -56,7 +57,6 @@
 		<button class="uk-button uk-button-primary uk-border-rounded" on:click={showScoreboard}>Show Scoreboard</button>
 	</div>
 </div>
-<!-- TODO(laniw): Sort answers by color to be the same as on the answering hardware. -->
 <div class="uk-grid-small" uk-grid>
     {#each question.answers as answer}
 		<div class="uk-width-1-2">
