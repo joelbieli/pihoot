@@ -1,12 +1,12 @@
 <script>
+	import Answer from './answerSubcomponents/Answer.svelte';
+	import TimedLoadingBar from '../../util/TimedLoadingBar.svelte';
 	import {createEventDispatcher} from 'svelte';
-	import {getHexForColor, getTextHexForColor} from '../../util/playUtils'
 
 	/**
 	 * File description:
 	 * Provides a component that shows the players what answers were right.
 	 */
-	// TODO(laniw): Modify text color of cross/tick based on background color.
 
 	export let question;
 	export let questionIndex;
@@ -35,17 +35,11 @@
 	}
 </script>
 
-<style>
-	.answer {
-		font-weight: bold;
-	}
-</style>
-
 <div class="uk-overlay uk-position-top-left">
     {questionIndex} of {questionCount}
 </div>
 
-<div class="uk-grid uk-margin" uk-grid="">
+<div class="uk-grid uk-margin" uk-grid>
 	<div class="uk-width-expand">
 		<h1>
             {question.question}
@@ -59,29 +53,6 @@
 </div>
 <div class="uk-grid-small" uk-grid>
     {#each question.answers as answer}
-		<div class="uk-width-1-2">
-            {#if answer.answer !== ''}
-				<div class="uk-card uk-card-default uk-card-small uk-card-body uk-box-shadow-large uk-border-rounded"
-				     style="{answer.correct ? `background-color: ${getHexForColor(answer.color)}` : ''}">
-					<div class="uk-grid-small" uk-grid>
-						<div class="uk-width-expand">
-							<h3 class="answer"
-							    style="{answer.correct ? `color: ${getTextHexForColor(answer.color)}` : ''}">
-                                {answer.answer}
-							</h3>
-						</div>
-						<div class="uk-width-auto">
-                            {#if answer.correct}
-								<span uk-icon="icon: check; ratio: 1.5"></span>
-                            {:else}
-								<span uk-icon="icon: close; ratio: 1.5"></span>
-                            {/if}
-						</div>
-					</div>
-				</div>
-            {:else}
-				<div class="uk-card uk-card-default uk-card-small"></div>
-            {/if}
-		</div>
+		<Answer {answer} showWhetherAnswerCorrect={true}/>
     {/each}
 </div>

@@ -2,8 +2,8 @@
 	import {apiUrl} from '../stores.js';
 	import {onDestroy, createEventDispatcher} from 'svelte';
 	import Question from './quizzing/Question.svelte';
-	import Answer from './quizzing/Answer.svelte';
-	import CorrectAnswer from './quizzing/CorrectAnswer.svelte';
+	import Answer from './quizzing/Answers.svelte';
+	import CorrectAnswer from './quizzing/CorrectAnswers.svelte';
 	import Scoreboard from './quizzing/Scoreboard.svelte';
 
 	/**
