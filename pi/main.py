@@ -14,11 +14,13 @@ from gamemanager import GameManager
 from gamestate import GameState
 
 def main():
-  logging.basicConfig(
-    level=logging.DEBUG)#, filename="/var/tmp/pihoot.log")
+  # Setup logging for background process
+  logging.basicConfig(level=logging.DEBUG, filename="/var/tmp/pihoot.log")
 
   game_manager = GameManager()
-  
+  event_loop(game_manager)
+
+def event_loop(game_manager):
   while True:
     button = game_manager.buttons.await_event()
     logging.getLogger('pihoot').info("Button press: {}".format(button))

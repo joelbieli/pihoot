@@ -7,6 +7,10 @@ from colors import Colors
 from colors import RGBColors
 from colors import RGB_COLORS
 
+'''
+Abstract class that defines the interface between LED access and
+different hardware.
+'''
 class _LEDManager(object):
   __metaclass__ = abc.ABCMeta
 
@@ -23,6 +27,9 @@ class _LEDManager(object):
   @abc.abstractmethod
   def blink(self, color, duration=.1): raise NotImplementedError
 
+'''
+LED manager implementation for GPIO
+'''
 class GPIOLEDManager(_LEDManager):
   def __init__(self):
     self._led_dict = {
@@ -72,7 +79,10 @@ class GPIOLEDManager(_LEDManager):
     self._led_dict[color].on()
     time.sleep(duration)
     self._led_dict[color].off()
-    
+
+'''
+LED manager implementation for SenseHat
+'''
 class SenseHatLEDManager(_LEDManager):
   def __init__(self):
     r_cords = ((1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (2, 1), (3, 1), (4, 1), (5, 1), (3, 2), (4, 2))

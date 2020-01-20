@@ -11,9 +11,14 @@ class _ButtonManager(object):
 
   @classmethod
   def version(self): return "1.0"
+  
+  # This method is called by the event loop on the beginning of every loop
   @abc.abstractmethod
   def await_event(self, color): raise NotImplementedError
 
+'''
+Button manager implementation for GPIO
+'''
 class GPIOButtonManager(_ButtonManager):
   def __init__(self, is_listening=True):
     self._event_queue = queue.Queue()
@@ -38,7 +43,9 @@ class GPIOButtonManager(_ButtonManager):
   def await_event(self):
     return self._event_queue.get(True, None)
 
-
+'''
+Button manager implementation for SenseHat
+'''
 class SenseHatButtonManager(_ButtonManager):
   def __init__(self, is_listening=True):
     self.is_listening = is_listening

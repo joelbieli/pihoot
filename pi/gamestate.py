@@ -1,5 +1,9 @@
 import enum
 
+'''
+The game state redulates the behaviour of the other submanagers
+and the main event loop.
+'''
 class GameState(enum.Enum):
   # Intro at the beginning
   STARTING = 1
