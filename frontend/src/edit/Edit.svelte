@@ -5,36 +5,32 @@
 	import {passByVal} from '../util.js'
 	import PlayableQuizHint from '../util/PlayableQuizHint.svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that lets the user edit their quizzes.
+	 */
+
 	const dispatch = createEventDispatcher();
 	let connectionSuccessful = false;
 	let animationConf;
 	let apiUrlStore;
-	let quizzes = '';
-	let editedQuizzes = '';
+	let quizzes = [];
+	let editedQuizzes = [];
 	let unidenticalQuizzes = [];
 
-	$: {
-		if (editedQuizzes !== '' && editedQuizzes.length > 0) {
-			editedQuizzes.forEach((quiz, i) => {
-				unidenticalQuizzes[i] = JSON.stringify(quiz) !== JSON.stringify(quizzes[i]);
-			});
-		}
-	}
+	// Generates an array of booleans that express whether a quiz has been changed since it's been fetched from the backend.
+	$: unidenticalQuizzes = editedQuizzes.map((_, i) => JSON.stringify(editedQuizzes[i]) !== JSON.stringify(quizzes[i]));
 
+	/**
+	 * Initiates every needed resource for proper functioning of the page.
+	 *
+	 * - Gets quizzes
+	 * - Subscribes to stores
+	 * - Updates the playable quizzes store.
+	 */
 	const init = () => {
-		fetch(`${apiUrlStore}quiz`, {
-			method: 'GET',
-			mode: 'cors'
-		}).then(res => {
-			connectionSuccessful = true;
-			return res.json();
-		}).then(data => {
-					resetQuizData(data);
-				}
-		).catch(res => {
-			// Do Nothing.
-		});
-
+		const unsubscribeApiUrl = apiUrl.subscribe(value => apiUrlStore = value);
+		const unsubscribeAnimationConf = animationConfig.subscribe(value => animationConf = value);
 		onDestroy(() => {
 			unsubscribeApiUrl();
 			unsubscribeAnimationConf();
@@ -43,73 +39,121 @@
 		fetch(`${apiUrlStore}quiz`, {
 			method: 'GET',
 			mode: 'cors'
-		})
-				.then(res => res.json())
-				.then(data => playableQuizzes.set({
-					available: playableQuizzesAvailable(data),
-					requestAttempted: true
-				}))
-				.catch(playableQuizzes.set({
-					available: false,
-					requestAttempted: true
-				}));
-	};
+		}).then(res => {
+			connectionSuccessful = true;
+			return res.json();
+		}).then(data => {
+			resetAllQuizzes(data);
+		}).catch(_ => {
+			// Do Nothing.
+		});
 
-	const unsubscribeApiUrl = apiUrl.subscribe(value => apiUrlStore = value);
-	const unsubscribeAnimationConf = animationConfig.subscribe(value => animationConf = value);
+		fetch(`${apiUrlStore}quiz`, {
+			method: 'GET',
+			mode: 'cors'
+		}).then(res => res.json()).then(data => {
+			playableQuizzes.set({
+				available: playableQuizzesAvailable(data),
+				requestAttempted: true
+			});
+		}).catch(_ => {
+			playableQuizzes.set({
+				available: false,
+				requestAttempted: true
+			});
+		});
+	};
 
 	init();
 
-	function resetQuizData(data) {
+	/**
+	 * Resets the value of the editedQuizzes and quizzes variable to the data variable contents.
+	 *
+	 * @param {Object} data The quizzes that overwrite the existing data.
+	 */
+	function resetAllQuizzes(data) {
 		editedQuizzes = passByVal(data);
 		quizzes = passByVal(data);
 	}
 
+	/**
+	 * Resets the value of a single quiz in both the editedQuizzes and quizzes variable.
+	 *
+	 * @param {Object} data The collection of quizzes from which one should be reset.
+	 * @param {string} quizId The id of the quiz that should be reset.
+	 */
+	function resetSingleQuiz(data, quizId) {
+		data.forEach((quiz, i) => {
+			if (quiz.id === quizId) {
+				editedQuizzes[i] = passByVal(quiz);
+				quizzes[i] = passByVal(quiz);
+			}
+		});
+	}
+
+	/**
+	 * Creates a new quiz in the database and updates the quizzes.
+	 */
 	function createQuiz() {
-		performRequest(requestMethods.POST, `${apiUrlStore}quiz`, result => {
-					updateEditedQuizzes();
-					displayNotification(
-							'Successfully added a quiz.',
-							notificationStatus.SUCCESS,
-							notificationPosition.BOTTOM_LEFT);
-				}, () => displayNotification(
-				'Failed to add quiz to the database.',
-				notificationStatus.DANGER,
-				notificationPosition.BOTTOM_LEFT),
-				_ => {
-				},
-				{
-					"title": "",
-					"description": ""
-				});
+		let data = {
+			"title": "",
+			"description": ""
+		};
+
+		fetch(`${apiUrlStore}quiz`, {
+			method: 'POST',
+			mode: 'cors',
+			headers: {
+				'Content-Type': 'application/JSON'
+			},
+			body: JSON.stringify(data)
+		}).then(_ => {
+			updateQuizzes();
+			displayNotification(
+					'Successfully added quiz.',
+					notificationStatus.SUCCESS,
+					notificationPosition.BOTTOM_LEFT);
+		}).catch(_ => {
+			displayNotification(
+					'Failed to add quiz.',
+					notificationStatus.DANGER,
+					notificationPosition.BOTTOM_LEFT);
+		});
 	}
 
-	function updateQuiz(quiz) {
-		performRequest(requestMethods.PUT, `${apiUrlStore}quiz/${quiz.id}`, result => {
-					displayNotification(
-							'Successfully saved changes to quiz.',
-							notificationStatus.SUCCESS,
-							notificationPosition.BOTTOM_LEFT);
-					return result.json();
-				}, _ => displayNotification(
-				'Failed to save changes to the database.',
-				notificationStatus.DANGER,
-				notificationPosition.BOTTOM_LEFT),
-				data => {
-					updateEditedQuiz(quiz.id, data);
-					performRequest(
-							requestMethods.GET,
-							`${apiUrlStore}quiz`,
-							result => result.json(),
-							() => console.error('Failed to update playAbleQuizzes.'),
-							data => playableQuizzes.set({
-								available: playableQuizzesAvailable(data),
-								requestAttempted: true
-							}));
-				}, quiz
-		);
+	/**
+	 * Saves the changes to the quiz in the database.
+	 * @param {Object} localQuiz The quiz that should be updated.
+	 */
+	function updateQuiz(localQuiz) {
+		fetch(`${apiUrlStore}quiz/${localQuiz.id}`, {
+			method: 'PUT',
+			mode: 'cors',
+			headers: {
+				'Content-Type': 'application/JSON'
+			},
+			body: JSON.stringify(localQuiz)
+		}).then(_ => {
+			displayNotification(
+					'Saved quiz changes.',
+					notificationStatus.SUCCESS,
+					notificationPosition.BOTTOM_LEFT);
+			updateEditedQuiz(localQuiz.id);
+			updatePlayableQuizzes();
+		}).catch(_ => {
+			displayNotification(
+					'Failed to save quiz changes.',
+					notificationStatus.DANGER,
+					notificationPosition.BOTTOM_LEFT);
+		});
 	}
 
+
+	/**
+	 * Reverts all the changes from an edited quiz when they press the respective button.
+	 *
+	 * @param {Object} quiz The quiz that should be reverted.
+	 */
 	function undoQuizChanges(quiz) {
 		editedQuizzes.forEach((quizItem, i) => {
 			if (quizItem.id === quiz.id) {
@@ -118,32 +162,35 @@
 		});
 	}
 
+	/**
+	 * Deletes the quiz from the database and updates the local quizzes once the request is done.
+	 *
+	 * @param {string} quizId The id of the quiz that should be deleted.
+	 */
 	function deleteQuiz(quizId) {
-		performRequest(
-				requestMethods.DELETE,
-				`${apiUrlStore}quiz/${quizId}`,
-				_ => {
-					updateEditedQuizzes();
-					displayNotification(
-							'Quiz successfully deleted from database.',
-							notificationStatus.SUCCESS,
-							notificationPosition.BOTTOM_LEFT);
-					performRequest(
-							requestMethods.GET,
-							`${apiUrlStore}quiz`,
-							result => result.json(),
-							() => console.error('Failed to update playAbleQuizzes.'),
-							data => playableQuizzes.set({
-								available: playableQuizzesAvailable(data),
-								requestAttempted: true
-							}));
-				},
-				() => displayNotification(
-						'Failed to delete quiz from the database.',
-						notificationStatus.DANGER,
-						notificationPosition.BOTTOM_LEFT));
+		fetch(`${apiUrlStore}quiz/${quizId}`, {
+			method: 'DELETE',
+			mode: 'cors'
+		}).then(_ => {
+			updateQuizzes();
+			displayNotification(
+					'Quiz successfully deleted.',
+					notificationStatus.SUCCESS,
+					notificationPosition.BOTTOM_LEFT);
+			updatePlayableQuizzes();
+		}).catch(_ => {
+			displayNotification(
+					'Failed to delete quiz.',
+					notificationStatus.DANGER,
+					notificationPosition.BOTTOM_LEFT);
+		});
 	}
 
+	/**
+	 * Adds a question to the given quiz.
+	 *
+	 * @param {string} quizId The id of the quiz to which the question should be added.
+	 */
 	function createQuestion(quizId) {
 		editedQuizzes.forEach((quiz, i, quizzes) => {
 			if (quiz.id === quizId) {
@@ -172,99 +219,102 @@
 		});
 	}
 
+	/**
+	 * Deletes the question specified by the quiz id and the question index.
+	 *
+	 * @param {string} quizId The id of the quiz from which the question should be deleted.
+	 * @param {number} questionIndex The index of the question that should be deleted from the quiz.
+	 */
 	function deleteQuestion(quizId, questionIndex) {
 		editedQuizzes.forEach((quiz, i) => {
 			if (quiz.id === quizId) {
 				editedQuizzes[i].questions = passByVal(editedQuizzes[i].questions).filter((quiz, i) => i !== questionIndex);
-				// Force UI update by reassigning root object.
-				editedQuizzes = editedQuizzes;
 			}
 		});
 	}
 
+	/**
+	 * Flip the boolean associated with the answer clicked.
+	 *
+	 * @param {string} quizId The id of the quiz of which the boolean of an answer of a question should be flipped.
+	 * @param {number} questionIndex The index of the question of which the boolean of an answer should be flipped.
+	 * @param {number} answerIndex The index of the answer of which the boolean should be flipped.
+	 */
 	function negateAnswerBool(quizId, questionIndex, answerIndex) {
 		editedQuizzes.forEach((quiz, i) => {
 			if (quiz.id === quizId) {
-				quiz.questions[questionIndex].answers[answerIndex].correct = passByVal(!editedQuizzes[i].questions[questionIndex].answers[answerIndex].correct);
-				// Force UI update by reassigning root object.
-				editedQuizzes = editedQuizzes;
+				editedQuizzes[i].questions[questionIndex].answers[answerIndex].correct = passByVal(!quiz.questions[questionIndex].answers[answerIndex].correct);
 			}
 		});
 	}
 
-	function updateEditedQuizzes(data = []) {
+	/**
+	 * Updates the quizzes with data from the backend.
+	 *
+	 * @param {Array} [data=[]] Optional parameter, which if set can be used to reset the quizzes.
+	 */
+	function updateQuizzes(data = []) {
 		if (data.length !== 0) {
-			resetQuizData(data);
+			resetAllQuizzes(data);
 		} else {
-			performRequest(
-					requestMethods.GET,
-					`${apiUrlStore}quiz`,
-					result => result.json(),
-					() => console.error('Failed to update edited quizzes.'),
-					requestData => resetQuizData(requestData)
-			);
+			fetch(`${apiUrlStore}quiz`, {
+				method: 'GET',
+				mode: 'cors'
+			}).then(result => result.json()).then(data => {
+				resetAllQuizzes(data);
+			}).catch(_ => {
+				console.error('Failed to update edited quizzes.');
+			});
 		}
 	}
 
+	/**
+	 * Updates the quizzes with data from the backend.
+	 *
+	 * @param {string} quizId The id of the quiz that should be reset.
+	 * @param {Array} [data=[]] Optional parameter, which if set can be used to reset the quiz.
+	 */
 	function updateEditedQuiz(quizId, data = []) {
-		performRequest(requestMethods.GET, `${apiUrlStore}quiz`, result =>
-						result.json(), () => displayNotification(
-				'Failed to update quizzes.',
-				notificationStatus.DANGER,
-				notificationPosition.BOTTOM_LEFT), data => {
-					data.forEach((quiz, i) => {
-						if (quiz.id === quizId) {
-							editedQuizzes[i] = passByVal(quiz);
-							quizzes[i] = passByVal(quiz);
-						}
-					});
-				}
-		);
-	}
-
-	function performRequest(methodEnum, url, callback1, catchClause, callback2 = () => {
-	}, data = {}) {
-		let method;
-
-		switch (methodEnum) {
-			case requestMethods.GET:
-				method = 'GET';
-				break;
-			case requestMethods.PUT:
-				method = 'PUT';
-				break;
-			case requestMethods.POST:
-				method = 'POST';
-				break;
-			case requestMethods.DELETE:
-				method = 'DELETE';
-				break;
-			default:
-				console.error('Unknown request method type!')
-		}
-
-		if (methodEnum === requestMethods.GET) {
-			fetch(url, {
-				method: method,
+		if (data.length > 0) {
+			resetSingleQuiz(data);
+		} else {
+			fetch(`${apiUrlStore}quiz`, {
+				method: 'GET',
 				mode: 'cors'
-			}).then(res => callback1(res)).then(data => callback2(data));
-		} else if (methodEnum === requestMethods.DELETE) {
-			fetch(url, {
-				method: method,
-				mode: 'cors'
-			}).then(res => callback1(res));
-		} else if (methodEnum === requestMethods.POST || methodEnum === requestMethods.PUT) {
-			fetch(url, {
-				method: method,
-				mode: 'cors',
-				headers: {
-					'Content-Type': 'application/JSON'
-				},
-				body: JSON.stringify(data)
-			}).then(res => callback1(res)).then(res2 => callback2(res2));
+			}).then(result => result.json()).then(data => {
+				resetSingleQuiz(data, quizId);
+			}).catch(_ => {
+				displayNotification(
+						'Failed to update quizzes.',
+						notificationStatus.DANGER,
+						notificationPosition.BOTTOM_LEFT);
+			});
 		}
 	}
 
+	/**
+	 * Updates the playable quizzes store.
+	 */
+	function updatePlayableQuizzes() {
+		fetch(`${apiUrlStore}quiz`, {
+			method: 'GET',
+			mode: 'cors'
+		}).then(result => result.json()).then(data => {
+			playableQuizzes.set({
+				available: playableQuizzesAvailable(data),
+				requestAttempted: true
+			})
+		}).catch(_ => console.error('Failed to update playAbleQuizzes.'));
+	}
+
+	/**
+	 * Displays a notification on the screen.
+	 *
+	 * @param {string} message The message to be displayed in the notification.
+	 * @param {Object} statusEnum The type of notification to be displayed (primary, success, warning, danger).
+	 * @param {Object} positionEnum The position of the notification to be displayed.
+	 * @param {number} [timeout=1000] The time until the notification automatically dismisses.
+	 */
 	function displayNotification(message, statusEnum, positionEnum, timeout = 1000) {
 		let status;
 		let position;
@@ -349,13 +399,16 @@
 </style>
 
 <div class="uk-container uk-container-small uk-margin-xlarge-bottom">
+	<!-- The button to create a new quiz -->
 	<button on:click={createQuiz} class="uk-button uk-button-default uk-border-rounded" uk-tooltip="Add quiz">
 		<span class="uk-margin-small-top uk-margin-small-bottom" uk-icon="plus"></span>
 	</button>
 
+	<!-- The hint explaining when quizzes are playable -->
 	<PlayableQuizHint animationY={animationConf.y} animationDuration={animationConf.duration}/>
 
 	<div class="uk-card uk-card-default uk-card-body uk-border-rounded">
+		<!-- The quizzes accordion-->
 		<ul uk-accordion>
             {#each editedQuizzes as quiz, i}
 				<li class="{i < editedQuizzes.length - 1 ? 'uk-margin-medium' : ''}"
@@ -369,6 +422,7 @@
 					<div class="uk-accordion-content">
 						<div>
 							<div class="uk-grid-collapse" uk-grid>
+								<!-- The quiz title and description fields -->
 								<div class="uk-width-expand">
 									<div class="uk-margin-small">
 										<input bind:value={quiz.title} class="uk-input uk-form-large uk-border-rounded"
@@ -381,6 +435,7 @@
 										       placeholder="Description">
 									</div>
 								</div>
+								<!-- The quiz action buttons (delete, save, and reset) -->
 								<div class="uk-width-auto">
 									<div class="uk-grid-collapse uk-margin-small-left" uk-grid>
 										<div class="uk-width-auto">
@@ -412,24 +467,27 @@
 						<hr>
 						<div class="uk-margin-medium-top">
                             {#each quiz.questions as question, j}
-								<div class="uk-margin{i < quiz.questions.length - 1 ? '-medium' : ''}"
+								<div class="uk-margin{j < quiz.questions.length - 1 ? '-medium' : ''}"
 								     transition:fly="{{ y: -animationConf.y, duration: animationConf.duration }}">
 									<div class="uk-grid-collapse" uk-grid>
+										<!-- The question field -->
 										<div class="uk-width-expand">
 											<input bind:value={question.question} class="uk-input uk-border-rounded"
 											       type="text"
 											       placeholder="Question">
 										</div>
+										<!-- The button question delete -->
 										<div class="uk-width-auto">
 											<div class="uk-margin-small-left">
 												<button class="uk-button uk-button-default uk-text-danger uk-border-rounded"
-														uk-tooltip="Delete question"
+												        uk-tooltip="Delete question"
 												        on:click={() => deleteQuestion(quiz.id, j)}>
 													<span uk-icon="icon: trash"></span>
 												</button>
 											</div>
 										</div>
 									</div>
+									<!-- The answers -->
 									<div class="uk-grid-small" uk-grid>
                                         {#each question.answers as answer, k}
 											<div class="uk-width-1-2">
@@ -439,13 +497,13 @@
 														   class="uk-form-icon uk-text-success uk-form-icon-flip"
 														   uk-icon="icon: check"
 														   uk-tooltip="Answer is correct"
-														   transition:fade="{{ duration: animationConf.duration }}"></a>
+														   transition:fade="{{ duration: animationConf.duration }}"><span></span></a>
                                                     {:else}
 														<a on:click={() => negateAnswerBool(quiz.id, j, k)}
 														   class="uk-form-icon uk-text-danger uk-form-icon-flip"
 														   uk-icon="icon: close"
 														   uk-tooltip="Answer is wrong"
-														   transition:fade="{{ duration: animationConf.duration }}"></a>
+														   transition:fade="{{ duration: animationConf.duration }}"><span></span></a>
                                                     {/if}
 													<input bind:value={answer.answer} class="uk-input uk-border-rounded"
 													       type="text"
@@ -458,6 +516,7 @@
                             {/each}
 						</div>
 
+						<!-- The button to add a question -->
 						<div class="uk-text-center">
 							<button on:click={() => createQuestion(quiz.id)}
 							        class="uk-button uk-button-default uk-border-rounded"
@@ -469,6 +528,7 @@
 					</div>
 				</li>
             {:else}
+			<!-- The alerts that are displayed in case there either aren't any quizzes or the server is unreachable -->
                 {#if connectionSuccessful}
 					<div class="uk-alert-primary"
 					     transition:fly="{{ y: -animationConf.y, duration: animationConf.duration }}"

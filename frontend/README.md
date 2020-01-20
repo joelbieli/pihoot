@@ -9,7 +9,7 @@ This server will refresh automatically as soon as you save the file. You can fin
 
 ## Get started
 
-Start [Rollup](https://rollupjs.org):
+This project is running on npm, so you'll need to install the dependencies with `npm install` first. Once that's done you go ahead and start [Rollup](https://rollupjs.org).
 
 ```bash
 npm run dev
@@ -28,4 +28,5 @@ To create an optimised version of the app:
 npm run build
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+It's recommended that you run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).<br>
+If you would just like to deploy the files to a server, copy the contents of the public folder to the server running the website.

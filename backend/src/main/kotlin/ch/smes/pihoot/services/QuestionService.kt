@@ -11,6 +11,9 @@ class QuestionService {
     @Autowired
     private lateinit var quizService: QuizService
 
+    /**
+     * Save a question if it doesn't already exist, otherwise update the existing question
+     */
     fun saveOrUpdate(quizId: String, question: Question): Question {
         val quiz = quizService.getOne(quizId)
 
@@ -24,6 +27,9 @@ class QuestionService {
         return question
     }
 
+    /**
+     * Delete an existing question
+     */
     fun delete(quizId: String, questionId: String) {
         val quiz = quizService.getOne(quizId)
 

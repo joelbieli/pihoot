@@ -4,6 +4,11 @@
 	import {onDestroy} from 'svelte';
 	import {createEventDispatcher} from 'svelte';
 
+	/**
+	 * File description:
+	 * Provides a navbar component.
+	 */
+
 	let apiStore;
 	let playableQuizzesStore;
 	const dispatch = createEventDispatcher();
@@ -15,6 +20,13 @@
 		unsubscribePlayableQuizzes();
 	});
 
+	/**
+	 * Dispatches a page update with the given page target.
+	 *
+	 * @fires pageUpdate
+	 *
+	 * @param {string} target The page that should be displayed.
+	 */
 	const dispatchPageUpdate = (target) => dispatch('pageUpdate', {target: target});
 </script>
 
@@ -35,7 +47,9 @@
 		<div class="uk-navbar-left">
 
 			<ul class="uk-navbar-nav">
-				<a class="uk-navbar-item uk-logo" on:click={() => dispatchPageUpdate('home')}>Pihoot</a>
+				<a class="uk-navbar-item uk-logo" on:click={() => dispatchPageUpdate('home')}>
+					<img data-src="/lib/images/logo.png" width="120em" alt="Pihoot Logo" uk-img>
+				</a>
 				<li>
 					<a>Actions <span uk-icon="chevron-down"></span></a>
 					<div class="uk-navbar-dropdown">

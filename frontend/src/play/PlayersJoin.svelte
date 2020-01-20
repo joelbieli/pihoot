@@ -2,6 +2,11 @@
 	import {createEventDispatcher} from 'svelte';
 	import {getHexForColor, getTextHexForColor} from '../util/playUtils'
 
+	/**
+	 * File description:
+	 * Provides a component to show which players have joined the game.
+	 */
+
 	export let quizName;
 	export let players;
 	export let colorCode;
@@ -9,13 +14,16 @@
 
 	const dispatch = createEventDispatcher();
 
+	/**
+	 * Fires the startPlaying event when the user presses the appropriate button.
+	 */
 	function startPlaying() {
 		dispatch('startPlaying');
 	}
 </script>
 
 <style>
-	.colorDot {
+	.colorBar {
 		width: calc(calc(100% / 8) - 1%);
 		height: 2em;
 		display: inline-block;
@@ -45,10 +53,10 @@
 
 	<div class="uk-card uk-card-default uk-card-body uk-card-small uk-border-rounded">
 		<p>
-			User the following color code to join the game.
+			Use the following color code to join the game.
 		</p>
         {#each colorCode as color}
-			<span class="colorDot uk-border-rounded" style="background-color: {getHexForColor(color)}"></span>
+			<span class="colorBar uk-border-rounded" style="background-color: {getHexForColor(color)}"></span>
         {/each}
 	</div>
 

@@ -1,24 +1,38 @@
 <script>
 	import {fly} from 'svelte/transition';
 
+	/**
+	 * File description:
+	 * The hint alert that explains when quizzes are playable.
+	 */
+
 	export let animationY;
 	export let animationDuration;
 
 	let playableQuizHintDisplayed = false;
 	let playableQuizHintExpanderDisplayed = true;
 
+	/**
+	 * Shows the hing and hides the summary.
+	 */
 	function displayHint() {
 		playableQuizHintExpanderDisplayed = false;
+		// Since I'm working with an animation I have to add a delay to make the elements appear and disappear at the correct time.
 		setTimeout(() => playableQuizHintDisplayed = true, animationDuration);
 	}
 
+	/**
+	 * Shows the summary and hides the hint.
+	 */
 	function hideHint() {
 		playableQuizHintDisplayed = false;
+		// Since I'm working with an animation I have to add a delay to make the elements appear and disappear at the correct time.
 		setTimeout(() => playableQuizHintExpanderDisplayed = true, animationDuration);
 	}
 </script>
 
 <style>
+	/* Turns the mouse into a hand to show that something is clickable. */
 	.mouse-hand {
 		cursor: pointer;
 	}
