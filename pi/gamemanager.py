@@ -60,6 +60,7 @@ class GameManager(object):
   # Restart the whole game
   def restart(self):
     self.state = GameState.RESET
-    os.system("python3 main.py")
+    os.system("python3 /home/pi/Desktop/pihoot/pi/main.py")
     time.sleep(.2)
+    print("quit")
     quit()
