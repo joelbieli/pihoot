@@ -5,7 +5,6 @@
 	import Answer from './quizzing/Answers.svelte';
 	import CorrectAnswer from './quizzing/CorrectAnswers.svelte';
 	import Scoreboard from './quizzing/Scoreboard.svelte';
-	import Endscreen from "./Endscreen.svelte";
 
 	/**
 	 * File description:
@@ -222,7 +221,7 @@
     {:else if !showOnlyQuestion && !showAnswers && showScoreboard && currentQuestionIndex !== game.quiz.questions.length}
 		<Scoreboard {game} {players} on:nextQuestion={playNextQuestion} on:returnHome={handleReturnHome}/>
     {:else if !showOnlyQuestion && !showAnswers && showScoreboard && currentQuestionIndex === game.quiz.questions.length}
-		<Endscreen {game} {players} on:returnHome={handleReturnHome}></Endscreen>
+		Final scoreboard
     {:else}
 		<div class="uk-alert-danger uk-border-rounded" uk-alert>
 			<p>Somebody did a big oopsie here. ts ts ts...</p>
