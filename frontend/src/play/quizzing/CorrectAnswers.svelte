@@ -1,6 +1,5 @@
 <script>
 	import Answer from './answerSubcomponents/Answer.svelte';
-	import TimedLoadingBar from '../../util/TimedLoadingBar.svelte';
 	import {createEventDispatcher} from 'svelte';
 
 	/**
