@@ -83,7 +83,6 @@ fetch(quizEndpointUrl, {
  *
  * @return {boolean} Boolean describing the playable quizzes situation.
  */
-// TODO(laniw): Update to makes sure playable quiz has an answer that actually contains text.
 export function playableQuizzesAvailable(quizzes) {
     let oneValidQuiz = false;
     if (quizzes.length < 1) {
@@ -93,8 +92,8 @@ export function playableQuizzesAvailable(quizzes) {
         if (quiz.questions.length > 0) {
             quiz.questions.forEach(question => {
                 if (question.answers.length > 1) {
-                    question.answers.forEach(question => {
-                        if (question.correct) {
+                    question.answers.forEach(answer => {
+                        if (answer.correct && answer.answer.length > 0) {
                             oneValidQuiz = true;
                         }
                     });
