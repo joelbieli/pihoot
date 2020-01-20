@@ -14,13 +14,16 @@ from gamemanager import GameManager
 from gamestate import GameState
 
 def main():
-  logging.basicConfig(level=logging.DEBUG)
+  # Setup logging for background process
+  logging.basicConfig(level=logging.DEBUG, filename="/var/tmp/pihoot.log")
 
   game_manager = GameManager()
-  
+  event_loop(game_manager)
+
+def event_loop(game_manager):
   while True:
     button = game_manager.buttons.await_event()
-    logging.info("button event: {}".format(button))
+    logging.getLogger('pihoot').info("Button press: {}".format(button))
     
     if game_manager.state is GameState.INPUT_COLORCODE:
       buffer = []
@@ -40,14 +43,16 @@ def main():
             code = game['colorCode']
             if code == buffer:
               game_manager.active_game = game
-                            
               game_manager.network.join_game()
+              
+              game_manager.state = GameState.WAITING_QUESTION
               
               break
           # Pop first item of buffer
           buffer.pop(0)
     elif game_manager.state is GameState.INPUT_REGULAR:
-      pass
+      game_manager.network.send_answer(button)
+      game_manager.state = GameState.WAITING_QUESTION
 
     elif game_manager.state is GameState.ERROR:
       game_manager.restart()
