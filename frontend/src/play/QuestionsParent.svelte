@@ -2,8 +2,8 @@
 	import {apiUrl} from '../stores.js';
 	import {onDestroy, createEventDispatcher} from 'svelte';
 	import Question from './quizzing/Question.svelte';
-	import Answer from './quizzing/Answers.svelte';
-	import CorrectAnswer from './quizzing/CorrectAnswers.svelte';
+	import Answers from './quizzing/Answers.svelte';
+	import CorrectAnswers from './quizzing/CorrectAnswers.svelte';
 	import Scoreboard from './quizzing/Scoreboard.svelte';
 
 	/**
@@ -212,12 +212,12 @@
 		<Question question={currentQuestion} questionIndex={currentQuestionIndex}
 		          questionCount={game.quiz.questions.length}/>
     {:else if !showOnlyQuestion && showAnswers && !showCorrectAnswers && !showScoreboard}
-		<Answer question={currentQuestion} questionIndex={currentQuestionIndex}
-		        questionCount={game.quiz.questions.length}/>
+		<Answers question={currentQuestion} questionIndex={currentQuestionIndex}
+				 questionCount={game.quiz.questions.length}/>
     {:else if !showOnlyQuestion && !showAnswers && showCorrectAnswers && !showScoreboard}
-		<CorrectAnswer question={currentQuestion} questionIndex={currentQuestionIndex}
-		               questionCount={game.quiz.questions.length} on:showScoreboard={switchToScoreboard}
-		               on:returnHome={handleReturnHome}/>
+		<CorrectAnswers question={currentQuestion} questionIndex={currentQuestionIndex}
+						questionCount={game.quiz.questions.length} on:showScoreboard={switchToScoreboard}
+						on:returnHome={handleReturnHome}/>
     {:else if !showOnlyQuestion && !showAnswers && showScoreboard && currentQuestionIndex !== game.quiz.questions.length}
 		<Scoreboard {game} {players} on:nextQuestion={playNextQuestion} on:returnHome={handleReturnHome}/>
     {:else if !showOnlyQuestion && !showAnswers && showScoreboard && currentQuestionIndex === game.quiz.questions.length}
