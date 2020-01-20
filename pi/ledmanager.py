@@ -69,6 +69,7 @@ class GPIOLEDManager(_LEDManager):
     
 class SenseHatLEDManager(_LEDManager):
   def __init__(self):
+    # The coordinates of the different colors on the led matrix
     r_cords = ((1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (2, 1), (3, 1), (4, 1), (5, 1), (3, 2), (4, 2))
     y_cords = ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1, 2), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4))
     g_cords = ((1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (2, 6), (3, 6), (4, 6), (5, 6), (3, 5), (4, 5))
