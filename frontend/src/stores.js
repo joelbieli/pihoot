@@ -93,8 +93,8 @@ export function playableQuizzesAvailable(quizzes) {
         if (quiz.questions.length > 0) {
             quiz.questions.forEach(question => {
                 if (question.answers.length > 1) {
-                    question.answers.forEach(question => {
-                        if (question.correct) {
+                    question.answers.forEach(answer => {
+                        if (answer.correct && answer.answer.length > 0) {
                             oneValidQuiz = true;
                         }
                     });
