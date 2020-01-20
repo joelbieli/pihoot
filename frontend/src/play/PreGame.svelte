@@ -1,13 +1,29 @@
 <script>
 	import {createEventDispatcher} from 'svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that shows a loading screen before the game has been created and an error screen if the game could not be created.
+	 */
+
 	export let createGameStatus;
 	const dispatch = createEventDispatcher();
 
+	/**
+	 * Fires a retryGameStart event to its parent to retry the game start.
+	 *
+	 * @fires retryGameStart
+	 */
 	function retryGameStart() {
 		dispatch('retryGameStart');
 	}
 
+	/**
+	 * Dispatches a pageUpdate and visibilitiesChange event to go back to the home screen.
+	 *
+	 * @fires pageUpdate
+	 * @fires visibilitiesChange
+	 */
 	function returnHome() {
 		dispatch('pageUpdate', {target: 'home'});
 		let visibilities = {
@@ -21,12 +37,6 @@
 		dispatch('visibilityChange', visibilities);
 	}
 </script>
-
-<style>
-	#container {
-		margin-top: 25%;
-	}
-</style>
 
 {#if !createGameStatus.attempted}
 	<div class="uk-container uk-container-xsmall uk-text-center uk-position-center">

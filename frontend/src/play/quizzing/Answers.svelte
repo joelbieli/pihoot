@@ -1,18 +1,19 @@
 <script>
+	import Answer from './answerSubcomponents/Answer.svelte';
 	import TimedLoadingBar from '../../util/TimedLoadingBar.svelte';
 
 	/**
 	 * File description:
-	 * Provides a component that displays the question.
+	 * Provides a component to show the answers a player can choose.
 	 */
 
 	export let question;
 	export let questionIndex;
 	export let questionCount;
 
-	let countDown = 5;
+	let countDown = 15;
 
-	// Update the countdown value every second.
+	// Updates the countdown value every second.
 	let interval = setInterval(() => {
 		if (countDown <= 0) {
 			clearInterval(interval);
@@ -26,23 +27,23 @@
     {questionIndex} of {questionCount}
 </div>
 
-<TimedLoadingBar seconds="5" barColor="#1e87f0" wrapperColor="#bababa"/>
-<div class="uk-grid uk-margin" uk-grid="">
+<TimedLoadingBar seconds="15" barColor="#1e87f0" wrapperColor="#bababa"/>
+<div class="uk-grid uk-margin" uk-grid>
 	<div class="uk-width-expand">
-		<h3>
-			Get ready!
-		</h3>
+		<h1>
+            {question.question}
+		</h1>
 	</div>
 	<div class="uk-width-auto">
 		<div class="uk-card uk-card-primary uk-card-body uk-border-rounded uk-card-small">
 			<h5>
-				{countDown}
+                {countDown}
 			</h5>
 		</div>
 	</div>
 </div>
-<div class="uk-card uk-card-body uk-card-default uk-border-rounded">
-	<h2>
-        {question.question}
-	</h2>
+<div class="uk-grid-small" uk-grid>
+    {#each question.answers as answer}
+		<Answer {answer} showWhetherAnswerCorrect={false}/>
+    {/each}
 </div>

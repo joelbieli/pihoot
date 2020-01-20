@@ -4,6 +4,11 @@ import time
 from colors import Colors
 from gamestate import GameState
 
+'''
+The animator acts as a basic interface between the low level LED manager
+and the Game manager. Based on the state of the game, this class
+managed the behaviour of the LEDs.
+'''
 class Animator(threading.Thread):
   def __init__(self, leds, game_manager):
     self._leds = leds
@@ -33,12 +38,12 @@ def _anim_input_colorcode(leds):
   leds.on(Colors.GREEN)
   leds.on(Colors.BLUE)
   leds.on(Colors.YELLOW)
-  time.sleep(.3)
+  time.sleep(.4)
   leds.off(Colors.RED)
   leds.off(Colors.GREEN)
   leds.off(Colors.BLUE)
   leds.off(Colors.YELLOW)
-  time.sleep(.3)
+  time.sleep(.4)
 
 def _anim_input_regular(leds):
   leds.on(Colors.RED)
@@ -88,7 +93,9 @@ def _anim_intro(leds):
   leds.off(Colors.GREEN)
   leds.off(Colors.YELLOW)
   time.sleep(.1)
-  
+
+# Most of the Game States are mapped to one specific animation
+# some animations are very basic, like just turing everything off
 _ANIM_MAP = {
   GameState.STARTING: _anim_intro,
   GameState.CONNECTING: _anim_connecting,
@@ -96,6 +103,6 @@ _ANIM_MAP = {
   GameState.WAITING_GAMES: _anim_waiting_games,
   GameState.WAITING_QUESTION: _anim_reset,
   GameState.INPUT_REGULAR: _anim_input_regular,
-  GameState.INPUT_COLORCODE: _anim_input_regular,
+  GameState.INPUT_COLORCODE: _anim_input_colorcode,
   GameState.RESET: _anim_reset
 }

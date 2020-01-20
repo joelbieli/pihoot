@@ -1,14 +1,14 @@
 <script>
-	import {getHexForColor, getTextHexForColor} from '../../util/playUtils'
+	import {getHexForColor, getTextHexForColor} from '../../util/playUtils';
+
+	/**
+	 * File description:
+	 * Provides a component that displays the score of a single player.
+	 */
 
 	export let color;
 	export let score;
 	export let position;
-
-	function fontBoldRule() {
-
-	}
-
 </script>
 
 <div class="uk-grid-small {position < 4 ? 'uk-padding-small' : ''} uk-border-rounded"

@@ -2,6 +2,11 @@
 	import {createEventDispatcher} from 'svelte';
 	import {getHexForColor, getTextHexForColor} from '../util/playUtils'
 
+	/**
+	 * File description:
+	 * Provides a component to show which players have joined the game.
+	 */
+
 	export let quizName;
 	export let players;
 	export let colorCode;
@@ -9,6 +14,9 @@
 
 	const dispatch = createEventDispatcher();
 
+	/**
+	 * Fires the startPlaying event when the user presses the appropriate button.
+	 */
 	function startPlaying() {
 		dispatch('startPlaying');
 	}

@@ -3,6 +3,11 @@
 	import {apiUrl} from '../../stores.js';
 	import {onDestroy, createEventDispatcher} from 'svelte';
 
+	/**
+	 * File description:
+	 * Provides a component that displays a scoreboard.
+	 */
+
 	export let game;
 	export let players;
 
@@ -11,6 +16,7 @@
 	let apiUrlStore;
 	let scores;
 	let fullPlayers;
+	// Creates a new players array that includes their id, color, and score.
 	$: {
 		fullPlayers = players.map(player => {
 			if (scores !== undefined) {
@@ -37,6 +43,12 @@
 
 	init();
 
+	/**
+	 * Initiates every needed resource for proper functioning of the page.
+	 *
+	 * - Subscribes to stores
+	 * - Gets the game scores
+	 */
 	function init() {
 		const unsubscribeApiUrl = apiUrl.subscribe(value => apiUrlStore = value);
 
@@ -45,7 +57,7 @@
 		});
 
 		fetch(`${apiUrlStore}game/${game.id}/score`, {
-			method: 'POST',
+			method: 'GET',
 			mode: 'cors'
 		}).then(res => {
 			state.scores.attempted = true;
@@ -58,10 +70,20 @@
 		});
 	}
 
+	/**
+	 * Passes on a returnHome event to its parent component.
+	 *
+	 * @fires returnHome
+	 */
 	function returnHome() {
 		dispatch('returnHome');
 	}
 
+	/**
+	 * Passes on a nextQuestion event to its parent component.
+	 *
+	 * @fires nextQuestion
+	 */
 	function nextQuestion() {
 		dispatch('nextQuestion');
 	}
