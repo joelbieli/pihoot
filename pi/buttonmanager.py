@@ -36,7 +36,6 @@ class GPIOButtonManager(_ButtonManager):
       self._event_queue.put(color)
 
   def await_event(self):
-    print("Await...")
     return self._event_queue.get(True, None)
 
 

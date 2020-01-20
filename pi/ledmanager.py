@@ -37,6 +37,12 @@ class GPIOLEDManager(_LEDManager):
       Colors.BLUE: gpiozero.LED(21)
     }
     
+    # Trun off all LEDs
+    self.off(Colors.RED)
+    self.off(Colors.GREEN)
+    self.off(Colors.BLUE)
+    self.off(Colors.YELLOW)
+    
   def set_rgb(self, color):
     if RGB_COLORS[color][0]:
       self._rgb_led[Colors.RED].on()
