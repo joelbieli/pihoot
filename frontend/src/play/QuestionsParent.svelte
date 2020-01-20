@@ -2,8 +2,8 @@
 	import {apiUrl} from '../stores.js';
 	import {onDestroy, createEventDispatcher} from 'svelte';
 	import Question from './quizzing/Question.svelte';
-	import Answer from './quizzing/Answer.svelte';
-	import CorrectAnswer from './quizzing/CorrectAnswer.svelte';
+	import Answer from './quizzing/Answers.svelte';
+	import CorrectAnswer from './quizzing/CorrectAnswers.svelte';
 	import Scoreboard from './quizzing/Scoreboard.svelte';
 
 	/**
@@ -48,6 +48,7 @@
 	 */
 	function playNextQuestion() {
 		currentQuestion = game.quiz.questions[currentQuestionIndex];
+		currentQuestion.answers = sortAnswersForHardware(currentQuestion.answers);
 		// Clear scoreboard status for next question.
 		showScoreboard = false;
 		// Show only the question for 5 seconds.
@@ -63,6 +64,24 @@
 		}, 1000 * 20);
 
 		currentQuestionIndex += 1;
+	}
+
+	function sortAnswersForHardware(answers) {
+		let sortedAnswers = [{}, {}, {}, {}];
+
+		let colorToIndexMapper = {
+			'RED': 0,
+			'GREEN': 1,
+			'BLUE': 2,
+			'YELLOW': 3
+		};
+
+		answers.forEach(answer => {
+			sortedAnswers[colorToIndexMapper[answer.color]] = answer;
+		});
+
+		console.log(sortedAnswers);
+		return sortedAnswers;
 	}
 
 	/**
