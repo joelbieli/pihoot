@@ -132,10 +132,15 @@
 
 		playNextQuestion();
 
-		// TODO(laniw): Use setInterval instead.
-		for (let i = 1000; i <= 10000; i += 1000) {
-			setTimeout(() => openWebsocketSubscription(), i);
-		}
+		let counter = 0;
+		let interval = setInterval(() => {
+			if (counter < 10) {
+				openWebsocketSubscription();
+			} else {
+				clearInterval(interval);
+			}
+			counter += 1;
+		}, 1000);
 	}
 
 	/**
