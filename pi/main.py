@@ -18,6 +18,8 @@ def main():
   logging.basicConfig(level=logging.DEBUG, filename="/var/tmp/pihoot.log")
 
   game_manager = GameManager()
+  game_manager.network.fetch_games()
+  
   event_loop(game_manager)
 
 def event_loop(game_manager):

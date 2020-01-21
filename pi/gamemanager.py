@@ -62,5 +62,4 @@ class GameManager(object):
     self.state = GameState.RESET
     os.system("python3 /home/pi/Desktop/pihoot/pi/main.py")
     time.sleep(.2)
-    print("quit")
     quit()

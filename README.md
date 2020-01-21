@@ -34,4 +34,6 @@ The backend is primarily responsible for data management. The starting/ending of
 
 ### Pi Frontend
 
-<!-- TODO(kian): Add pi frontend abstract. (Use the web frontend abstract as an example.) -->
+The Pi Frontend interface consists of four buttons. For each question one. Every button has a fixed color and the buttons have a fixed order. There is also the RGB LED that indicates the player color. The player color is needed to identify the players in the scoreboard.
+
+The Pi Architecture is a state machine and is built rather simple. There are two main interfaces that talk to the hardware itself. The LED manager and the Button manager. These two are implemented by the GPIO and the SenseHat class that have the actual code to talk to the hardware. The Network manager is responsible for everything network related. He manages the REST requests as well as the socket event loop. The socket event loop delegates tasks, based on the current state, to the game manager who manages the whole game. You can find the main game loop in the main.py file. This loop handles all incoming events from the user and also delegates tasks to the game manager based on the current state. The communication between the button manager, the main event loop and the game manager is always in colors since the only way for the user to input, is to press 'colors'.
