@@ -101,7 +101,8 @@
 		</h1>
 	</div>
 	<div class="uk-width-auto">
-		<button class="uk-button uk-button-{finalScoreboard ? 'primary' : 'default'} uk-border-rounded" on:click={returnHome}>
+		<button class="uk-button uk-button-{finalScoreboard ? 'primary' : 'default'} uk-border-rounded"
+		        on:click={returnHome}>
             {#if !finalScoreboard}
 				Cancel and return home
             {:else}
@@ -115,7 +116,11 @@
 </div>
 
 {#each fullPlayers as player, i}
-	<Score color={player.color} score={player.score} position={i+1}/>
+    {#if finalScoreboard}
+		<Score color={i === 0 ? 'GOLD' : i === 1 ? 'SILVER' : i === 2 ? 'BRONZE' : player.color} colorName={player.color} score={player.score} position={i+1}/>
+    {:else}
+		<Score color={player.color} colorName={player.color} score={player.score} position={i+1}/>
+    {/if}
     {#if fullPlayers.length > i+1 && i+1 > 2}
 		<hr class="uk-margin-small">
     {/if}

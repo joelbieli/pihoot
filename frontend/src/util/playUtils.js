@@ -19,7 +19,10 @@ export function getHexForColor(color) {
         GREEN: "#25880C",
         LIGHTBLUE: "#3ab1bb",
         BLUE: "#1460BE",
-        PURPLE: "#7132B2"
+        PURPLE: "#7132B2",
+        BRONZE: "#cd7f32",
+        SILVER: "#C0C0C0",
+        GOLD: "#ffd700"
     };
 
     switch (color) {
@@ -35,6 +38,12 @@ export function getHexForColor(color) {
             return colors.BLUE;
         case 'PURPLE':
             return colors.PURPLE;
+        case 'BRONZE':
+            return colors.BRONZE;
+        case 'SILVER':
+            return colors.SILVER;
+        case 'GOLD':
+            return colors.GOLD;
         default:
             console.error('Unknown color!');
     }
@@ -66,6 +75,12 @@ export function getTextHexForColor(color) {
         case 'BLUE':
             return colors.WHITE;
         case 'PURPLE':
+            return colors.WHITE;
+        case 'BRONZE':
+            return colors.WHITE;
+        case 'SILVER':
+            return colors.WHITE;
+        case 'GOLD':
             return colors.WHITE;
         default:
             console.error('Unknown color!');
