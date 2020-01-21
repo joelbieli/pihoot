@@ -8,7 +8,8 @@
 
 	/**
 	 * File description:
-	 * Provides a component that houses the needed to go through once cycle of question, answer, correct answers and scoreboard.
+	 * Provides a component that houses the needed to go through once cycle of question, answer, correct answers and
+	 * scoreboard.
 	 */
 
 	export let game;
@@ -57,7 +58,7 @@
 			showOnlyQuestion = false;
 			showAnswers = true;
 			startQuestion();
-		}, 5000);
+		}, 1000 * 5);
 		// Show scoreboard after 20 seconds
 		setTimeout(() => {
 			switchToCorrectAnswers()
@@ -80,7 +81,6 @@
 			sortedAnswers[colorToIndexMapper[answer.color]] = answer;
 		});
 
-		console.log(sortedAnswers);
 		return sortedAnswers;
 	}
 
@@ -100,7 +100,6 @@
 	 * Switches to the scoreboard screen.
 	 */
 	function switchToScoreboard() {
-		console.log('showing');
 		showCorrectAnswers = false;
 		showScoreboard = true;
 	}
@@ -163,7 +162,8 @@
 	}
 
 	/**
-	 * Subscribes to the answers websocket to get notified every time a player answers a question to go to the next screen as soon as all players have answered.
+	 * Subscribes to the answers websocket to get notified every time a player answers a question to go to the next
+	 * screen as soon as all players have answered.
 	 */
 	async function openWebsocketSubscription() {
 		const client = Stomp.client('ws://localhost:8080/ws/connect');
@@ -219,9 +219,9 @@
 						questionCount={game.quiz.questions.length} on:showScoreboard={switchToScoreboard}
 						on:returnHome={handleReturnHome}/>
     {:else if !showOnlyQuestion && !showAnswers && showScoreboard && currentQuestionIndex !== game.quiz.questions.length}
-		<Scoreboard {game} {players} on:nextQuestion={playNextQuestion} on:returnHome={handleReturnHome}/>
+		<Scoreboard gameId={game.id} {players} on:nextQuestion={playNextQuestion} on:returnHome={handleReturnHome}/>
     {:else if !showOnlyQuestion && !showAnswers && showScoreboard && currentQuestionIndex === game.quiz.questions.length}
-		Final scoreboard
+		<Scoreboard gameId={game.id} {players} on:returnHome={handleReturnHome} finalScoreboard={true}/>
     {:else}
 		<div class="uk-alert-danger uk-border-rounded" uk-alert>
 			<p>Somebody did a big oopsie here. ts ts ts...</p>
