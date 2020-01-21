@@ -4,8 +4,6 @@
 
 	export let answer;
 	export let showWhetherAnswerCorrect;
-
-	console.log(answer.correct, showWhetherAnswerCorrect);
 </script>
 
 <style>
