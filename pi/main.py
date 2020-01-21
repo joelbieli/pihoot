@@ -22,12 +22,15 @@ def main():
   
   event_loop(game_manager)
 
+'''
+This is the main event loop. It manages all the button presses by the user
+'''
 def event_loop(game_manager):
   buffer = []
   while True:
     button = game_manager.buttons.await_event()
     
-    # Manual restart mechanism
+    # Manual restart mechanism that restarts Pi when a certain color code is entered
     buffer.append(button.name)
     if len(buffer) == 8:
       if buffer == ['RED','BLUE','RED','BLUE','RED','BLUE','RED','BLUE']:
@@ -37,8 +40,11 @@ def event_loop(game_manager):
     logging.info("Button press: {}".format(button))
     
     if game_manager.state is GameState.INPUT_COLORCODE:
+
+      # Build buffer while checking if user entered a color code
       color_buffer = []
       color_buffer.append(button.name)
+
       while game_manager.active_game is None:
         # Wait for next color code input
         button = game_manager.buttons.await_event()
