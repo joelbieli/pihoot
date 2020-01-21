@@ -9,6 +9,7 @@ from colors import RGBColors
 
 '''
 The network manager is responsible for all Network related tasks
+It manages the REST client and the socket endpoints
 '''
 class NetworkManager(object):
   def __init__(self, address, port, game_manager):
@@ -18,7 +19,10 @@ class NetworkManager(object):
     self._game_manager = game_manager
 
     self._context = zmq.Context()
-    
+  
+  '''
+  Connect to the server with a address and a port
+  '''
   def connect(self):
     self._socket = self._context.socket(zmq.SUB)
     self._socket.connect("tcp://{}:{}".format(self.address, self.port))
@@ -37,13 +41,18 @@ class NetworkManager(object):
     
     return True
 
+  '''
+  This event loop manages the incoming events from the sockets
+  '''
   def socket_routine(self):
     while True:
       topic = self._socket.recv_string()
             
       if topic == _Topic.QUEUE_GAMES.value:
+        # Get the data package
         data = self._socket.recv_json()
                 
+        # Only update games when WAITING_GAMES or INPUT_COLORCODE
         if self._game_manager.state is GameState.WAITING_GAMES or \
            self._game_manager.state is GameState.INPUT_COLORCODE:
           # Update games list and set to listening
@@ -87,6 +96,15 @@ class NetworkManager(object):
         self._game_manager.active_game["id"],
         self._game_manager.active_player["id"]),
       data = color.name, headers = {'Content-Type':'text/plain'})
+      
+  def fetch_games(self):
+    logging.info("Fetching games from server")
+    
+    r = requests.get(
+      "http://{}:8080/api/game/queueing".format(self.address)).json()
+    if r != []:
+      self._game_manager.games_list = r
+      self._game_manager.state = GameState.INPUT_COLORCODE
 
 '''
 Topics that are used to comunicate with the socket server

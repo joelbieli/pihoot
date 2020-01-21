@@ -27,12 +27,18 @@ class Animator(threading.Thread):
   def halt(self, halt=True):
     self._halting = halt
 
+'''
+Animation to reset, turn off all LEDs
+'''
 def _anim_reset(leds):
   leds.off(Colors.RED)
   leds.off(Colors.GREEN)
   leds.off(Colors.BLUE)
   leds.off(Colors.YELLOW)
 
+'''
+Wait for color code input, slow blink animation
+'''
 def _anim_input_colorcode(leds):
   leds.on(Colors.RED)
   leds.on(Colors.GREEN)
@@ -45,6 +51,9 @@ def _anim_input_colorcode(leds):
   leds.off(Colors.YELLOW)
   time.sleep(.4)
 
+'''
+Wait for answer input, turn on all LEDs
+'''
 def _anim_input_regular(leds):
   leds.on(Colors.RED)
   leds.on(Colors.GREEN)
@@ -52,6 +61,9 @@ def _anim_input_regular(leds):
   leds.on(Colors.YELLOW)
   time.sleep(.1)
 
+'''
+Wait for games, slowly rotate
+'''
 def _anim_waiting_games(leds):
   leds.on(Colors.BLUE)
   time.sleep(.2)
@@ -69,6 +81,9 @@ def _anim_waiting_games(leds):
   time.sleep(.2)
   leds.off(Colors.YELLOW)
 
+'''
+Error, turn off all LEDs except for green
+'''
 def _anim_error(leds):
   leds.off(Colors.BLUE)
   leds.off(Colors.GREEN)
@@ -76,12 +91,18 @@ def _anim_error(leds):
   leds.on(Colors.RED)
   time.sleep(.5)
 
+'''
+Pi is connecting to server, fast rotating
+'''
 def _anim_connecting(leds):
   leds.blink(Colors.BLUE)
   leds.blink(Colors.RED)
   leds.blink(Colors.GREEN)
   leds.blink(Colors.YELLOW)
 
+'''
+Intro anim, flash all LEDs
+'''
 def _anim_intro(leds):
   leds.on(Colors.BLUE)
   leds.on(Colors.RED)

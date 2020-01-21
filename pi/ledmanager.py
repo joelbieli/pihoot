@@ -6,6 +6,7 @@ from sense_hat import SenseHat
 from colors import Colors
 from colors import RGBColors
 from colors import RGB_COLORS
+from colors import SenseRGB_COLORS
 
 '''
 Abstract class that defines the interface between LED access and
@@ -32,12 +33,15 @@ LED manager implementation for GPIO
 '''
 class GPIOLEDManager(_LEDManager):
   def __init__(self):
+    # LED pins
     self._led_dict = {
       Colors.BLUE: gpiozero.LED(22),
       Colors.RED: gpiozero.LED(24),
       Colors.GREEN: gpiozero.LED(12),
       Colors.YELLOW: gpiozero.LED(26),
     }
+
+    # RGB LED pins
     self._rgb_led = {
       Colors.RED: gpiozero.LED(16),
       Colors.GREEN: gpiozero.LED(20),
@@ -50,6 +54,9 @@ class GPIOLEDManager(_LEDManager):
     self.off(Colors.BLUE)
     self.off(Colors.YELLOW)
     
+  '''
+  Set the color of the RGB LED
+  '''
   def set_rgb(self, color):
     if RGB_COLORS[color][0]:
       self._rgb_led[Colors.RED].on()
@@ -66,15 +73,27 @@ class GPIOLEDManager(_LEDManager):
     else:
       self._rgb_led[Colors.BLUE].off()
 
+  '''
+  Turn on a specific LED
+  '''
   def on(self, color):
     self._led_dict[color].on()
   
+  '''
+  Turn off a specific LED
+  '''
   def off(self, color):
     self._led_dict[color].off()
     
+  '''
+  Toggle a specific LED
+  '''
   def toggle(self, color):
     self._led_dict[color].toggle()
     
+  '''
+  Blink a specific LED once
+  '''
   def blink(self, color, duration=.1):
     self._led_dict[color].on()
     time.sleep(duration)
@@ -85,12 +104,14 @@ LED manager implementation for SenseHat
 '''
 class SenseHatLEDManager(_LEDManager):
   def __init__(self):
+    # The coordinates of the different colors on the led matrix
     r_cords = ((1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (2, 1), (3, 1), (4, 1), (5, 1), (3, 2), (4, 2))
-    y_cords = ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1, 2), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4))
-    g_cords = ((1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (2, 6), (3, 6), (4, 6), (5, 6), (3, 5), (4, 5))
+    y_cords = ((1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (2, 6), (3, 6), (4, 6), (5, 6), (3, 5), (4, 5))
+    g_cords = ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1, 2), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4))
     b_cords = ((7, 1), (7, 2), (7, 3), (7, 4), (7, 5), (7, 6), (6, 2), (6, 3), (6, 4), (6, 5), (5, 3), (5, 4))
-    self.i_cords = ( (3, 3), (4, 4), (4, 3), (3, 4))
+    self.i_cords = ((3, 3), (4, 4), (4, 3), (3, 4))
     
+    # LED Coordinates
     self._led_dict = {
       Colors.RED: r_cords,
       Colors.GREEN: g_cords,
@@ -98,6 +119,7 @@ class SenseHatLEDManager(_LEDManager):
       Colors.YELLOW: y_cords
     }
     
+    # RGB color dictionary
     self._color_dict = {
       Colors.RED: (255, 0, 0),
       Colors.GREEN: (0, 255, 0),
@@ -106,27 +128,40 @@ class SenseHatLEDManager(_LEDManager):
     }
     
     self.sense = SenseHat()
+    self.set_rgb(RGBColors.BLACK)
     
+  '''
+  Turn on a specific LED
+  '''
   def on(self, color):
     self._set_led(color)
   
+  '''
+  Turn off a specific LED
+  '''
   def off(self, color):
     self._set_led(color, off=True)
     
+  '''
+  Toggle a specific LED
+  '''
   def toggle(self, color):
     if self.sense.get_pixel(self._led_dict[color][0][0], self._led_dict[color][0][1]) == [0, 0, 0]:
       self._set_led(color)
     else:
       self._set_led(color, off=True)
     
+  '''
+  Blink a specific LED once
+  '''
   def blink(self, color, duration=.1):
     self._set_led(color)
     time.sleep(duration)
     self._set_led(color, off=True)
   
-  def set_indicator_light(self, rgb):
+  def set_rgb(self, color):
     for i in self.i_cords:
-      self.sense.set_pixel(i[0], i[1], rgb)
+      self.sense.set_pixel(i[0], i[1], SenseRGB_COLORS[color])
     
   def _set_led (self, color, off=False):
     for i in self._led_dict[color]:

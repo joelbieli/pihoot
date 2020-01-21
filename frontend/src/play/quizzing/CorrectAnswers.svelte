@@ -1,6 +1,5 @@
 <script>
 	import Answer from './answerSubcomponents/Answer.svelte';
-	import TimedLoadingBar from '../../util/TimedLoadingBar.svelte';
 	import {createEventDispatcher} from 'svelte';
 
 	/**
@@ -11,8 +10,6 @@
 	export let question;
 	export let questionIndex;
 	export let questionCount;
-
-	console.log('loaded');
 
 	const dispatch = createEventDispatcher();
 

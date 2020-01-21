@@ -3,8 +3,8 @@ import time
 import enum
 import os
 
-from buttonmanager import GPIOButtonManager
-from ledmanager import GPIOLEDManager
+from buttonmanager import SenseHatButtonManager
+from ledmanager import SenseHatLEDManager
 from network import NetworkManager
 
 from animator import Animator
@@ -19,9 +19,9 @@ class GameManager(object):
     self.__state = GameState.STARTING
     
     # Game submanagers
-    self.leds = GPIOLEDManager()
-    self.buttons = GPIOButtonManager()
-    self.network = NetworkManager("10.0.0.229", 5563, self)
+    self.leds = SenseHatLEDManager()
+    self.buttons = SenseHatButtonManager()
+    self.network = NetworkManager("192.168.43.210", 5563, self)
     
     self.games_list = []
     self.active_game = None
@@ -60,6 +60,6 @@ class GameManager(object):
   # Restart the whole game
   def restart(self):
     self.state = GameState.RESET
-    os.system("python3 main.py")
+    os.system("python3 /home/pi/Desktop/pihoot/pi/main.py")
     time.sleep(.2)
     quit()

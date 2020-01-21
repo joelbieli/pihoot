@@ -8,8 +8,9 @@
 	 * Provides a component that displays a scoreboard.
 	 */
 
-	export let game;
+	export let gameId;
 	export let players;
+	export let finalScoreboard = false;
 
 	const dispatch = createEventDispatcher();
 
@@ -56,7 +57,7 @@
 			unsubscribeApiUrl();
 		});
 
-		fetch(`${apiUrlStore}game/${game.id}/score`, {
+		fetch(`${apiUrlStore}game/${gameId}/score`, {
 			method: 'GET',
 			mode: 'cors'
 		}).then(res => {
@@ -92,24 +93,39 @@
 <div class="uk-grid uk-margin" uk-grid="">
 	<div class="uk-width-expand">
 		<h1>
-			Scoreboard
+            {#if finalScoreboard}
+				Leaderboard
+            {:else}
+				Scoreboard
+            {/if}
 		</h1>
 	</div>
 	<div class="uk-width-auto">
-		<button class="uk-button uk-button-default uk-border-rounded" on:click={returnHome}>Cancel and return home
+		<button class="uk-button uk-button-{finalScoreboard ? 'primary' : 'default'} uk-border-rounded" on:click={returnHome}>
+            {#if finalScoreboard}
+				Return home
+            {:else}
+				Cancel and return home
+            {/if}
 		</button>
-		<button class="uk-button uk-button-primary uk-border-rounded" on:click={nextQuestion}>Next question</button>
+        {#if !finalScoreboard}
+			<button class="uk-button uk-button-primary uk-border-rounded" on:click={nextQuestion}>Next question</button>
+        {/if}
 	</div>
 </div>
 
 {#each fullPlayers as player, i}
-	<Score color={player.color} score={player.score} position={i+1}/>
+    {#if finalScoreboard}
+		<Score color={i === 0 ? 'GOLD' : i === 1 ? 'SILVER' : i === 2 ? 'BRONZE' : player.color} colorName={player.color} score={player.score} position={i+1}/>
+    {:else}
+		<Score color={player.color} colorName={player.color} score={player.score} position={i+1}/>
+    {/if}
     {#if fullPlayers.length > i+1 && i+1 > 2}
 		<hr class="uk-margin-small">
     {/if}
 {:else}
 	<div class="uk-card uk-card-default uk-card-small uk-border-rounded">
 		<div uk-spinner="ratio: 3"></div>
-		Fetching quizzes
+		Fetching scores
 	</div>
 {/each}

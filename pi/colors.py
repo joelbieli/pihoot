@@ -35,3 +35,13 @@ RGB_COLORS = {
   RGBColors.YELLOW: (1, 1, 0),
   RGBColors.PURPLE: (1, 0, 1)
 }
+
+SenseRGB_COLORS = {
+  RGBColors.BLACK: (0, 0, 0),
+  RGBColors.RED: (255, 0, 0),
+  RGBColors.GREEN: (0, 255, 0),
+  RGBColors.BLUE: (0, 0, 255),
+  RGBColors.LIGHTBLUE: (0, 255, 255),
+  RGBColors.YELLOW: (255, 255, 0),
+  RGBColors.PURPLE: (255, 0, 255)
+}
