@@ -7,8 +7,8 @@ import os
 import animator
 
 from colors import RGBColors
-from buttonmanager import GPIOButtonManager
-from ledmanager import GPIOLEDManager
+from buttonmanager import SenseHatButtonManager
+from ledmanager import SenseHatLEDManager
 from network import NetworkManager
 from gamemanager import GameManager
 from gamestate import GameState

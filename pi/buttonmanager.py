@@ -53,8 +53,8 @@ class SenseHatButtonManager(_ButtonManager):
     
     self._button_dict = {
       "right": Colors.BLUE,
-      "down": Colors.GREEN,
-      "left": Colors.YELLOW,
+      "left": Colors.GREEN,
+      "down": Colors.YELLOW,
       "up": Colors.RED
     }
 
