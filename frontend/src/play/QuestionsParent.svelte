@@ -50,7 +50,10 @@
 	function playNextQuestion() {
 		currentQuestion = game.quiz.questions[currentQuestionIndex];
 		currentQuestion.answers = sortAnswersForHardware(currentQuestion.answers);
-		// Clear scoreboard status for next question.
+		// Clear visibility statuses for next question.
+		showOnlyQuestion = false;
+		showAnswers = false;
+		showCorrectAnswers = false;
 		showScoreboard = false;
 		// Show only the question for 5 seconds.
 		showOnlyQuestion = true;
