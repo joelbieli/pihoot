@@ -8,8 +8,9 @@
 	 * Provides a component that displays a scoreboard.
 	 */
 
-	export let game;
+	export let gameId;
 	export let players;
+	export let finalScoreboard = false;
 
 	const dispatch = createEventDispatcher();
 
@@ -56,7 +57,7 @@
 			unsubscribeApiUrl();
 		});
 
-		fetch(`${apiUrlStore}game/${game.id}/score`, {
+		fetch(`${apiUrlStore}game/${gameId}/score`, {
 			method: 'GET',
 			mode: 'cors'
 		}).then(res => {
@@ -92,13 +93,24 @@
 <div class="uk-grid uk-margin" uk-grid="">
 	<div class="uk-width-expand">
 		<h1>
-			Scoreboard
+            {#if !finalScoreboard}
+				Scoreboard
+            {:else}
+				Leaderboard
+            {/if}
 		</h1>
 	</div>
 	<div class="uk-width-auto">
-		<button class="uk-button uk-button-default uk-border-rounded" on:click={returnHome}>Cancel and return home
+		<button class="uk-button uk-button-{finalScoreboard ? 'primary' : 'default'} uk-border-rounded" on:click={returnHome}>
+            {#if !finalScoreboard}
+				Cancel and return home
+            {:else}
+				Return home
+            {/if}
 		</button>
-		<button class="uk-button uk-button-primary uk-border-rounded" on:click={nextQuestion}>Next question</button>
+        {#if !finalScoreboard}
+			<button class="uk-button uk-button-primary uk-border-rounded" on:click={nextQuestion}>Next question</button>
+        {/if}
 	</div>
 </div>
 
@@ -110,6 +122,6 @@
 {:else}
 	<div class="uk-card uk-card-default uk-card-small uk-border-rounded">
 		<div uk-spinner="ratio: 3"></div>
-		Fetching quizzes
+		Fetching scores
 	</div>
 {/each}
