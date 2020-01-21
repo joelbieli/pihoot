@@ -11,8 +11,6 @@
 	export let questionIndex;
 	export let questionCount;
 
-	console.log('loaded');
-
 	const dispatch = createEventDispatcher();
 
 	/**
