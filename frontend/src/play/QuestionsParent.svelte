@@ -89,7 +89,7 @@
 	 */
 	function switchToCorrectAnswers() {
 		showAnswers = false;
-		showCorrectAnswers = showCorrectAnswers ? showCorrectAnswers : true;
+		showCorrectAnswers = true;
 		endQuestion();
 		if (game.quiz.questions.length <= currentQuestionIndex) {
 			stopGame();
@@ -225,6 +225,10 @@
     {:else}
 		<div class="uk-alert-danger uk-border-rounded" uk-alert>
 			<p>Somebody did a big oopsie here. ts ts ts...</p>
+			{showOnlyQuestion}
+			{showAnswers}
+			{showCorrectAnswers}
+			{showScoreboard}
 		</div>
     {/if}
 </div>
