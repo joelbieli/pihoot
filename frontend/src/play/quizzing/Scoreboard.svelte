@@ -93,20 +93,19 @@
 <div class="uk-grid uk-margin" uk-grid="">
 	<div class="uk-width-expand">
 		<h1>
-            {#if !finalScoreboard}
-				Scoreboard
-            {:else}
+            {#if finalScoreboard}
 				Leaderboard
+            {:else}
+				Scoreboard
             {/if}
 		</h1>
 	</div>
 	<div class="uk-width-auto">
-		<button class="uk-button uk-button-{finalScoreboard ? 'primary' : 'default'} uk-border-rounded"
-		        on:click={returnHome}>
-            {#if !finalScoreboard}
-				Cancel and return home
-            {:else}
+		<button class="uk-button uk-button-{finalScoreboard ? 'primary' : 'default'} uk-border-rounded" on:click={returnHome}>
+            {#if finalScoreboard}
 				Return home
+            {:else}
+				Cancel and return home
             {/if}
 		</button>
         {#if !finalScoreboard}

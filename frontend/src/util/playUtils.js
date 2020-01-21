@@ -81,7 +81,7 @@ export function getTextHexForColor(color) {
         case 'SILVER':
             return colors.WHITE;
         case 'GOLD':
-            return colors.WHITE;
+            return colors.BLACK;
         default:
             console.error('Unknown color!');
     }
