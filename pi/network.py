@@ -87,6 +87,15 @@ class NetworkManager(object):
         self._game_manager.active_game["id"],
         self._game_manager.active_player["id"]),
       data = color.name, headers = {'Content-Type':'text/plain'})
+      
+  def fetch_games(self):
+    logging.info("Fetching games from server")
+    
+    r = requests.get(
+      "http://{}:8080/api/game/queueing".format(self.address)).json()
+    if r != []:
+      self._game_manager.games_list = r
+      self._game_manager.state = GameState.INPUT_COLORCODE
 
 '''
 Topics that are used to comunicate with the socket server
